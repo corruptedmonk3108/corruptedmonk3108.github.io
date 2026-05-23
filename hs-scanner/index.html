@@ -1,0 +1,1283 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xhipment — HS Code Scanner</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.1.1/tesseract.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #F7F8FA;
+    --bg2:       #FFFFFF;
+    --bg3:       #F0F2F5;
+    --bg4:       #E8EBF0;
+    --accent:    #E8622A;
+    --accent-dk: #C9501F;
+    --navy:      #1B3160;
+    --danger:    #DC2626;
+    --warn:      #D97706;
+    --success:   #059669;
+    --text:      #1B3160;
+    --text2:     #4A5568;
+    --text3:     #9AA3B0;
+    --border:    #E2E8F0;
+    --border2:   #CBD5E0;
+    --shadow:    0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --radius:    12px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    height: 64px;
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+
+  .nav-badge {
+    margin-left: 1rem;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--text3);
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 5rem;
+  }
+
+  .page-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--navy);
+    letter-spacing: -0.03em;
+    margin-bottom: 0.4rem;
+  }
+
+  .page-sub {
+    font-size: 14px;
+    color: var(--text2);
+    margin-bottom: 2rem;
+  }
+
+  /* ── QUOTE ID CARD ── */
+  .quote-input-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+    max-width: 520px;
+  }
+
+  .quote-input-card label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .quote-input-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  .quote-input-row input {
+    flex: 1;
+    height: 44px;
+    border: 1.5px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 0 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--navy);
+    background: var(--bg);
+    outline: none;
+    transition: border-color 0.2s;
+    text-transform: uppercase;
+  }
+
+  .quote-input-row input:focus { border-color: var(--accent); background: #fff; }
+  .quote-input-row input::placeholder { text-transform: none; color: var(--text3); }
+  .quote-input-row input:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-primary {
+    height: 44px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0 20px;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .btn-primary:hover { background: var(--accent-dk); }
+  .btn-primary:disabled { background: var(--bg4); color: var(--text3); cursor: not-allowed; }
+
+  .btn-ghost {
+    height: 36px;
+    background: transparent;
+    color: var(--text2);
+    border: 1.5px solid var(--border2);
+    border-radius: 50px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 0 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 5px;
+  }
+
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── MISC ── */
+  .ocr-note {
+    display: none; margin-top: 0.75rem;
+    font-size: 12px; color: var(--warn);
+    background: #FFFBEB; border: 1px solid #FDE68A;
+    border-radius: var(--radius-sm); padding: 8px 12px;
+  }
+
+  .error-box {
+    display: none; margin-top: 1rem;
+    background: #FEF2F2; border: 1px solid #FECACA;
+    border-radius: var(--radius-sm); padding: 12px 14px;
+    font-size: 13px; color: var(--danger);
+  }
+
+  /* ── PROGRESS ── */
+  #progress-section { display: none; margin-top: 1.5rem; max-width: 520px; }
+
+  .progress-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow);
+  }
+
+  .progress-label {
+    font-size: 13px; color: var(--text2); font-weight: 500;
+    margin-bottom: 10px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .progress-bar-wrap {
+    height: 5px; background: var(--bg4); border-radius: 3px; overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%; background: var(--accent); border-radius: 3px;
+    transition: width 0.4s ease; width: 0%;
+  }
+
+  .progress-steps { display: flex; flex-direction: column; gap: 8px; margin-top: 1.25rem; }
+
+  .step { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text3); }
+  .step.active { color: var(--text2); }
+  .step.done   { color: var(--success); }
+
+  .step-icon {
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 1.5px solid var(--border2); background: var(--bg3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; flex-shrink: 0;
+  }
+
+  .step.active .step-icon { background: #FFF0EB; border-color: var(--accent); color: var(--accent); }
+  .step.done   .step-icon { background: #ECFDF5; border-color: var(--success); color: var(--success); }
+
+  /* ── RESULTS ── */
+  #results-section { display: none; margin-top: 1.5rem; }
+
+  .result-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem;
+  }
+
+  .result-title { font-size: 1.2rem; font-weight: 700; color: var(--navy); letter-spacing: -0.02em; }
+
+  .scan-again-btn {
+    background: var(--accent); color: #fff; border: none;
+    border-radius: 50px; font-family: 'Inter', sans-serif;
+    font-size: 13px; font-weight: 600; padding: 8px 18px;
+    cursor: pointer; transition: background 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .scan-again-btn:hover { background: var(--accent-dk); }
+
+  /* ── DISCLAIMER CARD ── */
+  .disclaimer-card {
+    background: #FFFBEB;
+    border: 1px solid #FDE68A;
+    border-left: 4px solid var(--warn);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 1.25rem 1.5rem;
+    margin-top: 1rem;
+    box-shadow: var(--shadow);
+  }
+
+  .disclaimer-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 0.75rem; flex-wrap: wrap; gap: 8px;
+  }
+
+  .disclaimer-title {
+    font-size: 11px; font-family: 'DM Mono', monospace;
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--warn);
+  }
+
+  .copy-btn {
+    display: flex; align-items: center; gap: 5px;
+    background: var(--warn); color: #fff;
+    border: none; border-radius: 50px;
+    font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600;
+    padding: 5px 12px; cursor: pointer; transition: background 0.2s;
+  }
+
+  .copy-btn:hover { background: #B45309; }
+  .copy-btn.copied { background: var(--success); }
+
+  .disclaimer-text {
+    font-size: 13px; color: var(--text2); line-height: 1.7;
+    white-space: pre-line;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* ── INVOICE COMPARISON CARD ── */
+  .comparison-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.25rem 1.5rem;
+    margin-top: 1rem; box-shadow: var(--shadow);
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .comparison-card { grid-template-columns: 1fr; }
+  }
+
+  .cmp-item { display: flex; flex-direction: column; gap: 4px; }
+
+  .cmp-label {
+    font-size: 10px; font-family: 'DM Mono', monospace;
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3);
+  }
+
+  .cmp-value {
+    font-size: 1.3rem; font-weight: 700; color: var(--navy);
+    letter-spacing: -0.02em;
+  }
+
+  .cmp-value .currency {
+    font-size: 0.8rem; font-weight: 500; color: var(--text2); margin-left: 3px;
+  }
+
+  .cmp-value.danger { color: var(--danger); }
+  .cmp-value.success { color: var(--success); }
+
+  .cmp-sub { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; }
+
+  /* ── WARNINGS ── */
+  .warnings-section { margin-top: 1.25rem; margin-bottom: 1.25rem; }
+
+  .section-label {
+    font-size: 10px; font-family: 'DM Mono', monospace;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--text3); margin-bottom: 0.6rem;
+  }
+
+  .warning-banner {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: #FEF2F2; border: 1px solid #FECACA;
+    border-left: 3px solid var(--danger);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 12px 14px; margin-bottom: 8px;
+    animation: slideIn 0.25s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-6px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .warn-icon { font-size: 14px; margin-top: 1px; flex-shrink: 0; }
+  .warn-content { flex: 1; }
+  .warn-headline { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--danger); font-weight: 500; margin-bottom: 2px; }
+  .warn-desc { font-size: 12px; color: #7F1D1D; opacity: 0.7; }
+
+  .no-warnings {
+    display: flex; align-items: center; gap: 10px;
+    background: #ECFDF5; border: 1px solid #A7F3D0;
+    border-radius: var(--radius-sm); padding: 12px 14px;
+    font-size: 13px; color: var(--success); font-weight: 500;
+  }
+
+  /* ── CODES TABLE ── */
+  .codes-section {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    box-shadow: var(--shadow); margin-top: 1.25rem;
+  }
+
+  .codes-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
+    background: var(--bg3);
+  }
+
+  .codes-header-title {
+    font-size: 10px; font-family: 'DM Mono', monospace;
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3);
+  }
+
+  .codes-count {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    background: var(--bg2); color: var(--accent);
+    padding: 2px 10px; border-radius: 20px;
+    border: 1px solid #FDDCCE; font-weight: 500;
+  }
+
+  .codes-table { width: 100%; border-collapse: collapse; }
+
+  .codes-table th {
+    text-align: left; padding: 10px 1.25rem;
+    font-size: 11px; font-weight: 600; color: var(--text3);
+    background: var(--bg3); border-bottom: 1px solid var(--border);
+    letter-spacing: 0.04em;
+  }
+
+  .codes-table td {
+    padding: 11px 1.25rem; font-size: 13px;
+    border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text2);
+  }
+
+  .codes-table tr:last-child td { border-bottom: none; }
+  .codes-table tbody tr:hover td { background: #FFFAF8; }
+
+  .code-val { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--navy); font-weight: 500; }
+
+  .chapter-badge {
+    display: inline-block; font-family: 'DM Mono', monospace; font-size: 10px;
+    padding: 2px 8px; border-radius: 4px;
+    background: var(--bg4); border: 1px solid var(--border2); color: var(--text2); font-weight: 500;
+  }
+
+  .chapter-badge.flagged { background: #FEF2F2; border-color: #FECACA; color: var(--danger); }
+
+  .flag-indicator   { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--danger); font-weight: 500; }
+  .clear-indicator  { font-size: 11px; color: var(--success); font-weight: 500; }
+
+  /* ── FILE STRIP ── */
+  .file-strip {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 10px 14px;
+    margin-top: 1rem; font-size: 13px; color: var(--text2);
+  }
+
+  .file-strip-name {
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  .file-type-badge {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    padding: 2px 7px; border-radius: 4px;
+    background: var(--bg4); border: 1px solid var(--border2);
+    color: var(--text3); text-transform: uppercase; flex-shrink: 0;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 4rem; text-align: center;
+    font-size: 12px; font-family: 'DM Mono', monospace;
+    color: var(--text3); letter-spacing: 0.04em;
+  }
+
+  footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="#">
+    <img src="data:image/png;base64,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" alt="Xhipment" style="height:34px;">
+  </a>
+  <span class="nav-badge">HS Code Scanner</span>
+</nav>
+
+<!-- ══════════════════════════════════════
+     QUOTE ID INPUT + SCANNING
+══════════════════════════════════════ -->
+<div id="quote-step" class="container">
+  <h1 class="page-title">HS Code Scanner</h1>
+  <p class="page-sub">Enter a Quote ID to automatically fetch and scan the commercial invoice.</p>
+
+  <div id="quoteFormArea">
+
+    <!-- Mode toggle -->
+    <div style="display:flex;gap:6px;margin-bottom:1rem;">
+      <button id="tabQid" onclick="setMode('qid')" style="height:32px;background:var(--navy);color:#fff;border:none;border-radius:50px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:0 16px;cursor:pointer;">By Quote ID</button>
+      <button id="tabUpload" onclick="setMode('upload')" style="height:32px;background:transparent;color:var(--text2);border:1.5px solid var(--border2);border-radius:50px;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;padding:0 16px;cursor:pointer;">Upload Invoice</button>
+    </div>
+
+    <!-- QID card -->
+    <div id="qidCard" class="quote-input-card">
+      <label>Quote ID</label>
+      <div class="quote-input-row">
+        <input type="text" id="quoteInput" placeholder="e.g. XQAMZFCL042620169M"
+               onkeydown="if(event.key==='Enter') scanQuote()">
+        <button class="btn-primary" id="scanBtn" onclick="scanQuote()">
+          Scan Invoice
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Upload card -->
+    <div id="uploadCard" class="quote-input-card" style="display:none">
+      <label>Invoice File</label>
+      <div class="quote-input-row" style="align-items:center;">
+        <span id="uploadFileName" style="flex:1;font-size:13px;color:var(--text3);font-family:'DM Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">No file chosen</span>
+        <button class="btn-primary" onclick="document.getElementById('fileInput').click()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Choose &amp; Scan
+        </button>
+        <input type="file" id="fileInput" accept=".pdf,.xlsx,.xls,.csv" style="display:none" onchange="scanUploadedFile()">
+      </div>
+    </div>
+
+    <div class="error-box" id="quoteErrorBox"></div>
+    <div id="cachePrompt" style="display:none;margin-top:1rem;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:12px 14px;font-size:13px;color:#1E40AF;">
+      <div style="font-weight:600;margin-bottom:8px;">Already scanned — show previous results or re-run?</div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="showCachedResults()" style="height:32px;background:#1E40AF;color:#fff;border:none;border-radius:50px;font-size:12px;font-weight:600;padding:0 14px;cursor:pointer;">Previous results</button>
+        <button onclick="rerunScan()" style="height:32px;background:transparent;color:#1E40AF;border:1.5px solid #BFDBFE;border-radius:50px;font-size:12px;font-weight:600;padding:0 14px;cursor:pointer;">Re-run analysis</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ocr-note" id="ocrNote">Scanned PDF detected — running OCR. This may take a moment.</div>
+
+  <!-- Progress (shown while scanning) -->
+  <div id="progress-section">
+    <div class="progress-card">
+      <div class="progress-label">
+        <span id="progressLabel">Processing...</span>
+        <span id="progressPct" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent);font-weight:500;">0%</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="progress-steps" id="progressSteps"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     RESULTS
+══════════════════════════════════════ -->
+<div id="results-section" class="container" style="display:none">
+
+  <div class="result-header">
+    <div class="result-title">Scan Results</div>
+    <button class="scan-again-btn" onclick="resetApp()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+      New Scan
+    </button>
+  </div>
+
+  <div id="fileInfoStrip"></div>
+
+  <!-- Invoice value comparison -->
+  <div class="comparison-card" id="comparisonCard" style="display:none">
+    <div class="cmp-item">
+      <div class="cmp-label">Exports Invoice Value</div>
+      <div class="cmp-value" id="cmpExports">—</div>
+      <div class="cmp-sub" id="cmpExportsSub"></div>
+    </div>
+    <div class="cmp-item">
+      <div class="cmp-label">Scanned Invoice Value</div>
+      <div class="cmp-value" id="cmpScanned">—</div>
+      <div class="cmp-sub" id="cmpScannedRaw"></div>
+    </div>
+    <div class="cmp-item">
+      <div class="cmp-label">Difference</div>
+      <div class="cmp-value" id="cmpDiff">—</div>
+      <div class="cmp-sub" id="cmpDiffLabel"></div>
+    </div>
+  </div>
+
+  <!-- Disclaimer (shown only when scanned < exports) -->
+  <div class="disclaimer-card" id="disclaimerCard" style="display:none">
+    <div class="disclaimer-header">
+      <div class="disclaimer-title">Invoice Value Mismatch — Customer Notice</div>
+      <button class="copy-btn" id="copyBtn" onclick="copyDisclaimer()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy message
+      </button>
+    </div>
+    <div class="disclaimer-text" id="disclaimerText"></div>
+  </div>
+
+  <!-- Chapter warnings -->
+  <div class="warnings-section">
+    <div class="section-label">Chapter Alerts</div>
+    <div id="warningsList"></div>
+  </div>
+
+  <!-- HTS Codes Table -->
+  <div class="codes-section">
+    <div class="codes-header">
+      <span class="codes-header-title">Detected HS / HTS Codes</span>
+      <span class="codes-count" id="codesCount">0 codes</span>
+    </div>
+    <table class="codes-table">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Chapter</th>
+          <th>Description</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="codesTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="container" style="padding-top:0">
+  <footer>
+    &copy; 2025 <a href="https://xhipment.com">Xhipment</a> &mdash; HS Code Compliance Scanner &mdash; powered by Claude AI
+  </footer>
+</div>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+const WORKER_URL   = 'https://xhipment-hs-proxy.raunak-4c2.workers.dev';
+function sendChatAlert(quoteId, chaptersMap, shipper) {
+  const dt = new Date().toLocaleString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    day: '2-digit', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', hour12: true
+  });
+  const chapterList = [...chaptersMap.entries()]
+    .map(([ch, desc]) => `Chapter ${ch} (${desc})`)
+    .join(', ');
+  fetch(WORKER_URL + '/gchat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ qid: quoteId, shipper: shipper || '', chapterList, dt })
+  }).catch(() => {});
+}
+
+function buildDisclaimer(scannedAmt, scannedCurrency, exportsAmt, exportsCurrency) {
+  const fmt = v => Number(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const sc = scannedCurrency || 'USD';
+  const ec = exportsCurrency || 'USD';
+  return `Dear Customer,
+
+Hope you are well. Upon reviewing the import invoice, we observed that there's a reduction in the imports invoice from the exports invoice value. Your imports invoice value is ${fmt(scannedAmt)} ${sc}, whereas your exports invoice value is ${fmt(exportsAmt)} ${ec}.
+
+Please note that any customs reviews or holds occurring because of this difference will be attributable to your shipment and the resulting additional charges will be passed on to your account.
+
+Thank you for your support and understanding.
+
+Regards,
+Team Xhipment`;
+}
+
+const FLAGGED_CHAPTERS = {
+  '01': 'Live Animals',
+  '02': 'Meat and Edible Meat Offal',
+  '03': 'Fish and Crustaceans, Molluscs and Other Aquatic Invertebrates',
+  '04': "Dairy Produce; Birds' Eggs; Natural Honey; Edible Products of Animal Origin",
+  '05': 'Products of Animal Origin, Not Elsewhere Specified',
+  '06': 'Live Trees and Other Plants; Bulbs, Roots and the Like',
+  '07': 'Edible Vegetables and Certain Roots and Tubers',
+  '10': 'Cereals',
+  '11': 'Products of the Milling Industry; Malt; Starches; Inulin; Wheat Gluten',
+  '15': 'Animal, Vegetable or Microbial Fats and Oils and Their Cleavage Products',
+  '16': 'Preparations of Meat, Fish, Crustaceans, Molluscs or Other Aquatic Invertebrates',
+  '22': 'Beverages, Spirits and Vinegar',
+  '23': 'Residues and Waste from the Food Industries; Prepared Animal Fodder',
+  '24': 'Tobacco and Manufactured Tobacco Substitutes',
+  '30': 'Pharmaceutical Products',
+  '31': 'Fertilizers',
+  '36': 'Explosives; Pyrotechnic Products; Matches; Pyrophoric Alloys; Certain Combustible Preparations',
+  '41': 'Raw Hides and Skins (Other Than Furskins) and Leather',
+  '43': 'Furskins and Artificial Fur; Manufactures Thereof',
+  '51': 'Wool, Fine or Coarse Animal Hair; Horsehair Yarn and Woven Fabric',
+  '67': 'Prepared Feathers and Down; Artificial Flowers; Articles of Human Hair',
+  '71': 'Natural or Cultured Pearls, Precious or Semiprecious Stones, Precious Metals and Articles Thereof',
+  '84': 'Nuclear Reactors, Boilers, Machinery and Mechanical Appliances; Parts Thereof',
+  '90': 'Optical, Photographic, Measuring, Medical or Surgical Instruments and Apparatus',
+  '93': 'Arms and Ammunition; Parts and Accessories Thereof',
+  '97': "Works of Art, Collectors' Pieces and Antiques"
+};
+
+// ── Alert exemptions ──
+const EXEMPT_QID_PREFIXES  = ['XQAMZFCL', 'XQFCL'];
+const EXEMPT_SHIPPERS = [
+  'parts world llc',
+  'madan mohan textiles',
+  'nmk textile mills india pvt ltd',
+  'vinay sharma',
+  'picado home decors pvt ltd',
+  'shrimahaveer home furnish expo pvt. ltd.',
+  'apl'
+];
+
+function isExemptFromAlert(quoteId, shipper) {
+  const q = (quoteId || '').toUpperCase();
+  if (EXEMPT_QID_PREFIXES.some(p => q.startsWith(p))) return true;
+  const s = (shipper || '').toLowerCase().trim();
+  if (EXEMPT_SHIPPERS.includes(s)) return true;
+  return false;
+}
+
+// ── State ──
+let quoteLookup = {};
+let currentQuoteId = '';
+let currentShipper = '';
+const scanResultCache = {};
+let exportsInvoiceValue = null;
+let currentFilename = '';
+let currentInvoiceUrl = '';
+
+fetch('./quote_lookup.json')
+  .then(r => r.json())
+  .then(data => {
+    data.forEach(entry => {
+      quoteLookup[entry.quoteId.trim().toUpperCase()] = {
+        exportsInvoiceValue: parseFloat(entry.exportsInvoiceValue),
+        shipper: entry.shipper || '',
+        url: entry.url ? entry.url.trim() : null
+      };
+    });
+  })
+  .catch(() => console.warn('quote_lookup.json not loaded'));
+
+// ── Main: look up Quote ID then fetch + scan invoice ──
+async function scanQuote() {
+  const raw = document.getElementById('quoteInput').value.trim().toUpperCase();
+  const errBox = document.getElementById('quoteErrorBox');
+  errBox.style.display = 'none';
+
+  if (!raw) {
+    errBox.textContent = 'Please enter a Quote ID.';
+    errBox.style.display = 'block';
+    return;
+  }
+
+  const entry = quoteLookup[raw];
+  if (!entry) {
+    errBox.textContent = 'Quote ID not found. Please check and try again.';
+    errBox.style.display = 'block';
+    return;
+  }
+
+  if (!entry.url) {
+    errBox.textContent = 'No invoice URL found for this Quote ID.';
+    errBox.style.display = 'block';
+    return;
+  }
+
+  currentQuoteId = raw;
+  currentShipper = entry.shipper || '';
+  exportsInvoiceValue = entry.exportsInvoiceValue;
+
+  if (scanResultCache[raw]) {
+    document.getElementById('cachePrompt').style.display = 'block';
+    return;
+  }
+
+  // Lock UI, show progress
+  document.getElementById('quoteFormArea').style.display = 'none';
+  document.getElementById('progress-section').style.display = 'block';
+
+  const steps = ['Fetching invoice', 'Extracting text', 'AI analysis', 'Processing results'];
+  updateStep(steps, 0);
+  setProgress(5, 'Fetching invoice from server...');
+
+  try {
+    // Detect file type from URL string
+    const urlLower = entry.url.toLowerCase();
+    const ext = urlLower.includes('.xlsx') ? 'xlsx'
+              : urlLower.includes('.xls')  ? 'xls'
+              : urlLower.includes('.csv')  ? 'csv'
+              : 'pdf';
+
+    // Extract display filename from the url parameter inside the query string
+    const urlParamMatch = entry.url.match(/[?&]url=([^&]+)/);
+    const urlParamValue = urlParamMatch ? urlParamMatch[1] : entry.url;
+    const rawFilename = urlParamValue.split('/').pop();
+    currentFilename = decodeURIComponent(rawFilename) || ('invoice.' + ext);
+    currentInvoiceUrl = entry.url.replace(/ /g, '%20');
+
+    // Fetch the invoice (try direct first, fall back to Worker proxy)
+    const safeUrl = currentInvoiceUrl;
+    let blob;
+    try {
+      const resp = await fetch(safeUrl, { mode: 'cors' });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      blob = await resp.blob();
+    } catch (corsErr) {
+      // Try via Cloudflare Worker proxy route
+      const proxyUrl = WORKER_URL + '/download?url=' + encodeURIComponent(safeUrl);
+      const resp2 = await fetch(proxyUrl);
+      if (!resp2.ok) {
+        const body = await resp2.text().catch(() => '');
+        throw new Error(`Could not fetch invoice (HTTP ${resp2.status})${body ? ': ' + body.substring(0, 120) : ''}`);
+      }
+      blob = await resp2.blob();
+    }
+
+    const file = new File([blob], currentFilename, { type: blob.type || 'application/octet-stream' });
+    await processInvoiceFile(file, steps);
+
+  } catch (err) {
+    document.getElementById('progress-section').style.display = 'none';
+    document.getElementById('quoteFormArea').style.display = 'block';
+    const msg = typeof err?.message === 'string' ? err.message
+              : typeof err === 'string' ? err
+              : JSON.stringify(err);
+    errBox.textContent = msg || 'An unexpected error occurred.';
+    errBox.style.display = 'block';
+  }
+}
+
+async function processInvoiceFile(file, steps) {
+  document.getElementById('ocrNote').style.display = 'none';
+
+  let extractedText = '';
+  const ext = file.name.split('.').pop().toLowerCase();
+
+  updateStep(steps, 1);
+
+  if (ext === 'pdf') {
+    setProgress(20, 'Extracting text from PDF...');
+    extractedText = await extractPDFText(file);
+  } else if (['xlsx', 'xls', 'csv'].includes(ext)) {
+    setProgress(25, 'Parsing spreadsheet...');
+    extractedText = await extractExcelText(file);
+    setProgress(45, 'Spreadsheet parsed');
+  } else {
+    throw new Error('Unsupported file type in invoice URL.');
+  }
+
+  if (!extractedText || extractedText.trim().length < 10) {
+    throw new Error('Could not extract meaningful text from the invoice.');
+  }
+
+  updateStep(steps, 2);
+  setProgress(55, 'Sending to Claude AI for analysis...');
+
+  const result = await analyzeWithClaude(extractedText);
+
+  updateStep(steps, 3);
+  setProgress(90, 'Processing results...');
+  await new Promise(r => setTimeout(r, 400));
+  setProgress(100, 'Complete');
+
+  setTimeout(async () => {
+    document.getElementById('progress-section').style.display = 'none';
+    document.getElementById('quote-step').style.display = 'none';
+    scanResultCache[currentQuoteId] = { result, file };
+    await showResults(result, file);
+  }, 500);
+}
+
+function setMode(mode) {
+  const isQid = mode === 'qid';
+  document.getElementById('qidCard').style.display    = isQid ? 'block' : 'none';
+  document.getElementById('uploadCard').style.display = isQid ? 'none'  : 'block';
+  document.getElementById('tabQid').style.cssText    = `height:32px;background:${isQid ? 'var(--navy);color:#fff' : 'transparent;color:var(--text2)'};border:${isQid ? 'none' : '1.5px solid var(--border2)'};border-radius:50px;font-family:'Inter',sans-serif;font-size:12px;font-weight:${isQid ? 600 : 500};padding:0 16px;cursor:pointer;`;
+  document.getElementById('tabUpload').style.cssText = `height:32px;background:${isQid ? 'transparent;color:var(--text2)' : 'var(--navy);color:#fff'};border:${isQid ? '1.5px solid var(--border2)' : 'none'};border-radius:50px;font-family:'Inter',sans-serif;font-size:12px;font-weight:${isQid ? 500 : 600};padding:0 16px;cursor:pointer;`;
+  document.getElementById('quoteErrorBox').style.display = 'none';
+}
+
+async function scanUploadedFile() {
+  const input = document.getElementById('fileInput');
+  const file  = input.files[0];
+  if (!file) return;
+
+  document.getElementById('uploadFileName').textContent = file.name;
+  const errBox = document.getElementById('quoteErrorBox');
+  errBox.style.display = 'none';
+
+  currentQuoteId        = '';
+  currentShipper        = '';
+  exportsInvoiceValue   = null;
+  currentFilename       = file.name;
+  currentInvoiceUrl     = '';
+
+  document.getElementById('quoteFormArea').style.display    = 'none';
+  document.getElementById('progress-section').style.display = 'block';
+
+  const steps = ['Reading file', 'Extracting text', 'AI analysis', 'Processing results'];
+  updateStep(steps, 0);
+  setProgress(10, 'Reading invoice file...');
+
+  try {
+    await processInvoiceFile(file, steps);
+  } catch (err) {
+    document.getElementById('progress-section').style.display = 'none';
+    document.getElementById('quoteFormArea').style.display    = 'block';
+    const msg = typeof err?.message === 'string' ? err.message
+              : typeof err === 'string' ? err
+              : JSON.stringify(err);
+    errBox.textContent = msg || 'An unexpected error occurred.';
+    errBox.style.display = 'block';
+  }
+  input.value = '';
+}
+
+async function showCachedResults() {
+  document.getElementById('cachePrompt').style.display = 'none';
+  document.getElementById('quoteFormArea').style.display = 'none';
+  document.getElementById('quote-step').style.display = 'none';
+  const cached = scanResultCache[currentQuoteId];
+  await showResults(cached.result, cached.file);
+}
+
+function rerunScan() {
+  document.getElementById('cachePrompt').style.display = 'none';
+  delete scanResultCache[currentQuoteId];
+  scanQuote();
+}
+
+function resetApp() {
+  document.getElementById('results-section').style.display = 'none';
+  document.getElementById('quote-step').style.display      = 'block';
+  document.getElementById('quoteFormArea').style.display   = 'block';
+  document.getElementById('progress-section').style.display = 'none';
+  document.getElementById('ocrNote').style.display         = 'none';
+  document.getElementById('quoteInput').value = '';
+  document.getElementById('uploadFileName').textContent = 'No file chosen';
+  document.getElementById('quoteErrorBox').style.display = 'none';
+  document.getElementById('cachePrompt').style.display   = 'none';
+  setMode('qid');
+  document.getElementById('disclaimerCard').style.display = 'none';
+  document.getElementById('comparisonCard').style.display = 'none';
+  const tn = document.getElementById('thresholdNote');
+  if (tn) tn.remove();
+  currentQuoteId = '';
+  currentShipper = '';
+  exportsInvoiceValue = null;
+  currentFilename = '';
+  currentInvoiceUrl = '';
+  const aiNote = document.getElementById('aiNote');
+  if (aiNote) aiNote.remove();
+}
+
+// ── PDF / Excel extraction ──
+async function extractPDFText(file) {
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  let fullText = '', hasText = false;
+
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page    = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    const pageText = content.items.map(item => item.str).join(' ');
+    if (pageText.trim().length > 20) hasText = true;
+    fullText += pageText + '\n';
+  }
+
+  if (!hasText) {
+    document.getElementById('ocrNote').style.display = 'block';
+    setProgress(25, 'Running OCR on scanned PDF...');
+    fullText = await runOCROnPDF(pdf);
+  }
+  return fullText;
+}
+
+async function runOCROnPDF(pdf) {
+  let ocrText = '';
+  const worker = await Tesseract.createWorker('eng');
+  for (let i = 1; i <= pdf.numPages; i++) {
+    setProgress(25 + Math.round((i / pdf.numPages) * 20), `OCR: page ${i} of ${pdf.numPages}...`);
+    const page     = await pdf.getPage(i);
+    const viewport = page.getViewport({ scale: 2.0 });
+    const canvas   = document.createElement('canvas');
+    canvas.width   = viewport.width;
+    canvas.height  = viewport.height;
+    await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+    const { data: { text } } = await worker.recognize(canvas.toDataURL('image/png'));
+    ocrText += text + '\n';
+  }
+  await worker.terminate();
+  return ocrText;
+}
+
+async function extractExcelText(file) {
+  const arrayBuffer = await file.arrayBuffer();
+  const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+
+  const priority = ['invoice', 'commercial invoice', 'ci'];
+  const sorted = [...workbook.SheetNames].sort((a, b) => {
+    const al = a.toLowerCase(), bl = b.toLowerCase();
+    const ap = priority.some(p => al.includes(p)) ? 0 : 1;
+    const bp = priority.some(p => bl.includes(p)) ? 0 : 1;
+    return ap - bp;
+  });
+
+  let allText = '';
+  sorted.forEach(name => {
+    allText += `[Sheet: ${name}]\n${XLSX.utils.sheet_to_csv(workbook.Sheets[name])}\n\n`;
+  });
+  return allText;
+}
+
+// ── Claude analysis ──
+async function analyzeWithClaude(text) {
+  const prompt = `You are an expert customs and trade compliance analyst. Analyze the commercial invoice below and extract two things:
+
+1. ALL HS codes (also called HTS codes, Harmonized System codes, Commodity Codes, or Tariff Codes).
+   - Look in columns labeled "HS Code", "HTS Code", "Commodity Code", "Tariff Code", "Code", "HTS", "HS", etc.
+   - Also as standalone numeric strings anywhere in the document
+   - With or without dots/dashes (e.g., 0910.99.6000 or 0910996000)
+   - Strip any leading apostrophe (Excel artifact)
+   - As 4, 6, 8, or 10-digit codes
+   - Use contextual understanding, NOT regex pattern matching
+
+2. The TOTAL INVOICE VALUE (grand total amount payable in USD or foreign currency).
+   - First look for an explicit total line: "Total", "Invoice Total", "Grand Total", "Amount Due", "Total Amount", "Total Value", "Net Amount", etc.
+   - If the total is written in words (e.g. "Ten Thousand One Hundred Fifteen and Cents Thirty Five Only"), convert it to a number (10115.35).
+   - If no explicit total line exists, compute it yourself: multiply each line's Qty × Rate and sum all lines.
+   - Capture the numeric amount as a plain number (no $ sign, no commas) AND the currency code.
+   - IMPORTANT: "amount" must always be a plain JSON number like 10115.35, never a string like "$10,115.35".
+
+Return ONLY valid JSON (no markdown) in this exact format:
+{
+  "codes": [
+    {"raw": "original code as found", "normalized": "digits only no dots or dashes", "context": "brief note"}
+  ],
+  "invoice_value": {
+    "amount": 12345.67,
+    "currency": "USD",
+    "raw": "original string or computed note, e.g. 'Computed from line items' or 'Ten Thousand...' "
+  },
+  "notes": "any observations"
+}
+
+If no HS codes found, return empty codes array. Only set invoice_value.amount to null if there is truly no way to determine any value at all.
+
+Invoice content:
+${text.substring(0, 30000)}`;
+
+  const response = await fetch(WORKER_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 2000,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+
+  const data = await response.json();
+  if (!response.ok || data.error) {
+    const e = data.error;
+    throw new Error(
+      typeof e === 'string' ? e
+      : e?.message || (e ? JSON.stringify(e) : `Server error ${response.status}`)
+    );
+  }
+
+  const rawText = data.content[0].text.trim();
+  try {
+    return JSON.parse(rawText.replace(/```json|```/g, '').trim());
+  } catch {
+    throw new Error('Could not parse AI response. Please try again.');
+  }
+}
+
+// ── Results ──
+function showUnderThresholdNote(pct) {
+  const el = document.createElement('div');
+  el.id = 'thresholdNote';
+  el.style.cssText = 'display:flex;align-items:center;gap:10px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:12px 14px;margin-top:1rem;font-size:13px;color:#1E40AF;font-weight:500;';
+  el.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg>Difference in invoice is &lt;10% (${pct.toFixed(1)}%) — no disclaimer required`;
+  document.getElementById('comparisonCard').insertAdjacentElement('afterend', el);
+}
+
+function showPriorityCustomerNote() {
+  const el = document.createElement('div');
+  el.id = 'thresholdNote';
+  el.style.cssText = 'display:flex;align-items:center;gap:10px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:12px 14px;margin-top:1rem;font-size:13px;color:#1E40AF;font-weight:500;';
+  el.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg>Priority Customer — No invoice disclaimer required`;
+  document.getElementById('comparisonCard').insertAdjacentElement('afterend', el);
+}
+
+async function getExchangeRate(from, to) {
+  const resp = await fetch(`https://api.frankfurter.app/latest?from=${from}&to=${to}`);
+  if (!resp.ok) throw new Error('Exchange rate unavailable');
+  const data = await resp.json();
+  const rate = data.rates[to];
+  if (!rate) throw new Error(`No rate for ${from}→${to}`);
+  return rate;
+}
+
+async function showResults(result, file) {
+  document.getElementById('results-section').style.display = 'block';
+
+  const ext = file.name.split('.').pop().toUpperCase();
+  document.getElementById('fileInfoStrip').innerHTML = `
+    <div class="file-strip">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text3);flex-shrink:0">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+      </svg>
+      <span class="file-strip-name">${file.name}</span>
+      <span class="file-type-badge">${ext}</span>
+      <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);margin-left:auto;">${currentQuoteId}</span>
+      ${currentInvoiceUrl ? `<a href="${currentInvoiceUrl}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--accent);font-weight:500;text-decoration:none;margin-left:10px;" title="Open invoice"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Open</a>` : ''}
+    </div>`;
+
+  // Invoice value comparison
+  const iv = result.invoice_value;
+  let scannedAmount = null;
+  if (iv && iv.amount !== null && iv.amount !== undefined) {
+    const parsed = parseFloat(iv.amount);
+    if (!isNaN(parsed)) scannedAmount = parsed;
+  }
+  if (scannedAmount === null && iv && iv.raw) {
+    const cleaned = parseFloat(iv.raw.replace(/[^0-9.]/g, ''));
+    if (!isNaN(cleaned) && cleaned > 0) scannedAmount = cleaned;
+  }
+  const exportsAmt = exportsInvoiceValue;
+  const compCard   = document.getElementById('comparisonCard');
+
+  if (scannedAmount !== null && exportsAmt !== null) {
+    compCard.style.display = 'grid';
+    const scannedCurrency = (iv.currency || 'USD').toUpperCase();
+    const sameCurrency    = scannedCurrency === 'USD';
+
+    document.getElementById('cmpScanned').innerHTML =
+      `${formatCurrency(scannedAmount)}<span class="currency">${scannedCurrency}</span>`;
+    document.getElementById('cmpScannedRaw').textContent = '';
+
+    const diffEl    = document.getElementById('cmpDiff');
+    const diffLabel = document.getElementById('cmpDiffLabel');
+
+    if (!sameCurrency) {
+      // Show USD exports while fetching rate
+      document.getElementById('cmpExports').innerHTML =
+        `${formatCurrency(exportsAmt)}<span class="currency">USD</span>`;
+      document.getElementById('cmpExportsSub').textContent = 'Converting…';
+      diffEl.textContent    = '…';
+      diffEl.className      = 'cmp-value';
+      diffLabel.textContent = '';
+
+      try {
+        const rate             = await getExchangeRate('USD', scannedCurrency);
+        const convertedExports = exportsAmt * rate;
+
+        document.getElementById('cmpExports').innerHTML =
+          `${formatCurrency(convertedExports)}<span class="currency">${scannedCurrency}</span>`;
+        document.getElementById('cmpExportsSub').textContent =
+          `$${formatCurrency(exportsAmt)} USD × ${rate.toFixed(4)}`;
+
+        const diff    = scannedAmount - convertedExports;
+        const isShort = scannedAmount < convertedExports;
+        const pct     = Math.abs(diff) / convertedExports * 100;
+        diffEl.innerHTML  = `${diff < 0 ? '−' : '+'}${formatCurrency(Math.abs(diff))}<span class="currency">${scannedCurrency}</span>`;
+        diffEl.className  = 'cmp-value ' + (isShort ? 'danger' : 'success');
+        diffLabel.textContent = isShort ? 'Import value is lower' : 'Import value matches or exceeds';
+
+        if (pct < 10) {
+          showUnderThresholdNote(pct);
+        } else if (isShort && !isExemptFromAlert(currentQuoteId, currentShipper)) {
+          const msg = buildDisclaimer(scannedAmount, scannedCurrency, convertedExports, scannedCurrency);
+          document.getElementById('disclaimerCard').style.display = 'block';
+          const textEl = document.getElementById('disclaimerText');
+          textEl.textContent = msg;
+          textEl.dataset.message = msg;
+        } else if (isShort) {
+          showPriorityCustomerNote();
+        }
+      } catch (_) {
+        document.getElementById('cmpExports').innerHTML =
+          `${formatCurrency(exportsAmt)}<span class="currency">USD</span>`;
+        document.getElementById('cmpExportsSub').textContent = '';
+        diffEl.textContent    = '—';
+        diffLabel.textContent = 'Could not fetch exchange rate';
+      }
+    } else {
+      document.getElementById('cmpExports').innerHTML =
+        `${formatCurrency(exportsAmt)}<span class="currency">USD</span>`;
+      document.getElementById('cmpExportsSub').textContent = 'From Google Sheet';
+
+      const diff    = scannedAmount - exportsAmt;
+      const isShort = scannedAmount < exportsAmt;
+      const pct     = Math.abs(diff) / exportsAmt * 100;
+      diffEl.innerHTML  = `${diff < 0 ? '−' : '+'}${formatCurrency(Math.abs(diff))}<span class="currency">USD</span>`;
+      diffEl.className  = 'cmp-value ' + (isShort ? 'danger' : 'success');
+      diffLabel.textContent = isShort ? 'Import value is lower' : 'Import value matches or exceeds';
+
+      if (pct < 10) {
+        showUnderThresholdNote(pct);
+      } else if (isShort && !isExemptFromAlert(currentQuoteId, currentShipper)) {
+        const msg = buildDisclaimer(scannedAmount, scannedCurrency, exportsAmt, 'USD');
+        document.getElementById('disclaimerCard').style.display = 'block';
+        const textEl = document.getElementById('disclaimerText');
+        textEl.textContent = msg;
+        textEl.dataset.message = msg;
+      } else if (isShort) {
+        showPriorityCustomerNote();
+      }
+    }
+  } else if (scannedAmount === null) {
+    compCard.style.display = 'grid';
+    document.getElementById('cmpExports').innerHTML =
+      `${formatCurrency(exportsAmt)}<span class="currency">USD</span>`;
+    document.getElementById('cmpScanned').textContent = 'Not detected';
+    document.getElementById('cmpScanned').style.fontSize = '1rem';
+    document.getElementById('cmpDiff').textContent = '—';
+  }
+
+  // Chapter warnings
+  const codes = result.codes || [];
+  const warningsList = document.getElementById('warningsList');
+  warningsList.innerHTML = '';
+  const triggeredChapters = new Map();
+  codes.forEach(code => {
+    const norm = code.normalized.replace(/\D/g, '');
+    if (norm.length >= 2) {
+      const ch = norm.substring(0, 2);
+      if (FLAGGED_CHAPTERS[ch] && !triggeredChapters.has(ch)) triggeredChapters.set(ch, FLAGGED_CHAPTERS[ch]);
+    }
+  });
+
+  if (triggeredChapters.size === 0) {
+    warningsList.innerHTML = `
+      <div class="no-warnings">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        No flagged chapters detected in this invoice
+      </div>`;
+  } else {
+    triggeredChapters.forEach((desc, ch) => {
+      warningsList.innerHTML += `
+        <div class="warning-banner">
+          <span class="warn-icon">⚠</span>
+          <div class="warn-content">
+            <div class="warn-headline">Chapter ${ch}: ${desc}</div>
+            <div class="warn-desc">Requires additional compliance review per USITC HTS schedule</div>
+          </div>
+        </div>`;
+    });
+    sendChatAlert(currentQuoteId, triggeredChapters, currentShipper);
+  }
+
+  // HTS codes table
+  const tbody = document.getElementById('codesTableBody');
+  tbody.innerHTML = '';
+  document.getElementById('codesCount').textContent = codes.length + ' code' + (codes.length !== 1 ? 's' : '');
+
+  if (codes.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:2rem;font-size:13px;">No HS codes detected in this invoice</td></tr>`;
+  } else {
+    codes.forEach(code => {
+      const norm        = code.normalized.replace(/\D/g, '');
+      const chapter     = norm.length >= 2 ? norm.substring(0, 2) : '??';
+      const isFlagged   = !!FLAGGED_CHAPTERS[chapter];
+      const chapterDesc = FLAGGED_CHAPTERS[chapter] || '';
+      tbody.innerHTML += `
+        <tr>
+          <td><span class="code-val">${code.raw}</span></td>
+          <td><span class="chapter-badge ${isFlagged ? 'flagged' : ''}">${chapter}</span></td>
+          <td style="font-size:12px;color:var(--text2);max-width:260px;">${isFlagged ? chapterDesc.substring(0, 60) + (chapterDesc.length > 60 ? '…' : '') : '—'}</td>
+          <td>${isFlagged
+            ? `<span class="flag-indicator"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15" stroke="currentColor" stroke-width="2"/></svg> Flagged</span>`
+            : `<span class="clear-indicator">✓ Clear</span>`
+          }</td>
+        </tr>`;
+    });
+  }
+
+}
+
+// ── Helpers ──
+function formatCurrency(val) {
+  return Number(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function copyDisclaimer() {
+  const msg = document.getElementById('disclaimerText').dataset.message || document.getElementById('disclaimerText').textContent;
+  navigator.clipboard.writeText(msg).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.classList.add('copied');
+    btn.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy message`;
+    }, 2500);
+  });
+}
+
+function setProgress(pct, label) {
+  document.getElementById('progressBar').style.width   = pct + '%';
+  document.getElementById('progressPct').textContent   = pct + '%';
+  document.getElementById('progressLabel').textContent = label;
+}
+
+function updateStep(steps, activeIdx) {
+  const container = document.getElementById('progressSteps');
+  container.innerHTML = '';
+  steps.forEach((s, i) => {
+    const div = document.createElement('div');
+    let cls = 'step', icon = '○';
+    if (i < activeIdx)       { cls += ' done';   icon = '✓'; }
+    else if (i === activeIdx) { cls += ' active'; icon = '→'; }
+    div.className = cls;
+    div.innerHTML = `<div class="step-icon">${icon}</div><span>${s}</span>`;
+    container.appendChild(div);
+  });
+}
+</script>
+</body>
+</html>

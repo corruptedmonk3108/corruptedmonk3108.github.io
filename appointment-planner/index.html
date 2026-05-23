@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Appointment Planner</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .fade-in { animation: fadeIn 0.3s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .spinner { border: 2px solid #e5e7eb; border-top-color: #3b82f6; border-radius: 50%; width: 18px; height: 18px; animation: spin 0.7s linear infinite; display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+    <div>
+      <h1 class="text-xl font-semibold text-gray-800">Appointment Planner</h1>
+      <p class="text-sm text-gray-500">FCL / LCL Shipment Tracker</p>
+    </div>
+    <span class="text-xs px-2.5 py-1 rounded-full bg-green-50 text-green-700">Live data · Google Sheets</span>
+  </header>
+
+  <!-- Main -->
+  <main class="max-w-7xl mx-auto px-6 pt-4 pb-8">
+
+    <!-- Search box -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-3 max-w-2xl mx-auto">
+      <h2 class="text-lg font-medium text-gray-700 mb-1">Enter Container Number</h2>
+      <p class="text-sm text-gray-400 mb-5">The app will calculate the suggested appointment date based on SLA logic.</p>
+      <form onsubmit="handleSearch(event)" class="flex gap-3">
+        <input
+          id="container-input"
+          type="text"
+          placeholder="e.g. TEMU7239219"
+          autocomplete="off"
+          autofocus
+          class="flex-1 border border-gray-300 rounded-lg px-4 py-3 text-sm font-mono uppercase
+                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                 placeholder:normal-case placeholder:font-sans placeholder:text-gray-400"
+        />
+        <button type="submit" id="search-btn"
+          class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-6 py-3 rounded-lg
+                 transition-colors disabled:opacity-50 flex items-center gap-2">
+          <span id="search-label">Search</span>
+          <span id="search-spinner" class="hidden spinner !border-white !border-t-transparent"></span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Result -->
+    <div id="result" class="hidden fade-in"></div>
+
+  </main>
+
+  <script>
+    const N8N_WEBHOOK = 'https://raunak3108.app.n8n.cloud/webhook/appointment';
+
+    // -----------------------------------------------------------------------
+    // Search
+    // -----------------------------------------------------------------------
+    async function handleSearch(e) {
+      e.preventDefault();
+      const container = document.getElementById('container-input').value.trim().toUpperCase();
+      if (!container) return;
+
+      setSearchLoading(true);
+      clearResult();
+
+      try {
+        const r = await fetch(`${N8N_WEBHOOK}?container=${encodeURIComponent(container)}`);
+        const data = await r.json();
+        if (data.error) renderError(data.error);
+        else renderResult(data);
+      } catch {
+        renderError('Could not reach the server. Please try again.');
+      } finally {
+        setSearchLoading(false);
+      }
+    }
+
+    function setSearchLoading(on) {
+      document.getElementById('search-btn').disabled = on;
+      document.getElementById('search-label').textContent = on ? 'Searching…' : 'Search';
+      document.getElementById('search-spinner').classList.toggle('hidden', !on);
+    }
+
+    function clearResult() {
+      const el = document.getElementById('result');
+      el.innerHTML = '';
+      el.classList.add('hidden');
+    }
+
+    // -----------------------------------------------------------------------
+    // Render result
+    // -----------------------------------------------------------------------
+    function renderResult(data) {
+      const el = document.getElementById('result');
+      el.classList.remove('hidden');
+
+      const isDate = !!data.suggestedDate;
+      const suggestionValue = isDate ? formatDateNice(data.suggestedDate) : (data.suggestedText || '—');
+      const suggestionLabel = isDate ? 'Suggested Appointment Date' : 'Appointment Status';
+      const urgencyClass = isDate ? urgencyColor(data.suggestedDate) : textStatusColor(data.suggestedText);
+
+      el.innerHTML = `
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden fade-in">
+
+          <!-- Suggestion hero -->
+          <div class="px-6 py-5 border-b border-gray-100">
+            <p class="text-xs font-medium uppercase tracking-wider text-gray-400 mb-1">${suggestionLabel}</p>
+            <p class="text-3xl font-bold ${urgencyClass} mb-1">${escHtml(suggestionValue)}</p>
+            <p class="text-sm text-gray-400">
+              Container&nbsp;<span class="font-mono font-semibold text-gray-600">${escHtml(data.container)}</span>
+              &nbsp;·&nbsp;Arrival ETA&nbsp;<span class="font-medium text-gray-600">${formatDateNice(data.arrivalETA)}</span>
+            </p>
+          </div>
+
+          <!-- QID table -->
+          <div class="px-4 py-4">
+            <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">
+              QID Breakdown (${data.qids.length} shipment${data.qids.length !== 1 ? 's' : ''})
+            </p>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm border-collapse">
+                <thead>
+                  <tr class="border-b border-gray-200">
+                    <th class="text-left text-xs font-semibold uppercase tracking-wider text-gray-400 py-2 pr-4 whitespace-nowrap">QID</th>
+                    <th class="text-left text-xs font-semibold uppercase tracking-wider text-gray-400 py-2 pr-4 whitespace-nowrap">Customer</th>
+                    <th class="text-left text-xs font-semibold uppercase tracking-wider text-gray-400 py-2 pr-4 whitespace-nowrap">Destination</th>
+                    <th class="text-left text-xs font-semibold uppercase tracking-wider text-gray-400 py-2 pr-4 whitespace-nowrap">Status</th>
+                    <th class="text-right text-xs font-semibold uppercase tracking-wider text-gray-400 py-2 pr-4 whitespace-nowrap">Days in Exec</th>
+                    <th class="text-right text-xs font-semibold uppercase tracking-wider text-gray-400 py-2 pr-4 whitespace-nowrap">Committed SLA</th>
+                    <th class="text-right text-xs font-semibold uppercase tracking-wider text-gray-400 py-2 pr-4 whitespace-nowrap">Est. Days at Arrival</th>
+                    <th class="text-right text-xs font-semibold uppercase tracking-wider text-gray-400 py-2 whitespace-nowrap">Days Remaining</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                  ${data.qids.map(q => qidRow(q)).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      `;
+    }
+
+    function qidRow(q) {
+      const tat = q.targetLmTat;
+      const isNum = typeof tat === 'number';
+      const tatDisplay = isNum ? `${tat}` : (tat || '—');
+      const tatColor = isNum
+        ? (tat <= 5 ? 'text-red-600 font-semibold' : tat <= 14 ? 'text-yellow-600 font-semibold' : 'text-green-700 font-semibold')
+        : 'text-gray-500';
+
+      return `
+        <tr class="hover:bg-gray-50 transition-colors">
+          <td class="py-3 pr-4 font-mono text-xs font-semibold text-gray-700 whitespace-nowrap">${escHtml(q.qid)}</td>
+          <td class="py-3 pr-4 text-gray-600 whitespace-nowrap">${escHtml(q.customer || '—')}</td>
+          <td class="py-3 pr-4 text-gray-600 max-w-xs truncate" title="${escHtml(q.destination)}">${escHtml(q.destination || '—')}</td>
+          <td class="py-3 pr-4 text-gray-600 whitespace-nowrap">${escHtml(q.status || '—')}</td>
+          <td class="py-3 pr-4 text-right text-gray-600">${q.daysInExecution ?? '—'}</td>
+          <td class="py-3 pr-4 text-right text-gray-600">${q.committedSLA ?? '—'}</td>
+          <td class="py-3 pr-4 text-right text-gray-600">${q.estimatedExecDays ?? '—'}</td>
+          <td class="py-3 text-right ${tatColor}">${escHtml(tatDisplay)}</td>
+        </tr>
+      `;
+    }
+
+    function renderError(msg) {
+      const el = document.getElementById('result');
+      el.classList.remove('hidden');
+      el.innerHTML = `
+        <div class="bg-red-50 border border-red-200 rounded-2xl px-6 py-5 text-red-700 text-sm fade-in">
+          ${escHtml(msg)}
+        </div>
+      `;
+    }
+
+    // -----------------------------------------------------------------------
+    // Helpers
+    // -----------------------------------------------------------------------
+    function formatDateNice(iso) {
+      if (!iso) return '—';
+      const d = new Date(iso + 'T00:00:00Z');
+      return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+    }
+
+    function urgencyColor(isoDate) {
+      if (!isoDate) return 'text-gray-700';
+      const days = Math.round((new Date(isoDate + 'T00:00:00Z') - new Date().setHours(0,0,0,0)) / 86400000);
+      if (days < 0) return 'text-red-600';
+      if (days <= 5) return 'text-red-500';
+      if (days <= 14) return 'text-yellow-600';
+      return 'text-green-700';
+    }
+
+    function textStatusColor(text) {
+      if (!text) return 'text-gray-700';
+      if (text.includes('breach')) return 'text-red-600';
+      if (text.includes('within SLA')) return 'text-green-700';
+      return 'text-gray-700';
+    }
+
+    function escHtml(s) {
+      if (s == null) return '';
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+  </script>
+</body>
+</html>
