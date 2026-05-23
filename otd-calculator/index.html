@@ -4,6 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OTD Calculator</title>
+  <script>
+    (function() {
+      var auth = null;
+      try { auth = JSON.parse(localStorage.getItem('xhipAuth') || 'null'); } catch(e) {}
+      if (!auth || !auth.expires || Date.now() > auth.expires) {
+        localStorage.removeItem('xhipAuth');
+        window.location.replace('/login.html');
+        return;
+      }
+      document.addEventListener('DOMContentLoaded', function() {
+        var bar = document.createElement('div');
+        bar.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#1e293b;color:#94a3b8;font-family:system-ui,sans-serif;font-size:12px;padding:5px 16px;display:flex;align-items:center;justify-content:space-between;';
+        bar.innerHTML = '<a href="/" style="color:#e2e8f0;text-decoration:none;font-weight:500;">← Xhipment Tools</a>' +
+          '<span style="display:flex;align-items:center;gap:14px;">' +
+          '<span>' + (auth.email || '') + '</span>' +
+          '<a href="#" onclick="localStorage.removeItem(\'xhipAuth\');window.location.replace(\'/login.html\');return false;" style="color:#f87171;text-decoration:none;">Logout</a>' +
+          '</span>';
+        document.body.insertBefore(bar, document.body.firstChild);
+        document.body.style.paddingTop = '30px';
+      });
+    })();
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
   <style>

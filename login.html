@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — Xhipment Tools</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .fade-in { animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .spinner { border: 2px solid #e5e7eb; border-top-color: #3b82f6; border-radius: 50%; width: 16px; height: 16px; animation: spin 0.7s linear infinite; display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col items-center justify-center px-4">
+
+  <!-- ─── EmailJS Config ─────────────────────────────────────────────────────
+       1. Go to https://emailjs.com and create a free account
+       2. Add an Email Service (connect your Gmail — use raunak@xhipment.com)
+       3. Create an Email Template. In the template body use:
+            Subject: Your Xhipment Tools OTP
+            Body:    Hi {{user_name}}, your one-time code is: {{otp_code}}
+                     It expires in 10 minutes.
+       4. Replace the three placeholder values below with your real IDs
+  ─────────────────────────────────────────────────────────────────────────── -->
+  <script>
+    const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // Account → API Keys
+    const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // Email Services tab
+    const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // Email Templates tab
+
+    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+  </script>
+
+  <div class="w-full max-w-sm">
+
+    <!-- Logo / brand -->
+    <div class="text-center mb-8">
+      <h1 class="text-2xl font-bold text-gray-800">Xhipment Tools</h1>
+      <p class="text-sm text-gray-500 mt-1">Sign in to continue</p>
+    </div>
+
+    <!-- ── Step 1: Credentials ── -->
+    <div id="step-credentials" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-7 fade-in">
+      <h2 class="text-base font-semibold text-gray-700 mb-5">Enter your details</h2>
+      <form id="form-credentials" novalidate>
+        <div class="mb-4">
+          <label class="block text-xs font-medium text-gray-600 mb-1.5">Work email</label>
+          <input id="inp-email" type="email" placeholder="you@xhipment.com" autocomplete="email"
+            class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm
+                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+        </div>
+        <div class="mb-5">
+          <label class="block text-xs font-medium text-gray-600 mb-1.5">Password</label>
+          <input id="inp-password" type="password" placeholder="••••••••" autocomplete="current-password"
+            class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm
+                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+        </div>
+        <div id="cred-error" class="hidden text-xs text-red-600 mb-4 bg-red-50 border border-red-200 rounded-lg px-3 py-2"></div>
+        <button type="submit" id="btn-send-otp"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2.5 rounded-lg
+                 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+          <span id="send-label">Send OTP</span>
+          <span id="send-spinner" class="hidden spinner !border-white !border-t-transparent"></span>
+        </button>
+      </form>
+    </div>
+
+    <!-- ── Step 2: OTP ── -->
+    <div id="step-otp" class="hidden bg-white rounded-2xl shadow-sm border border-gray-200 p-7 fade-in">
+      <h2 class="text-base font-semibold text-gray-700 mb-1">Check your email</h2>
+      <p id="otp-hint" class="text-sm text-gray-500 mb-5"></p>
+      <form id="form-otp" novalidate>
+        <div class="mb-5">
+          <label class="block text-xs font-medium text-gray-600 mb-1.5">6-digit code</label>
+          <input id="inp-otp" type="number" placeholder="123456" maxlength="6" inputmode="numeric"
+            class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm font-mono tracking-widest
+                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+        </div>
+        <div id="otp-error" class="hidden text-xs text-red-600 mb-4 bg-red-50 border border-red-200 rounded-lg px-3 py-2"></div>
+        <button type="submit" id="btn-verify"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2.5 rounded-lg
+                 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+          <span id="verify-label">Verify &amp; Sign In</span>
+          <span id="verify-spinner" class="hidden spinner !border-white !border-t-transparent"></span>
+        </button>
+      </form>
+      <button onclick="resetToStep1()" class="mt-3 w-full text-xs text-gray-400 hover:text-gray-600 transition-colors">
+        ← Use a different email
+      </button>
+    </div>
+
+    <p class="text-center text-xs text-gray-400 mt-6">&copy; 2026 Xhipment</p>
+  </div>
+
+  <script>
+    const CORRECT_PASSWORD = 'Xhip@1234';
+    const OTP_EXPIRY_MS    = 10 * 60 * 1000; // 10 minutes
+    const SESSION_MS       = 8 * 60 * 60 * 1000; // 8 hours
+
+    let pendingEmail = '';
+    let generatedOtp = '';
+    let otpExpiry    = 0;
+
+    // ── Already logged in? ──────────────────────────────────────────────────
+    try {
+      const existing = JSON.parse(localStorage.getItem('xhipAuth') || 'null');
+      if (existing && existing.expires && Date.now() < existing.expires) {
+        window.location.replace('/');
+      }
+    } catch(e) {}
+
+    // ── Step 1 ──────────────────────────────────────────────────────────────
+    document.getElementById('form-credentials').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const email    = document.getElementById('inp-email').value.trim().toLowerCase();
+      const password = document.getElementById('inp-password').value;
+      const errEl    = document.getElementById('cred-error');
+
+      errEl.classList.add('hidden');
+
+      if (!email.endsWith('@xhipment.com')) {
+        showError(errEl, 'Only @xhipment.com accounts are allowed.');
+        return;
+      }
+      if (password !== CORRECT_PASSWORD) {
+        showError(errEl, 'Incorrect password.');
+        return;
+      }
+
+      setLoading('send', true);
+
+      generatedOtp = String(Math.floor(100000 + Math.random() * 900000));
+      otpExpiry    = Date.now() + OTP_EXPIRY_MS;
+      pendingEmail = email;
+
+      try {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+          to_email:  email,
+          user_name: email.split('@')[0],
+          otp_code:  generatedOtp,
+        });
+        showStep2();
+      } catch(err) {
+        console.error(err);
+        showError(errEl, 'Could not send OTP. Check EmailJS configuration or try again.');
+      } finally {
+        setLoading('send', false);
+      }
+    });
+
+    // ── Step 2 ──────────────────────────────────────────────────────────────
+    document.getElementById('form-otp').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const entered = document.getElementById('inp-otp').value.trim();
+      const errEl   = document.getElementById('otp-error');
+
+      errEl.classList.add('hidden');
+
+      if (Date.now() > otpExpiry) {
+        showError(errEl, 'This code has expired. Please go back and request a new one.');
+        return;
+      }
+      if (entered !== generatedOtp) {
+        showError(errEl, 'Incorrect code. Please try again.');
+        return;
+      }
+
+      // ✓ Authenticated
+      localStorage.setItem('xhipAuth', JSON.stringify({
+        email:   pendingEmail,
+        expires: Date.now() + SESSION_MS,
+      }));
+      window.location.replace('/');
+    });
+
+    // ── Helpers ─────────────────────────────────────────────────────────────
+    function showStep2() {
+      document.getElementById('step-credentials').classList.add('hidden');
+      const step2 = document.getElementById('step-otp');
+      step2.classList.remove('hidden');
+      step2.classList.add('fade-in');
+      document.getElementById('otp-hint').textContent =
+        'A 6-digit code was sent to ' + pendingEmail + '. It expires in 10 minutes.';
+      document.getElementById('inp-otp').focus();
+    }
+
+    function resetToStep1() {
+      generatedOtp = '';
+      document.getElementById('inp-otp').value = '';
+      document.getElementById('otp-error').classList.add('hidden');
+      document.getElementById('step-otp').classList.add('hidden');
+      const step1 = document.getElementById('step-credentials');
+      step1.classList.remove('hidden');
+      step1.classList.add('fade-in');
+    }
+
+    function showError(el, msg) {
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    function setLoading(which, on) {
+      if (which === 'send') {
+        document.getElementById('btn-send-otp').disabled = on;
+        document.getElementById('send-label').textContent = on ? 'Sending…' : 'Send OTP';
+        document.getElementById('send-spinner').classList.toggle('hidden', !on);
+      } else {
+        document.getElementById('btn-verify').disabled = on;
+        document.getElementById('verify-label').textContent = on ? 'Verifying…' : 'Verify & Sign In';
+        document.getElementById('verify-spinner').classList.toggle('hidden', !on);
+      }
+    }
+  </script>
+
+</body>
+</html>
