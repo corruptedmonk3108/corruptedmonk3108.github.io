@@ -147,7 +147,8 @@
         showStep2();
       } catch(err) {
         console.error(err);
-        showError(errEl, 'Could not send OTP. Check EmailJS configuration or try again.');
+        const detail = err && err.text ? err.text : (err && err.message ? err.message : JSON.stringify(err));
+        showError(errEl, 'EmailJS error: ' + detail);
       } finally {
         setLoading('send', false);
       }
