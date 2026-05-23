@@ -47,66 +47,78 @@
     </div>
   </header>
 
-  <main class="max-w-4xl mx-auto px-6 py-10">
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+  <main class="max-w-4xl mx-auto px-6 py-10 space-y-10">
 
-      <a href="./appointment-planner/" class="card-hover bg-white rounded-2xl border border-gray-200 p-6 block no-underline">
-        <div class="flex items-start gap-4">
-          <div class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
+    <!-- Imports & Customs Tools -->
+    <section>
+      <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4">Imports &amp; Customs Tools</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+        <a href="./hs-scanner/" class="card-hover bg-white rounded-2xl border border-gray-200 p-6 block no-underline">
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-purple-50 flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-base font-semibold text-gray-800 mb-1">HS Code Scanner</h3>
+              <p class="text-sm text-gray-500 leading-snug">Scan commercial invoices to identify HS codes and check IEEPA/tariff compliance.</p>
+            </div>
           </div>
-          <div>
-            <h2 class="text-base font-semibold text-gray-800 mb-1">Appointment Planner</h2>
-            <p class="text-sm text-gray-500 leading-snug">Calculate suggested delivery appointment dates for FCL/LCL shipments based on SLA logic.</p>
+        </a>
+
+        <a href="./refund-calculator/" class="card-hover bg-white rounded-2xl border border-gray-200 p-6 block no-underline">
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-base font-semibold text-gray-800 mb-1">Entry Summary Refund Calculator</h3>
+              <p class="text-sm text-gray-500 leading-snug">Determine IEEPA refund eligibility and calculate amounts from entry summary reports.</p>
+            </div>
           </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Drayage Tools -->
+    <section>
+      <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4">Drayage Tools</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+        <a href="./appointment-planner/" class="card-hover bg-white rounded-2xl border border-gray-200 p-6 block no-underline">
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-base font-semibold text-gray-800 mb-1">Appointment Planner</h3>
+              <p class="text-sm text-gray-500 leading-snug">Calculate suggested delivery appointment dates for FCL/LCL shipments based on SLA logic.</p>
+            </div>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Transloading + LM Tools -->
+    <section>
+      <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4">Transloading + LM Tools</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+        <div class="bg-white rounded-2xl border border-dashed border-gray-200 p-6 flex items-center justify-center">
+          <p class="text-sm text-gray-400">Tools coming soon</p>
         </div>
-      </a>
 
-      <a href="./hs-scanner/" class="card-hover bg-white rounded-2xl border border-gray-200 p-6 block no-underline">
-        <div class="flex items-start gap-4">
-          <div class="w-11 h-11 rounded-xl bg-purple-50 flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
-            </svg>
-          </div>
-          <div>
-            <h2 class="text-base font-semibold text-gray-800 mb-1">HS Code Scanner</h2>
-            <p class="text-sm text-gray-500 leading-snug">Scan commercial invoices to identify HS codes and check IEEPA/tariff compliance.</p>
-          </div>
-        </div>
-      </a>
+      </div>
+    </section>
 
-      <a href="./otd-calculator/" class="card-hover bg-white rounded-2xl border border-gray-200 p-6 block no-underline">
-        <div class="flex items-start gap-4">
-          <div class="w-11 h-11 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-            </svg>
-          </div>
-          <div>
-            <h2 class="text-base font-semibold text-gray-800 mb-1">OTD Calculator</h2>
-            <p class="text-sm text-gray-500 leading-snug">Calculate on-time delivery rates from shipment data spreadsheets.</p>
-          </div>
-        </div>
-      </a>
-
-      <a href="./refund-calculator/" class="card-hover bg-white rounded-2xl border border-gray-200 p-6 block no-underline">
-        <div class="flex items-start gap-4">
-          <div class="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-            </svg>
-          </div>
-          <div>
-            <h2 class="text-base font-semibold text-gray-800 mb-1">Entry Summary Refund Calculator</h2>
-            <p class="text-sm text-gray-500 leading-snug">Determine IEEPA refund eligibility and calculate amounts from entry summary reports.</p>
-          </div>
-        </div>
-      </a>
-
-    </div>
   </main>
 
   <footer class="text-center text-xs text-gray-400 pb-8">
