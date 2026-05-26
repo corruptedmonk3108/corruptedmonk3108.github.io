@@ -40,8 +40,9 @@
     </div>
   </header>
 
-  <main class="max-w-3xl mx-auto px-6 py-10">
+  <main class="max-w-3xl mx-auto px-6 py-10 space-y-6">
 
+    <!-- Drop zone -->
     <div id="drop-zone"
       class="border-2 border-dashed border-gray-300 rounded-2xl p-10 text-center cursor-pointer transition-colors"
       onclick="document.getElementById('file-input').click()"
@@ -57,20 +58,27 @@
         </svg>
       </div>
       <p class="text-sm font-medium text-gray-700">Drop files here or click to select</p>
-      <p class="text-xs text-gray-400 mt-1">Accepts PDFs, ZIPs, or a mix of both</p>
+      <p class="text-xs text-gray-400 mt-1">PDFs, ZIPs, or a mix — drop more anytime to add to the queue</p>
       <input id="file-input" type="file" accept=".pdf,.zip" multiple class="hidden"
         onchange="handleFiles(this.files)" />
     </div>
 
-    <div id="results" class="mt-8 hidden fade-in">
+    <!-- Queue / results panel -->
+    <div id="queue-section" class="hidden fade-in">
       <div class="flex items-center justify-between mb-4">
-        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Results</p>
-        <button id="zip-btn" onclick="downloadZip()"
-          class="text-xs px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors font-medium hidden">
-          Download All as ZIP
-        </button>
+        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Queue</p>
+        <div class="flex items-center gap-2">
+          <button id="zip-btn" onclick="downloadZip()"
+            class="hidden text-xs px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors font-medium">
+            Download All as ZIP
+          </button>
+          <button id="run-btn" onclick="runAll()"
+            class="text-xs px-4 py-2 bg-gray-900 text-white rounded-full hover:bg-gray-700 transition-colors font-medium">
+            Run
+          </button>
+        </div>
       </div>
-      <div id="result-list" class="space-y-3"></div>
+      <div id="file-list" class="space-y-2"></div>
     </div>
 
   </main>
@@ -84,7 +92,9 @@
       'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
     const { PDFDocument } = PDFLib;
-    let splitResults = [];
+
+    let queue = [];       // { name, buffer, status, rowEl }
+    let doneResults = []; // { cargoName, cargoBytes, custRef, entryNumber, manifestQty }
 
     // ── Drag / drop / input ──────────────────────────────────────────────────
 
@@ -98,17 +108,40 @@
     function onDrop(e) {
       e.preventDefault();
       onDragLeave();
-      const files = Array.from(e.dataTransfer.files)
-        .filter(f => /\.(pdf|zip)$/i.test(f.name));
-      if (files.length) handleFiles(files);
+      const files = Array.from(e.dataTransfer.files).filter(f => /\.(pdf|zip)$/i.test(f.name));
+      if (files.length) stageFiles(files);
     }
     function handleFiles(fileList) {
-      const files = Array.from(fileList)
-        .filter(f => /\.(pdf|zip)$/i.test(f.name));
-      if (files.length) processFiles(files);
+      const files = Array.from(fileList).filter(f => /\.(pdf|zip)$/i.test(f.name));
+      if (files.length) stageFiles(files);
     }
 
-    // ── ZIP expansion ────────────────────────────────────────────────────────
+    // ── Staging ──────────────────────────────────────────────────────────────
+
+    async function stageFiles(files) {
+      document.getElementById('queue-section').classList.remove('hidden');
+      const list = document.getElementById('file-list');
+
+      // Temporarily show expanding indicator for ZIPs
+      const hasZip = files.some(f => /\.zip$/i.test(f.name));
+      let expandRow = null;
+      if (hasZip) {
+        expandRow = document.createElement('div');
+        expandRow.className = 'text-xs text-gray-400 px-1 py-2';
+        expandRow.textContent = 'Expanding ZIP files…';
+        list.appendChild(expandRow);
+      }
+
+      const pdfs = await expandToPdfs(files);
+      if (expandRow) expandRow.remove();
+
+      for (const pdf of pdfs) {
+        const rowEl = appendQueuedRow(list, pdf.name);
+        queue.push({ name: pdf.name, buffer: pdf.buffer, status: 'queued', rowEl });
+      }
+
+      refreshRunButton();
+    }
 
     async function expandToPdfs(files) {
       const pdfs = [];
@@ -121,8 +154,7 @@
           });
           entries.sort((a, b) => a.path.localeCompare(b.path));
           for (const { path, entry } of entries) {
-            const buffer = await entry.async('arraybuffer');
-            pdfs.push({ name: path.split('/').pop(), buffer });
+            pdfs.push({ name: path.split('/').pop(), buffer: await entry.async('arraybuffer') });
           }
         } else {
           pdfs.push({ name: file.name, buffer: await file.arrayBuffer() });
@@ -131,37 +163,43 @@
       return pdfs;
     }
 
-    // ── Main processing ──────────────────────────────────────────────────────
+    function refreshRunButton() {
+      const queued = queue.filter(p => p.status === 'queued').length;
+      const btn = document.getElementById('run-btn');
+      btn.textContent = queued > 0 ? `Run ${queued} file${queued > 1 ? 's' : ''}` : 'Run';
+      btn.disabled = queued === 0;
+      btn.className = queued > 0
+        ? 'text-xs px-4 py-2 bg-gray-900 text-white rounded-full hover:bg-gray-700 transition-colors font-medium'
+        : 'text-xs px-4 py-2 bg-gray-200 text-gray-400 rounded-full font-medium cursor-not-allowed';
+    }
 
-    async function processFiles(files) {
-      splitResults = [];
-      const list = document.getElementById('result-list');
-      list.innerHTML = '';
-      document.getElementById('results').classList.remove('hidden');
-      document.getElementById('zip-btn').classList.add('hidden');
+    // ── Running ──────────────────────────────────────────────────────────────
 
-      // Show a single "expanding" placeholder while unzipping
-      const expandRow = appendStatusRow(list, 'Expanding files…');
-      const pdfs = await expandToPdfs(files);
-      expandRow.remove();
+    async function runAll() {
+      const toProcess = queue.filter(p => p.status === 'queued');
+      if (!toProcess.length) return;
 
-      if (pdfs.length === 0) {
-        appendStatusRow(list, 'No PDF files found in the uploaded files.', true);
-        return;
-      }
+      document.getElementById('run-btn').disabled = true;
+      document.getElementById('run-btn').textContent = 'Running…';
 
-      for (const pdf of pdfs) {
-        const row = appendPendingRow(list, pdf.name);
+      for (const item of toProcess) {
+        item.status = 'processing';
+        setRowProcessing(item.rowEl);
+
         try {
-          const result = await extractCargo(pdf.name, pdf.buffer);
-          splitResults.push(result);
-          renderDoneRow(row, result);
+          const result = await extractCargo(item.name, item.buffer);
+          item.status = 'done';
+          doneResults.push(result);
+          renderDoneRow(item.rowEl, result);
         } catch (err) {
-          renderErrorRow(row, err.message);
+          item.status = 'error';
+          renderErrorRow(item.rowEl, item.name, err.message);
         }
       }
 
-      if (splitResults.length > 1) {
+      refreshRunButton();
+
+      if (doneResults.length > 1) {
         document.getElementById('zip-btn').classList.remove('hidden');
       }
     }
@@ -169,146 +207,144 @@
     // ── Page classification ──────────────────────────────────────────────────
 
     function classifyPageText(text) {
-      if (text.includes('ENTRY/IMMEDIATE DELIVERY') || text.includes('CBP Form 3461')) {
-        return 'entry';
-      }
-      if (text.includes('Cargo Release Results')) {
-        return 'cargo';
-      }
+      if (text.includes('ENTRY/IMMEDIATE DELIVERY') || text.includes('CBP Form 3461')) return 'entry';
+      if (text.includes('Cargo Release Results')) return 'cargo';
       if (
         text.includes('ENTRY SUMMARY') ||
         text.includes('CBP Form 7501') ||
         (text.includes('Invoice') && (text.includes('Invoice Number') || text.includes('Invoice Date')))
-      ) {
-        return 'skip';
-      }
+      ) return 'skip';
       return null;
     }
 
-    async function classifyPages(arrayBuffer) {
-      const pdfJs = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
-      const raw = [];
+    // ── Metadata extraction ──────────────────────────────────────────────────
 
-      for (let n = 1; n <= pdfJs.numPages; n++) {
-        const page = await pdfJs.getPage(n);
-        const content = await page.getTextContent();
-        const text = content.items.map(i => i.str).join(' ');
-        raw.push(classifyPageText(text));
-      }
+    function extractMetadata(fullText) {
+      // Entry Summary Number e.g. 9R3-0035177-4
+      const entryMatch = fullText.match(/\b([0-9][A-Z][0-9]-\d{7}-\d)\b/);
+      const entryNumber = entryMatch ? entryMatch[1] : null;
 
-      // Nulls are cargo continuations only if the immediately preceding page resolved to 'cargo'
-      const labels = [];
-      for (let i = 0; i < raw.length; i++) {
-        if (raw[i] !== null) {
-          labels.push(raw[i]);
-        } else {
-          labels.push(labels[i - 1] === 'cargo' ? 'cargo' : 'skip');
+      // Customer Reference starting with XQ
+      const xqMatch = fullText.match(/\b(XQ[A-Z0-9]+)\b/);
+      const custRef = xqMatch ? xqMatch[1] : null;
+
+      // Manifest Quantity — prefer Entry form format (space-separated qty+unit)
+      // Entry form:      XHPUS198988  1401  BOX      (space before unit)
+      // Cargo Release:   XHPUS198988  00001401PCS    (leading zeros, no space)
+      let manifestQty = null;
+      const spaceQtyMatch = fullText.match(/XHPUS\d+\s+(\d+)\s+([A-Z]{2,4})\b/);
+      if (spaceQtyMatch) {
+        manifestQty = spaceQtyMatch[1] + spaceQtyMatch[2];
+      } else {
+        const concatQtyMatch = fullText.match(/XHPUS\d+\s+0+(\d+)([A-Z]{2,4})\b/);
+        if (concatQtyMatch) {
+          manifestQty = concatQtyMatch[1] + concatQtyMatch[2];
         }
       }
 
-      return labels;
+      return { entryNumber, custRef, manifestQty };
     }
 
     // ── PDF extraction ───────────────────────────────────────────────────────
 
     async function extractCargo(filename, arrayBuffer) {
-      const labels = await classifyPages(arrayBuffer.slice(0));
+      const pdfJs = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer.slice(0)) }).promise;
+
+      const pageTexts = [];
+      const rawLabels = [];
+      for (let n = 1; n <= pdfJs.numPages; n++) {
+        const page = await pdfJs.getPage(n);
+        const content = await page.getTextContent();
+        const text = content.items.map(i => i.str).join(' ');
+        pageTexts.push(text);
+        rawLabels.push(classifyPageText(text));
+      }
+
+      // Resolve nulls: continuation of 'cargo' only
+      const labels = rawLabels.map((raw, i) => {
+        if (raw !== null) return raw;
+        return (i > 0 && labels[i - 1] === 'cargo') ? 'cargo' : 'skip';
+      });
 
       const cargoIndices = labels.reduce((a, c, i) => { if (c === 'cargo') a.push(i); return a; }, []);
-      const entryCount  = labels.filter(l => l === 'entry').length;
-      const skipCount   = labels.filter(l => l === 'skip').length;
+      if (cargoIndices.length === 0) throw new Error('No Cargo Release Results page found');
 
-      if (cargoIndices.length === 0) {
-        throw new Error('No Cargo Release Results page found');
-      }
+      const meta = extractMetadata(pageTexts.join(' '));
 
       const src = await PDFDocument.load(arrayBuffer);
       const cargoDoc = await PDFDocument.create();
       (await cargoDoc.copyPages(src, cargoIndices)).forEach(p => cargoDoc.addPage(p));
 
-      const base = filename.replace(/\.pdf$/i, '');
+      const nameParts = [meta.entryNumber, meta.custRef, meta.manifestQty].filter(Boolean);
+      const cargoName = nameParts.length === 3
+        ? nameParts.join('_') + '.pdf'
+        : filename.replace(/\.pdf$/i, '') + ' - Cargo Release.pdf';
+
       return {
-        cargoName:  `${base} - Cargo Release.pdf`,
+        cargoName,
         cargoBytes: await cargoDoc.save(),
-        cargoCount: cargoIndices.length,
-        entryCount,
-        skipCount,
-        total: labels.length,
+        custRef:     meta.custRef     || '—',
+        entryNumber: meta.entryNumber || '—',
+        manifestQty: meta.manifestQty || '—',
       };
     }
 
-    // ── UI helpers ───────────────────────────────────────────────────────────
+    // ── Row rendering ────────────────────────────────────────────────────────
 
-    function appendPendingRow(list, filename) {
+    function appendQueuedRow(list, filename) {
       const div = document.createElement('div');
-      div.className = 'bg-white rounded-2xl border border-gray-200 p-5';
+      div.className = 'bg-white rounded-xl border border-gray-200 px-5 py-4 flex items-center gap-3';
       div.innerHTML = `
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
-            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-            </svg>
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium text-gray-800 truncate">${escHtml(filename)}</p>
-            <p class="text-xs text-gray-400 mt-0.5">Reading pages…</p>
-          </div>
-          <div class="w-4 h-4 border-2 border-green-500 border-t-transparent rounded-full animate-spin flex-shrink-0"></div>
-        </div>`;
+        <div class="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+          <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+        </div>
+        <p class="text-sm text-gray-600 truncate flex-1">${escHtml(filename)}</p>
+        <span class="text-xs text-gray-400 flex-shrink-0">Queued</span>`;
       list.appendChild(div);
       return div;
     }
 
-    function appendStatusRow(list, message, isError = false) {
-      const div = document.createElement('div');
-      div.className = 'bg-white rounded-2xl border border-gray-200 p-5';
-      div.innerHTML = `<p class="text-sm ${isError ? 'text-red-500' : 'text-gray-400'}">${escHtml(message)}</p>`;
-      list.appendChild(div);
-      return div;
+    function setRowProcessing(row) {
+      row.innerHTML = `
+        <div class="w-4 h-4 border-2 border-green-500 border-t-transparent rounded-full animate-spin flex-shrink-0"></div>
+        <p class="text-sm text-gray-500 flex-1">Reading pages…</p>`;
     }
 
-    function renderDoneRow(row, r) {
-      const parts = [];
-      if (r.entryCount) parts.push(`${r.entryCount} entry`);
-      if (r.skipCount)  parts.push(`${r.skipCount} skipped`);
-      const detail = parts.length ? ` (${parts.join(', ')} excluded)` : '';
-      const summary = `${r.cargoCount} cargo release page${r.cargoCount !== 1 ? 's' : ''} extracted`
-        + ` from ${r.total} total${detail}`;
-
+    function renderDoneRow(row, result) {
+      row.className = 'bg-white rounded-xl border border-gray-200 px-5 py-4 flex items-center gap-4';
       row.innerHTML = `
-        <div class="flex items-start gap-3">
-          <div class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0 mt-0.5">
-            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="text-xs text-gray-400 mb-3">${summary}</p>
-            <button class="btn-cargo text-xs px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full hover:bg-blue-100 transition-colors font-medium flex items-center gap-1.5">
-              ${dlIcon()} Cargo Release Results
-            </button>
-          </div>
-        </div>`;
-
-      row.querySelector('.btn-cargo').addEventListener('click', () =>
-        downloadBytes(r.cargoBytes, r.cargoName));
+        <div class="w-7 h-7 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0">
+          <svg class="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-semibold text-gray-800">${escHtml(result.custRef)}</p>
+          <p class="text-xs text-gray-400 mt-0.5">${escHtml(result.entryNumber)} &nbsp;·&nbsp; ${escHtml(result.manifestQty)}</p>
+        </div>
+        <button class="btn-dl flex-shrink-0 text-xs px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full hover:bg-blue-100 transition-colors font-medium flex items-center gap-1.5">
+          ${dlIcon()} Download
+        </button>`;
+      row.querySelector('.btn-dl').addEventListener('click', () =>
+        downloadBytes(result.cargoBytes, result.cargoName));
     }
 
-    function renderErrorRow(row, message) {
+    function renderErrorRow(row, filename, message) {
+      row.className = 'bg-white rounded-xl border border-gray-200 px-5 py-4 flex items-center gap-3';
       row.innerHTML = `
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center flex-shrink-0">
-            <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="12" y1="8" x2="12" y2="12"/>
-              <line x1="12" y1="16" x2="12.01" y2="16"/>
-            </svg>
-          </div>
-          <div>
-            <p class="text-sm font-medium text-red-600">Skipped</p>
-            <p class="text-xs text-gray-400">${escHtml(message)}</p>
-          </div>
+        <div class="w-7 h-7 rounded-lg bg-red-50 flex items-center justify-center flex-shrink-0">
+          <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm text-gray-600 truncate">${escHtml(filename)}</p>
+          <p class="text-xs text-red-400 mt-0.5">${escHtml(message)}</p>
         </div>`;
     }
 
@@ -317,23 +353,17 @@
     function downloadBytes(bytes, name) {
       const url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
       const a = document.createElement('a');
-      a.href = url;
-      a.download = name;
-      a.click();
+      a.href = url; a.download = name; a.click();
       URL.revokeObjectURL(url);
     }
 
     async function downloadZip() {
       const zip = new JSZip();
-      for (const r of splitResults) {
-        zip.file(r.cargoName, r.cargoBytes);
-      }
+      for (const r of doneResults) zip.file(r.cargoName, r.cargoBytes);
       const blob = await zip.generateAsync({ type: 'blob' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
-      a.download = 'cargo-release-results.zip';
-      a.click();
+      a.href = url; a.download = 'cargo-release-results.zip'; a.click();
       URL.revokeObjectURL(url);
     }
 
@@ -346,7 +376,7 @@
     }
 
     function escHtml(str) {
-      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
   </script>
 
