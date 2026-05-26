@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Release Note Splitter — Xhipment Tools</title>
+  <script>
+    (function() {
+      var auth = null;
+      try { auth = JSON.parse(localStorage.getItem('xhipAuth') || 'null'); } catch(e) {}
+      if (!auth || !auth.expires || Date.now() > auth.expires) {
+        localStorage.removeItem('xhipAuth');
+        window.location.replace('/login.html');
+      }
+    })();
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .fade-in { animation: fadeIn 0.2s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  <header class="bg-white border-b border-gray-200 px-6 py-5">
+    <div class="max-w-3xl mx-auto flex items-center gap-4">
+      <a href="/" class="text-gray-400 hover:text-gray-600 transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </a>
+      <div>
+        <h1 class="text-xl font-semibold text-gray-800">Release Note Splitter</h1>
+        <p class="text-sm text-gray-500">Extract Cargo Release Results from customs PDFs</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-6 py-10">
+
+    <div id="drop-zone"
+      class="border-2 border-dashed border-gray-300 rounded-2xl p-10 text-center cursor-pointer transition-colors"
+      onclick="document.getElementById('file-input').click()"
+      ondragover="onDragOver(event)"
+      ondragleave="onDragLeave(event)"
+      ondrop="onDrop(event)"
+    >
+      <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center mx-auto mb-4">
+        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </div>
+      <p class="text-sm font-medium text-gray-700">Drop files here or click to select</p>
+      <p class="text-xs text-gray-400 mt-1">Accepts PDFs, ZIPs, or a mix of both</p>
+      <input id="file-input" type="file" accept=".pdf,.zip" multiple class="hidden"
+        onchange="handleFiles(this.files)" />
+    </div>
+
+    <div id="results" class="mt-8 hidden fade-in">
+      <div class="flex items-center justify-between mb-4">
+        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Results</p>
+        <button id="zip-btn" onclick="downloadZip()"
+          class="text-xs px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors font-medium hidden">
+          Download All as ZIP
+        </button>
+      </div>
+      <div id="result-list" class="space-y-3"></div>
+    </div>
+
+  </main>
+
+  <footer class="text-center text-xs text-gray-400 pb-8">
+    &copy; 2026 <a href="https://xhipment.com" class="hover:underline">Xhipment</a>
+  </footer>
+
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    const { PDFDocument } = PDFLib;
+    let splitResults = [];
+
+    // ── Drag / drop / input ──────────────────────────────────────────────────
+
+    function onDragOver(e) {
+      e.preventDefault();
+      document.getElementById('drop-zone').classList.add('border-green-400', 'bg-green-50');
+    }
+    function onDragLeave() {
+      document.getElementById('drop-zone').classList.remove('border-green-400', 'bg-green-50');
+    }
+    function onDrop(e) {
+      e.preventDefault();
+      onDragLeave();
+      const files = Array.from(e.dataTransfer.files)
+        .filter(f => /\.(pdf|zip)$/i.test(f.name));
+      if (files.length) handleFiles(files);
+    }
+    function handleFiles(fileList) {
+      const files = Array.from(fileList)
+        .filter(f => /\.(pdf|zip)$/i.test(f.name));
+      if (files.length) processFiles(files);
+    }
+
+    // ── ZIP expansion ────────────────────────────────────────────────────────
+
+    async function expandToPdfs(files) {
+      const pdfs = [];
+      for (const file of files) {
+        if (/\.zip$/i.test(file.name)) {
+          const zip = await JSZip.loadAsync(file);
+          const entries = [];
+          zip.forEach((path, entry) => {
+            if (!entry.dir && /\.pdf$/i.test(path)) entries.push({ path, entry });
+          });
+          entries.sort((a, b) => a.path.localeCompare(b.path));
+          for (const { path, entry } of entries) {
+            const buffer = await entry.async('arraybuffer');
+            pdfs.push({ name: path.split('/').pop(), buffer });
+          }
+        } else {
+          pdfs.push({ name: file.name, buffer: await file.arrayBuffer() });
+        }
+      }
+      return pdfs;
+    }
+
+    // ── Main processing ──────────────────────────────────────────────────────
+
+    async function processFiles(files) {
+      splitResults = [];
+      const list = document.getElementById('result-list');
+      list.innerHTML = '';
+      document.getElementById('results').classList.remove('hidden');
+      document.getElementById('zip-btn').classList.add('hidden');
+
+      // Show a single "expanding" placeholder while unzipping
+      const expandRow = appendStatusRow(list, 'Expanding files…');
+      const pdfs = await expandToPdfs(files);
+      expandRow.remove();
+
+      if (pdfs.length === 0) {
+        appendStatusRow(list, 'No PDF files found in the uploaded files.', true);
+        return;
+      }
+
+      for (const pdf of pdfs) {
+        const row = appendPendingRow(list, pdf.name);
+        try {
+          const result = await extractCargo(pdf.name, pdf.buffer);
+          splitResults.push(result);
+          renderDoneRow(row, result);
+        } catch (err) {
+          renderErrorRow(row, err.message);
+        }
+      }
+
+      if (splitResults.length > 1) {
+        document.getElementById('zip-btn').classList.remove('hidden');
+      }
+    }
+
+    // ── Page classification ──────────────────────────────────────────────────
+
+    function classifyPageText(text) {
+      if (text.includes('ENTRY/IMMEDIATE DELIVERY') || text.includes('CBP Form 3461')) {
+        return 'entry';
+      }
+      if (text.includes('Cargo Release Results')) {
+        return 'cargo';
+      }
+      if (
+        text.includes('ENTRY SUMMARY') ||
+        text.includes('CBP Form 7501') ||
+        (text.includes('Invoice') && (text.includes('Invoice Number') || text.includes('Invoice Date')))
+      ) {
+        return 'skip';
+      }
+      return null;
+    }
+
+    async function classifyPages(arrayBuffer) {
+      const pdfJs = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+      const raw = [];
+
+      for (let n = 1; n <= pdfJs.numPages; n++) {
+        const page = await pdfJs.getPage(n);
+        const content = await page.getTextContent();
+        const text = content.items.map(i => i.str).join(' ');
+        raw.push(classifyPageText(text));
+      }
+
+      // Nulls are cargo continuations only if the immediately preceding page resolved to 'cargo'
+      const labels = [];
+      for (let i = 0; i < raw.length; i++) {
+        if (raw[i] !== null) {
+          labels.push(raw[i]);
+        } else {
+          labels.push(labels[i - 1] === 'cargo' ? 'cargo' : 'skip');
+        }
+      }
+
+      return labels;
+    }
+
+    // ── PDF extraction ───────────────────────────────────────────────────────
+
+    async function extractCargo(filename, arrayBuffer) {
+      const labels = await classifyPages(arrayBuffer.slice(0));
+
+      const cargoIndices = labels.reduce((a, c, i) => { if (c === 'cargo') a.push(i); return a; }, []);
+      const entryCount  = labels.filter(l => l === 'entry').length;
+      const skipCount   = labels.filter(l => l === 'skip').length;
+
+      if (cargoIndices.length === 0) {
+        throw new Error('No Cargo Release Results page found');
+      }
+
+      const src = await PDFDocument.load(arrayBuffer);
+      const cargoDoc = await PDFDocument.create();
+      (await cargoDoc.copyPages(src, cargoIndices)).forEach(p => cargoDoc.addPage(p));
+
+      const base = filename.replace(/\.pdf$/i, '');
+      return {
+        cargoName:  `${base} - Cargo Release.pdf`,
+        cargoBytes: await cargoDoc.save(),
+        cargoCount: cargoIndices.length,
+        entryCount,
+        skipCount,
+        total: labels.length,
+      };
+    }
+
+    // ── UI helpers ───────────────────────────────────────────────────────────
+
+    function appendPendingRow(list, filename) {
+      const div = document.createElement('div');
+      div.className = 'bg-white rounded-2xl border border-gray-200 p-5';
+      div.innerHTML = `
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-gray-800 truncate">${escHtml(filename)}</p>
+            <p class="text-xs text-gray-400 mt-0.5">Reading pages…</p>
+          </div>
+          <div class="w-4 h-4 border-2 border-green-500 border-t-transparent rounded-full animate-spin flex-shrink-0"></div>
+        </div>`;
+      list.appendChild(div);
+      return div;
+    }
+
+    function appendStatusRow(list, message, isError = false) {
+      const div = document.createElement('div');
+      div.className = 'bg-white rounded-2xl border border-gray-200 p-5';
+      div.innerHTML = `<p class="text-sm ${isError ? 'text-red-500' : 'text-gray-400'}">${escHtml(message)}</p>`;
+      list.appendChild(div);
+      return div;
+    }
+
+    function renderDoneRow(row, r) {
+      const parts = [];
+      if (r.entryCount) parts.push(`${r.entryCount} entry`);
+      if (r.skipCount)  parts.push(`${r.skipCount} skipped`);
+      const detail = parts.length ? ` (${parts.join(', ')} excluded)` : '';
+      const summary = `${r.cargoCount} cargo release page${r.cargoCount !== 1 ? 's' : ''} extracted`
+        + ` from ${r.total} total${detail}`;
+
+      row.innerHTML = `
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs text-gray-400 mb-3">${summary}</p>
+            <button class="btn-cargo text-xs px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full hover:bg-blue-100 transition-colors font-medium flex items-center gap-1.5">
+              ${dlIcon()} Cargo Release Results
+            </button>
+          </div>
+        </div>`;
+
+      row.querySelector('.btn-cargo').addEventListener('click', () =>
+        downloadBytes(r.cargoBytes, r.cargoName));
+    }
+
+    function renderErrorRow(row, message) {
+      row.innerHTML = `
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center flex-shrink-0">
+            <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-red-600">Skipped</p>
+            <p class="text-xs text-gray-400">${escHtml(message)}</p>
+          </div>
+        </div>`;
+    }
+
+    // ── Downloads ────────────────────────────────────────────────────────────
+
+    function downloadBytes(bytes, name) {
+      const url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    async function downloadZip() {
+      const zip = new JSZip();
+      for (const r of splitResults) {
+        zip.file(r.cargoName, r.cargoBytes);
+      }
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'cargo-release-results.zip';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function dlIcon() {
+      return `<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>`;
+    }
+
+    function escHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+  </script>
+
+</body>
+</html>
