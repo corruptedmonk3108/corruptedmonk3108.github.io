@@ -119,6 +119,12 @@
     // ── Staging ──────────────────────────────────────────────────────────────
 
     async function stageFiles(files) {
+      // Fresh session on every new upload
+      queue = [];
+      doneResults = [];
+      document.getElementById('file-list').innerHTML = '';
+      document.getElementById('zip-btn').classList.add('hidden');
+
       document.getElementById('queue-section').classList.remove('hidden');
       const list = document.getElementById('file-list');
 
