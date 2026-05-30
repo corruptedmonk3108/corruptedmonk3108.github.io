@@ -28,7 +28,6 @@
 </head>
 <body class="min-h-screen bg-gray-50">
 
-  <!-- ── Header ────────────────────────────────────────────────────────── -->
   <header class="bg-white border-b border-gray-200 px-6 py-4">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -65,8 +64,6 @@
 
   <main class="max-w-7xl mx-auto px-6 py-6">
 
-
-    <!-- ── Loading ───────────────────────────────────────────────────────── -->
     <div id="loading" class="py-24 text-center">
       <svg class="spin w-6 h-6 text-blue-500 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="10" stroke-dasharray="31.4" stroke-dashoffset="10" stroke-linecap="round"/>
@@ -74,7 +71,6 @@
       <p class="text-sm text-gray-400">Loading…</p>
     </div>
 
-    <!-- ── Error ─────────────────────────────────────────────────────────── -->
     <div id="error-state" class="hidden py-24 text-center">
       <svg class="w-8 h-8 text-red-400 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
@@ -83,7 +79,6 @@
       <p class="text-xs text-gray-400 mt-1">Make sure the Google Sheet is shared as "Anyone with the link can view".</p>
     </div>
 
-    <!-- ── Main content ──────────────────────────────────────────────────── -->
     <div id="content" class="hidden fade-in">
 
       <!-- Tab nav -->
@@ -98,21 +93,22 @@
         </button>
       </div>
 
-      <!-- ── SHIPMENTS TAB ────────────────────────────────────────────────── -->
+      <!-- ── SHIPMENTS TAB ── -->
       <div id="tab-shipments" class="space-y-4">
 
+        <!-- Stats -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div class="bg-white rounded-2xl border border-gray-200 px-5 py-4">
-            <div class="text-xs text-gray-400 uppercase tracking-wider mb-1">Total</div>
+            <div class="text-xs text-gray-400 uppercase tracking-wider mb-1">Total Shipments</div>
             <div id="stat-total" class="text-2xl font-bold text-gray-800">—</div>
           </div>
           <div class="bg-red-50 rounded-2xl border border-red-100 px-5 py-4">
-            <div class="text-xs text-red-400 uppercase tracking-wider mb-1">POA Needed</div>
-            <div id="stat-needed" class="text-2xl font-bold text-red-600">—</div>
+            <div class="text-xs text-red-400 uppercase tracking-wider mb-1">Regal POA Missing</div>
+            <div id="stat-regal" class="text-2xl font-bold text-red-600">—</div>
           </div>
-          <div class="bg-green-50 rounded-2xl border border-green-100 px-5 py-4">
-            <div class="text-xs text-green-500 uppercase tracking-wider mb-1">POA on File</div>
-            <div id="stat-exists" class="text-2xl font-bold text-green-600">—</div>
+          <div class="bg-amber-50 rounded-2xl border border-amber-100 px-5 py-4">
+            <div class="text-xs text-amber-500 uppercase tracking-wider mb-1">StrixSmart POA Missing</div>
+            <div id="stat-strix" class="text-2xl font-bold text-amber-600">—</div>
           </div>
           <div class="bg-blue-50 rounded-2xl border border-blue-100 px-5 py-4">
             <div class="text-xs text-blue-400 uppercase tracking-wider mb-1">Entities Tracked</div>
@@ -120,11 +116,12 @@
           </div>
         </div>
 
+        <!-- Filters -->
         <div class="bg-white rounded-2xl border border-gray-200 px-4 py-3 flex items-center gap-3 flex-wrap">
           <div class="flex gap-1">
-            <button data-filter="all"    onclick="setFilter('all')"    class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-800 text-white">All</button>
-            <button data-filter="needed" onclick="setFilter('needed')" class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium text-gray-500 hover:bg-gray-50 transition-colors">POA Needed</button>
-            <button data-filter="exists" onclick="setFilter('exists')" class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium text-gray-500 hover:bg-gray-50 transition-colors">POA Exists</button>
+            <button data-filter="all"         onclick="setFilter('all')"         class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-800 text-white">All</button>
+            <button data-filter="regal_needed" onclick="setFilter('regal_needed')" class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium text-gray-500 hover:bg-gray-50 transition-colors">Regal Needed</button>
+            <button data-filter="strix_needed" onclick="setFilter('strix_needed')" class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium text-gray-500 hover:bg-gray-50 transition-colors">StrixSmart Needed</button>
           </div>
           <div class="flex-1 min-w-48">
             <input id="search" type="text" placeholder="Search entity, QID, container…" oninput="renderShipments()"
@@ -133,6 +130,7 @@
           <span id="row-count" class="text-xs text-gray-400 whitespace-nowrap"></span>
         </div>
 
+        <!-- Shipments table -->
         <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
           <div class="table-wrap">
             <table>
@@ -144,7 +142,8 @@
                   <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3">Container</th>
                   <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3 whitespace-nowrap">Arrival ETA</th>
                   <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3 min-w-44">Vessel Status</th>
-                  <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3">POA</th>
+                  <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3 whitespace-nowrap">Regal</th>
+                  <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3 whitespace-nowrap">StrixSmart</th>
                   <th class="w-12 px-4 py-3"></th>
                 </tr>
               </thead>
@@ -155,9 +154,8 @@
         </div>
       </div>
 
-      <!-- ── REGISTRY TAB ─────────────────────────────────────────────────── -->
+      <!-- ── REGISTRY TAB ── -->
       <div id="tab-registry" class="hidden space-y-4">
-
         <div class="flex items-center justify-between flex-wrap gap-3">
           <p class="text-xs text-gray-500">
             Entity names are auto-synced by the Apps Script.
@@ -173,23 +171,24 @@
             <table>
               <thead class="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3 min-w-64">Entity Name</th>
+                  <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3 min-w-56">Entity Name</th>
                   <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3">Customs Identifier</th>
-                  <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3">POA Status</th>
-                  <th class="w-24 px-4 py-3"></th>
+                  <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3 whitespace-nowrap">Regal Customs Broker</th>
+                  <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3 whitespace-nowrap">StrixSmart</th>
+                  <th class="w-20 px-4 py-3"></th>
                 </tr>
               </thead>
               <tbody id="tbody-registry"></tbody>
             </table>
           </div>
-          <div id="empty-registry" class="hidden py-12 text-center text-sm text-gray-400">No entities in registry yet. Run the sync script to populate.</div>
+          <div id="empty-registry" class="hidden py-12 text-center text-sm text-gray-400">No entities in registry yet.</div>
         </div>
       </div>
 
     </div>
   </main>
 
-  <!-- ── POA Edit Modal ────────────────────────────────────────────────── -->
+  <!-- ── POA Edit Modal ── -->
   <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
     <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="closeModal()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 fade-in">
@@ -204,18 +203,35 @@
         </button>
       </div>
 
-      <!-- POA status toggle -->
-      <div class="mb-5">
-        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2.5">POA Status</p>
+      <!-- Regal toggle -->
+      <div class="mb-4">
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Regal Customs Broker</p>
         <div class="flex gap-2">
-          <button id="btn-poa-true" onclick="setModalPoa(true)"
-            class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold border-2 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <button id="btn-regal-true"  onclick="setModalBroker('regal', true)"
+            class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold border-2 transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
             POA Obtained
           </button>
-          <button id="btn-poa-false" onclick="setModalPoa(false)"
-            class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold border-2 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <button id="btn-regal-false" onclick="setModalBroker('regal', false)"
+            class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold border-2 transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Not on File
+          </button>
+        </div>
+      </div>
+
+      <!-- StrixSmart toggle -->
+      <div class="mb-5">
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">StrixSmart</p>
+        <div class="flex gap-2">
+          <button id="btn-strix-true"  onclick="setModalBroker('strix', true)"
+            class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold border-2 transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            POA Obtained
+          </button>
+          <button id="btn-strix-false" onclick="setModalBroker('strix', false)"
+            class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold border-2 transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             Not on File
           </button>
         </div>
@@ -229,7 +245,6 @@
         <p class="text-xs text-gray-400 mt-1.5">Auto-filled from shipment data. Edit or clear as needed.</p>
       </div>
 
-      <!-- Buttons -->
       <div class="flex gap-2">
         <button onclick="saveModal()" id="save-btn"
           class="flex-1 flex items-center justify-center gap-2 py-2.5 bg-gray-900 text-white rounded-xl text-sm font-semibold hover:bg-gray-700 transition-colors disabled:opacity-50">
@@ -245,7 +260,6 @@
       </div>
 
       <p id="modal-error" class="hidden mt-3 text-xs text-red-600 text-center"></p>
-
     </div>
   </div>
 
@@ -258,18 +272,19 @@
     const GAS_URL           = 'https://script.google.com/macros/s/AKfycbwV5HX2qOXIoNKXl4VA6ergfHQBfecFqzb4dmpGJJf_bVjj9J8JpVjSU5LXhnUEhl29/exec';
 
     // ── State ─────────────────────────────────────────────────────────────
-    let allShipments = [];
-    let registryMap  = new Map();  // norm(entity_name) → { display, poaExists, customsId }
-    let activeFilter = 'all';
-    let modalKey     = null;       // norm key of entity currently in modal
-    let modalPoa     = null;       // boolean — current toggle state in modal
+    let allShipments  = [];
+    let registryMap   = new Map();  // norm(entity) → { display, customsId, poaRegal, poaStrix }
+    let activeFilter  = 'all';
+    let modalKey      = null;
+    let modalPoaRegal = null;
+    let modalPoaStrix = null;
 
-    // ── GAS URL (stored per-device in localStorage) ───────────────────────
-    function getGasUrl() { return GAS_URL; }
+    // ── Helpers ───────────────────────────────────────────────────────────
+    const norm      = s => (s || '').trim().toLowerCase();
+    const parseDate = s => { if (!s) return null; const d = new Date(s); return isNaN(d) ? null : d; };
+    const fmtDate   = d => d ? d.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+    const esc       = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
-    function checkSetup() { /* GAS URL is hardcoded — no setup needed */ }
-
-    // ── CSV helpers ───────────────────────────────────────────────────────
     function csvUrl(sheetId, gid) {
       return `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${gid}`;
     }
@@ -284,14 +299,14 @@
           else if (ch === '"') inQ = false;
           else field += ch;
         } else {
-          if      (ch === '"')                          inQ = true;
-          else if (ch === ',')                          { row.push(field); field = ''; }
+          if      (ch === '"') inQ = true;
+          else if (ch === ',') { row.push(field); field = ''; }
           else if (ch === '\n' || (ch === '\r' && nx === '\n')) {
             row.push(field); rows.push(row); row = []; field = '';
             if (ch === '\r') i++;
           }
-          else if (ch === '\r')                         { row.push(field); rows.push(row); row = []; field = ''; }
-          else                                          field += ch;
+          else if (ch === '\r') { row.push(field); rows.push(row); row = []; field = ''; }
+          else field += ch;
         }
       }
       if (field || row.length) { row.push(field); rows.push(row); }
@@ -311,11 +326,6 @@
         });
     }
 
-    const norm      = s => (s || '').trim().toLowerCase();
-    const parseDate = s => { if (!s) return null; const d = new Date(s); return isNaN(d) ? null : d; };
-    const fmtDate   = d => d ? d.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
-    const esc       = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-
     function etaInfo(d) {
       if (!d) return { cls: 'text-gray-400', badge: '' };
       const days = Math.ceil((d - Date.now()) / 86400000);
@@ -326,21 +336,17 @@
       return { cls: 'text-gray-700', badge: '' };
     }
 
-    function poaBadge(exists, compact) {
-      return exists
-        ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-             <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-             ${compact ? 'Exists' : 'Obtained'}
-           </span>`
-        : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
-             <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-             Needed
-           </span>`;
+    function brokerBadge(has) {
+      return has
+        ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+             <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Yes</span>`
+        : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700">
+             <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>No</span>`;
     }
 
     // ── Load data ─────────────────────────────────────────────────────────
     async function loadData() {
-      const btn = document.getElementById('refresh-btn');
+      const btn  = document.getElementById('refresh-btn');
       const icon = document.getElementById('refresh-icon');
       btn.disabled = true;
       icon.classList.add('spin');
@@ -357,25 +363,25 @@
 
         const [shipText, poaText] = await Promise.all([shipRes.text(), poaRes.text()]);
 
-        // Build registry map — column order: entity_name, poa_exists, customs_identifier
+        // Registry map: entity_name | poa_regal | customs_identifier | poa_strixsmart
         registryMap = new Map();
         toObjects(poaText).forEach(r => {
           const key = norm(r.entity_name);
           if (key) registryMap.set(key, {
             display:   r.entity_name,
-            poaExists: norm(r.poa_exists) === 'true',
+            poaRegal:  norm(r.poa_regal)       === 'true',
+            poaStrix:  norm(r.poa_strixsmart)  === 'true',
             customsId: r.customs_identifier || '',
           });
         });
 
-        // Parse shipments
+        // Shipments
         allShipments = toObjects(shipText).map(r => ({
           ...r,
           _eta:    parseDate(r.arrival_eta),
           _regKey: norm(r.entity_name),
         }));
 
-        // Chronological sort — nulls last
         allShipments.sort((a, b) => {
           if (!a._eta && !b._eta) return 0;
           if (!a._eta) return 1;
@@ -391,7 +397,6 @@
         renderStats();
         renderShipments();
         renderRegistry();
-        checkSetup();
 
       } catch (err) {
         document.getElementById('loading').classList.add('hidden');
@@ -403,13 +408,15 @@
       }
     }
 
-    const shipPoa = s => (registryMap.get(s._regKey) || {}).poaExists || false;
+    const getReg    = key => registryMap.get(key) || {};
+    const hasRegal  = s   => !!(getReg(s._regKey).poaRegal);
+    const hasStrix  = s   => !!(getReg(s._regKey).poaStrix);
 
     // ── Stats ─────────────────────────────────────────────────────────────
     function renderStats() {
       document.getElementById('stat-total').textContent    = allShipments.length;
-      document.getElementById('stat-needed').textContent   = allShipments.filter(s => !shipPoa(s)).length;
-      document.getElementById('stat-exists').textContent   = allShipments.filter(s =>  shipPoa(s)).length;
+      document.getElementById('stat-regal').textContent    = allShipments.filter(s => !hasRegal(s)).length;
+      document.getElementById('stat-strix').textContent    = allShipments.filter(s => !hasStrix(s)).length;
       document.getElementById('stat-entities').textContent = registryMap.size;
     }
 
@@ -418,8 +425,8 @@
       const query = norm(document.getElementById('search').value);
 
       const filtered = allShipments.filter(s => {
-        if (activeFilter === 'needed' &&  shipPoa(s)) return false;
-        if (activeFilter === 'exists' && !shipPoa(s)) return false;
+        if (activeFilter === 'regal_needed' &&  hasRegal(s)) return false;
+        if (activeFilter === 'strix_needed' &&  hasStrix(s)) return false;
         if (query) {
           const hay = [s.entity_name, s.quote_identity, s.container_number, s.name, s.hbl_number].join(' ').toLowerCase();
           if (!hay.includes(query)) return false;
@@ -440,7 +447,6 @@
       tbody.innerHTML = filtered.map((s, i) => {
         const { cls: etaCls, badge: etaBadge } = etaInfo(s._eta);
         const inReg = registryMap.has(s._regKey);
-
         return `<tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
           <td class="px-4 py-3 text-xs text-gray-300 tabular-nums">${i + 1}</td>
           <td class="px-4 py-3">
@@ -453,7 +459,8 @@
           <td class="px-4 py-3 text-xs text-gray-500 max-w-xs">
             <span class="block truncate" title="${esc(s.shipment_status)}">${esc(s.shipment_status) || '—'}</span>
           </td>
-          <td class="px-4 py-3">${poaBadge(shipPoa(s), true)}</td>
+          <td class="px-4 py-3">${brokerBadge(hasRegal(s))}</td>
+          <td class="px-4 py-3">${brokerBadge(hasStrix(s))}</td>
           <td class="px-4 py-3">
             <button data-key="${esc(s._regKey)}" onclick="openModal(this.dataset.key)"
               ${!inReg ? 'disabled title="Not yet in registry — wait for next sync"' : ''}
@@ -491,13 +498,14 @@
       if (!entries.length) { tbody.innerHTML = ''; empty.classList.remove('hidden'); return; }
       empty.classList.add('hidden');
 
-      tbody.innerHTML = entries.map(([key, { display, poaExists, customsId }]) =>
+      tbody.innerHTML = entries.map(([key, { display, poaRegal, poaStrix, customsId }]) =>
         `<tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
           <td class="px-4 py-3 text-sm font-medium text-gray-800">${esc(display)}</td>
           <td class="px-4 py-3 text-xs font-mono text-gray-500">
             ${customsId ? esc(customsId) : '<span class="text-gray-300">—</span>'}
           </td>
-          <td class="px-4 py-3">${poaBadge(poaExists, false)}</td>
+          <td class="px-4 py-3">${brokerBadge(poaRegal)}</td>
+          <td class="px-4 py-3">${brokerBadge(poaStrix)}</td>
           <td class="px-4 py-3 text-right">
             <button data-key="${esc(key)}" onclick="openModal(this.dataset.key)"
               class="text-xs px-3 py-1.5 rounded-lg border border-gray-200 text-gray-500 hover:text-indigo-600 hover:border-indigo-200 transition-colors">
@@ -511,7 +519,7 @@
     // ── Tabs ──────────────────────────────────────────────────────────────
     function showTab(tab) {
       document.getElementById('tab-shipments').classList.toggle('hidden', tab !== 'shipments');
-      document.getElementById('tab-registry').classList.toggle('hidden', tab !== 'registry');
+      document.getElementById('tab-registry').classList.toggle('hidden',  tab !== 'registry');
       document.querySelectorAll('.tab-btn').forEach(btn => {
         const on = btn.dataset.tab === tab;
         btn.className = `tab-btn px-5 py-2.5 text-sm font-medium -mb-px border-b-2 transition-colors ${
@@ -525,14 +533,15 @@
       const entry = registryMap.get(key);
       if (!entry) return;
 
-      modalKey = key;
-      modalPoa = entry.poaExists;
+      modalKey      = key;
+      modalPoaRegal = entry.poaRegal;
+      modalPoaStrix = entry.poaStrix;
 
       document.getElementById('modal-entity').textContent = entry.display;
       document.getElementById('modal-customs').value      = entry.customsId;
       document.getElementById('modal-error').classList.add('hidden');
 
-      refreshPoaButtons();
+      refreshBrokerButtons();
       document.getElementById('modal').classList.remove('hidden');
       document.body.style.overflow = 'hidden';
     }
@@ -543,23 +552,29 @@
       modalKey = null;
     }
 
-    function setModalPoa(val) { modalPoa = val; refreshPoaButtons(); }
+    function setModalBroker(broker, val) {
+      if (broker === 'regal') modalPoaRegal = val;
+      else                    modalPoaStrix = val;
+      refreshBrokerButtons();
+    }
 
-    function refreshPoaButtons() {
-      const t = document.getElementById('btn-poa-true');
-      const f = document.getElementById('btn-poa-false');
-      t.className = `flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold border-2 transition-colors ${
-        modalPoa  ? 'border-green-500 bg-green-50 text-green-700' : 'border-gray-200 text-gray-400 hover:border-gray-300'
+    function refreshBrokerButtons() {
+      styleToggle('btn-regal-true',  'btn-regal-false',  modalPoaRegal);
+      styleToggle('btn-strix-true',  'btn-strix-false',  modalPoaStrix);
+    }
+
+    function styleToggle(trueId, falseId, val) {
+      const t = document.getElementById(trueId);
+      const f = document.getElementById(falseId);
+      t.className = `flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold border-2 transition-colors ${
+        val  ? 'border-green-500 bg-green-50 text-green-700' : 'border-gray-200 text-gray-400 hover:border-gray-300'
       }`;
-      f.className = `flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold border-2 transition-colors ${
-        !modalPoa ? 'border-red-400 bg-red-50 text-red-700'       : 'border-gray-200 text-gray-400 hover:border-gray-300'
+      f.className = `flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold border-2 transition-colors ${
+        !val ? 'border-red-400 bg-red-50 text-red-700'      : 'border-gray-200 text-gray-400 hover:border-gray-300'
       }`;
     }
 
     async function saveModal() {
-      const gasUrl = getGasUrl();
-      if (!gasUrl) return;
-
       const btn     = document.getElementById('save-btn');
       const spinner = document.getElementById('save-spinner');
       const label   = document.getElementById('save-label');
@@ -574,12 +589,12 @@
 
       try {
         const calls = [];
-        if (entry.poaExists !== modalPoa) {
-          calls.push(gasCall(gasUrl, { action: 'set_poa', entity: entry.display, value: String(modalPoa) }));
-        }
-        if (entry.customsId !== newCid) {
-          calls.push(gasCall(gasUrl, { action: 'set_customs', entity: entry.display, value: newCid }));
-        }
+        if (entry.poaRegal !== modalPoaRegal)
+          calls.push(gasCall({ action: 'set_poa', entity: entry.display, broker: 'regal',      value: String(modalPoaRegal) }));
+        if (entry.poaStrix !== modalPoaStrix)
+          calls.push(gasCall({ action: 'set_poa', entity: entry.display, broker: 'strixsmart', value: String(modalPoaStrix) }));
+        if (entry.customsId !== newCid)
+          calls.push(gasCall({ action: 'set_customs', entity: entry.display, value: newCid }));
 
         if (calls.length) {
           const results = await Promise.all(calls);
@@ -587,8 +602,7 @@
           if (fail) throw new Error(fail.error);
         }
 
-        // Update local state immediately (no reload needed)
-        registryMap.set(modalKey, { ...entry, poaExists: modalPoa, customsId: newCid });
+        registryMap.set(modalKey, { ...entry, poaRegal: modalPoaRegal, poaStrix: modalPoaStrix, customsId: newCid });
         renderStats();
         renderShipments();
         renderRegistry();
@@ -604,8 +618,8 @@
       }
     }
 
-    async function gasCall(baseUrl, params) {
-      const url = new URL(baseUrl);
+    async function gasCall(params) {
+      const url = new URL(GAS_URL);
       url.searchParams.set('secret', GAS_SECRET);
       Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
       const res = await fetch(url.toString());
