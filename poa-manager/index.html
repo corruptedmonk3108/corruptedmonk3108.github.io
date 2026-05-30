@@ -17,7 +17,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { font-family: 'Inter', system-ui, sans-serif; }
-    .fade-in { animation: fadeIn 0.2s ease; }
+    .fade-in { animation: fadeIn 0.15s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
     table { border-collapse: collapse; width: 100%; }
     .table-wrap { overflow-x: auto; }
@@ -28,6 +28,7 @@
 </head>
 <body class="min-h-screen bg-gray-50">
 
+  <!-- ── Header ────────────────────────────────────────────────────────── -->
   <header class="bg-white border-b border-gray-200 px-6 py-4">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -62,15 +63,38 @@
     </script>
   </header>
 
-  <main class="max-w-7xl mx-auto px-6 py-8">
+  <main class="max-w-7xl mx-auto px-6 py-6">
 
+    <!-- ── GAS setup banner (shown until URL is configured) ─────────────── -->
+    <div id="setup-banner" class="hidden mb-5 bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4">
+      <div class="flex items-start gap-3">
+        <svg class="w-5 h-5 text-amber-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <div class="flex-1">
+          <p class="text-sm font-semibold text-amber-800">One-time setup required to enable editing</p>
+          <p class="text-xs text-amber-700 mt-0.5 mb-3">Deploy the Google Apps Script Web App, then paste the deployment URL below. Viewing works without this.</p>
+          <div class="flex gap-2">
+            <input id="gas-url-input" type="text" placeholder="https://script.google.com/macros/s/…/exec"
+              class="flex-1 text-xs border border-amber-300 bg-white rounded-lg px-3 py-1.5 outline-none focus:border-amber-500" />
+            <button onclick="saveGasUrl()"
+              class="text-xs px-4 py-1.5 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors font-medium whitespace-nowrap">
+              Save URL
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Loading ───────────────────────────────────────────────────────── -->
     <div id="loading" class="py-24 text-center">
       <svg class="spin w-6 h-6 text-blue-500 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="10" stroke-dasharray="31.4" stroke-dashoffset="10" stroke-linecap="round"/>
       </svg>
-      <p class="text-sm text-gray-400">Fetching shipment data…</p>
+      <p class="text-sm text-gray-400">Loading…</p>
     </div>
 
+    <!-- ── Error ─────────────────────────────────────────────────────────── -->
     <div id="error-state" class="hidden py-24 text-center">
       <svg class="w-8 h-8 text-red-400 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
@@ -79,108 +103,205 @@
       <p class="text-xs text-gray-400 mt-1">Make sure the Google Sheet is shared as "Anyone with the link can view".</p>
     </div>
 
-    <div id="content" class="hidden fade-in space-y-5">
+    <!-- ── Main content ──────────────────────────────────────────────────── -->
+    <div id="content" class="hidden fade-in">
 
-      <!-- Stats -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div class="bg-white rounded-2xl border border-gray-200 px-5 py-4">
-          <div class="text-xs text-gray-400 uppercase tracking-wider mb-1">Total Shipments</div>
-          <div id="stat-total" class="text-2xl font-bold text-gray-800">—</div>
-        </div>
-        <div class="bg-white rounded-2xl border border-red-100 bg-red-50 px-5 py-4">
-          <div class="text-xs text-red-400 uppercase tracking-wider mb-1">POA Needed</div>
-          <div id="stat-needed" class="text-2xl font-bold text-red-600">—</div>
-        </div>
-        <div class="bg-white rounded-2xl border border-green-100 bg-green-50 px-5 py-4">
-          <div class="text-xs text-green-500 uppercase tracking-wider mb-1">POA on File</div>
-          <div id="stat-exists" class="text-2xl font-bold text-green-600">—</div>
-        </div>
-        <div class="bg-white rounded-2xl border border-blue-100 bg-blue-50 px-5 py-4">
-          <div class="text-xs text-blue-400 uppercase tracking-wider mb-1">Entities w/ POA</div>
-          <div id="stat-entities" class="text-2xl font-bold text-blue-600">—</div>
-        </div>
-      </div>
-
-      <!-- Filter bar -->
-      <div class="bg-white rounded-2xl border border-gray-200 px-4 py-3 flex items-center gap-3 flex-wrap">
-        <div class="flex gap-1" id="filter-tabs">
-          <button data-filter="all"    onclick="setFilter('all')"    class="filter-tab active   px-3 py-1.5 rounded-lg text-xs font-medium">All</button>
-          <button data-filter="needed" onclick="setFilter('needed')" class="filter-tab inactive px-3 py-1.5 rounded-lg text-xs font-medium">POA Needed</button>
-          <button data-filter="exists" onclick="setFilter('exists')" class="filter-tab inactive px-3 py-1.5 rounded-lg text-xs font-medium">POA Exists</button>
-        </div>
-        <div class="flex-1 min-w-48">
-          <input id="search" type="text" placeholder="Search entity, QID, container…" oninput="renderTable()"
-            class="w-full text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none focus:border-blue-300 transition-colors" />
-        </div>
-        <span id="row-count" class="text-xs text-gray-400 whitespace-nowrap"></span>
-      </div>
-
-      <!-- Table -->
-      <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-        <div class="table-wrap">
-          <table>
-            <thead class="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th class="text-left text-xs font-semibold text-gray-400 px-4 py-3 w-10">#</th>
-                <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3 min-w-52">Entity Name</th>
-                <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3">QID</th>
-                <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3">Container</th>
-                <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3">Arrival ETA</th>
-                <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3 min-w-48">Vessel Status</th>
-                <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3">POA</th>
-              </tr>
-            </thead>
-            <tbody id="tbody"></tbody>
-          </table>
-        </div>
-        <div id="empty-state" class="hidden py-12 text-center text-sm text-gray-400">No shipments match your filters.</div>
-      </div>
-
-      <!-- POA Registry -->
-      <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-        <button onclick="toggleRegistry()"
-          class="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 transition-colors">
-          <div class="flex items-center gap-2">
-            <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
-            <span class="text-sm font-semibold text-gray-800">POA Registry</span>
-            <span id="registry-count" class="text-xs text-gray-400 font-normal"></span>
-          </div>
-          <svg id="registry-chevron" class="w-4 h-4 text-gray-400 transition-transform duration-200"
-               fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <polyline points="6 9 12 15 18 9"/>
-          </svg>
+      <!-- Tab nav -->
+      <div class="flex gap-0 mb-6 border-b border-gray-200">
+        <button onclick="showTab('shipments')" data-tab="shipments"
+          class="tab-btn px-5 py-2.5 text-sm font-medium -mb-px border-b-2 border-gray-800 text-gray-800 transition-colors">
+          Shipments
         </button>
-        <div id="registry-body" class="hidden border-t border-gray-100 px-5 py-4">
-          <p class="text-xs text-gray-400 mb-4">
-            Entities listed here have a POA on file.
+        <button onclick="showTab('registry')" data-tab="registry"
+          class="tab-btn px-5 py-2.5 text-sm font-medium -mb-px border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition-colors">
+          POA Registry
+        </button>
+      </div>
+
+      <!-- ── SHIPMENTS TAB ────────────────────────────────────────────────── -->
+      <div id="tab-shipments" class="space-y-4">
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="bg-white rounded-2xl border border-gray-200 px-5 py-4">
+            <div class="text-xs text-gray-400 uppercase tracking-wider mb-1">Total</div>
+            <div id="stat-total" class="text-2xl font-bold text-gray-800">—</div>
+          </div>
+          <div class="bg-red-50 rounded-2xl border border-red-100 px-5 py-4">
+            <div class="text-xs text-red-400 uppercase tracking-wider mb-1">POA Needed</div>
+            <div id="stat-needed" class="text-2xl font-bold text-red-600">—</div>
+          </div>
+          <div class="bg-green-50 rounded-2xl border border-green-100 px-5 py-4">
+            <div class="text-xs text-green-500 uppercase tracking-wider mb-1">POA on File</div>
+            <div id="stat-exists" class="text-2xl font-bold text-green-600">—</div>
+          </div>
+          <div class="bg-blue-50 rounded-2xl border border-blue-100 px-5 py-4">
+            <div class="text-xs text-blue-400 uppercase tracking-wider mb-1">Entities Tracked</div>
+            <div id="stat-entities" class="text-2xl font-bold text-blue-600">—</div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-gray-200 px-4 py-3 flex items-center gap-3 flex-wrap">
+          <div class="flex gap-1">
+            <button data-filter="all"    onclick="setFilter('all')"    class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-800 text-white">All</button>
+            <button data-filter="needed" onclick="setFilter('needed')" class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium text-gray-500 hover:bg-gray-50 transition-colors">POA Needed</button>
+            <button data-filter="exists" onclick="setFilter('exists')" class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium text-gray-500 hover:bg-gray-50 transition-colors">POA Exists</button>
+          </div>
+          <div class="flex-1 min-w-48">
+            <input id="search" type="text" placeholder="Search entity, QID, container…" oninput="renderShipments()"
+              class="w-full text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none focus:border-blue-300 transition-colors" />
+          </div>
+          <span id="row-count" class="text-xs text-gray-400 whitespace-nowrap"></span>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+          <div class="table-wrap">
+            <table>
+              <thead class="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th class="text-left text-xs font-semibold text-gray-400 px-4 py-3 w-10">#</th>
+                  <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3 min-w-52">Entity</th>
+                  <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3">QID</th>
+                  <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3">Container</th>
+                  <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3 whitespace-nowrap">Arrival ETA</th>
+                  <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3 min-w-44">Vessel Status</th>
+                  <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3">POA</th>
+                  <th class="w-12 px-4 py-3"></th>
+                </tr>
+              </thead>
+              <tbody id="tbody-shipments"></tbody>
+            </table>
+          </div>
+          <div id="empty-shipments" class="hidden py-12 text-center text-sm text-gray-400">No shipments match your filters.</div>
+        </div>
+      </div>
+
+      <!-- ── REGISTRY TAB ─────────────────────────────────────────────────── -->
+      <div id="tab-registry" class="hidden space-y-4">
+
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <p class="text-xs text-gray-500">
+            Entity names are auto-synced by the Apps Script.
             <a href="https://docs.google.com/spreadsheets/d/1hT0klGac6bIRyUgD4BugB7Zroma31lH1ey2BMw9LLIY/edit?gid=1751535167"
-               target="_blank" class="text-blue-500 hover:underline ml-1">Edit the POA Registry sheet →</a>
+              target="_blank" class="text-blue-500 hover:underline ml-1">View sheet →</a>
           </p>
-          <div id="registry-list" class="flex flex-wrap gap-2"></div>
+          <input id="registry-search" type="text" placeholder="Search entities…" oninput="renderRegistry()"
+            class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none focus:border-blue-300 transition-colors w-52" />
+        </div>
+
+        <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+          <div class="table-wrap">
+            <table>
+              <thead class="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3 min-w-64">Entity Name</th>
+                  <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3">Customs Identifier</th>
+                  <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3">POA Status</th>
+                  <th class="w-24 px-4 py-3"></th>
+                </tr>
+              </thead>
+              <tbody id="tbody-registry"></tbody>
+            </table>
+          </div>
+          <div id="empty-registry" class="hidden py-12 text-center text-sm text-gray-400">No entities in registry yet. Run the sync script to populate.</div>
         </div>
       </div>
 
     </div>
   </main>
 
-  <style>
-    .filter-tab.active   { background: #1f2937; color: #fff; }
-    .filter-tab.inactive { color: #6b7280; }
-    .filter-tab.inactive:hover { background: #f9fafb; }
-  </style>
+  <!-- ── POA Edit Modal ────────────────────────────────────────────────── -->
+  <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="closeModal()"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 fade-in">
+
+      <div class="flex items-start justify-between mb-5">
+        <div class="pr-4">
+          <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">POA Details</p>
+          <h2 id="modal-entity" class="text-sm font-semibold text-gray-800 leading-snug"></h2>
+        </div>
+        <button onclick="closeModal()" class="text-gray-300 hover:text-gray-500 transition-colors flex-shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <!-- POA status toggle -->
+      <div class="mb-5">
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2.5">POA Status</p>
+        <div class="flex gap-2">
+          <button id="btn-poa-true" onclick="setModalPoa(true)"
+            class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold border-2 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            POA Obtained
+          </button>
+          <button id="btn-poa-false" onclick="setModalPoa(false)"
+            class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold border-2 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Not on File
+          </button>
+        </div>
+      </div>
+
+      <!-- Customs identifier -->
+      <div class="mb-6">
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Customs Identifier</p>
+        <input id="modal-customs" type="text" placeholder="e.g. 231001-04003"
+          class="w-full text-sm border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:border-blue-300 focus:ring-1 focus:ring-blue-100 transition-colors" />
+        <p class="text-xs text-gray-400 mt-1.5">Auto-filled from shipment data. Edit or clear as needed.</p>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex gap-2">
+        <button onclick="saveModal()" id="save-btn"
+          class="flex-1 flex items-center justify-center gap-2 py-2.5 bg-gray-900 text-white rounded-xl text-sm font-semibold hover:bg-gray-700 transition-colors disabled:opacity-50">
+          <svg id="save-spinner" class="hidden spin w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke-dasharray="31.4" stroke-dashoffset="10" stroke-linecap="round"/>
+          </svg>
+          <span id="save-label">Save Changes</span>
+        </button>
+        <button onclick="closeModal()"
+          class="px-5 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+          Cancel
+        </button>
+      </div>
+
+      <p id="modal-error" class="hidden mt-3 text-xs text-red-600 text-center"></p>
+
+      <div id="modal-no-gas" class="hidden mt-3 bg-amber-50 border border-amber-100 rounded-xl px-4 py-3 text-xs text-amber-700">
+        GAS Web App URL not set. Paste it in the setup banner at the top to enable saving.
+      </div>
+    </div>
+  </div>
 
   <script>
     const SHEET_ID     = '1hT0klGac6bIRyUgD4BugB7Zroma31lH1ey2BMw9LLIY';
     const SHIPMENT_GID = '0';
     const POA_GID      = '1751535167';
+    const GAS_SECRET   = 'xhip-poa-2026';
 
-    let allShipments  = [];
-    let poaEntities   = new Set();
-    let activeFilter  = 'all';
-    let registryOpen  = false;
+    // ── State ─────────────────────────────────────────────────────────────
+    let allShipments = [];
+    let registryMap  = new Map();  // norm(entity_name) → { display, poaExists, customsId }
+    let activeFilter = 'all';
+    let modalKey     = null;       // norm key of entity currently in modal
+    let modalPoa     = null;       // boolean — current toggle state in modal
 
+    // ── GAS URL (stored per-device in localStorage) ───────────────────────
+    function getGasUrl() { return localStorage.getItem('poaGasUrl') || ''; }
+
+    function saveGasUrl() {
+      const val = (document.getElementById('gas-url-input').value || '').trim();
+      if (!val) return;
+      localStorage.setItem('poaGasUrl', val);
+      document.getElementById('setup-banner').classList.add('hidden');
+    }
+
+    function checkSetup() {
+      if (!getGasUrl()) {
+        document.getElementById('setup-banner').classList.remove('hidden');
+      }
+    }
+
+    // ── CSV helpers ───────────────────────────────────────────────────────
     function csvUrl(gid) {
       return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${gid}`;
     }
@@ -192,58 +313,66 @@
         const ch = text[i], nx = text[i + 1];
         if (inQ) {
           if (ch === '"' && nx === '"') { field += '"'; i++; }
-          else if (ch === '"')          { inQ = false; }
-          else                          { field += ch; }
+          else if (ch === '"') inQ = false;
+          else field += ch;
         } else {
-          if      (ch === '"')                    { inQ = true; }
-          else if (ch === ',')                    { row.push(field); field = ''; }
+          if      (ch === '"')                          inQ = true;
+          else if (ch === ',')                          { row.push(field); field = ''; }
           else if (ch === '\n' || (ch === '\r' && nx === '\n')) {
             row.push(field); rows.push(row); row = []; field = '';
             if (ch === '\r') i++;
-          } else if (ch === '\r')                 { row.push(field); rows.push(row); row = []; field = ''; }
-          else                                    { field += ch; }
+          }
+          else if (ch === '\r')                         { row.push(field); rows.push(row); row = []; field = ''; }
+          else                                          field += ch;
         }
       }
       if (field || row.length) { row.push(field); rows.push(row); }
       return rows;
     }
 
-    function rowsToObjects(text) {
+    function toObjects(text) {
       const raw = parseCSV(text);
       if (raw.length < 2) return [];
-      const headers = raw[0].map(h => h.trim().toLowerCase().replace(/\s+/g, '_'));
+      const hdrs = raw[0].map(h => h.trim().toLowerCase().replace(/\s+/g, '_'));
       return raw.slice(1)
         .filter(r => r.some(c => c.trim()))
         .map(r => {
           const obj = {};
-          headers.forEach((h, i) => { obj[h] = (r[i] || '').trim(); });
+          hdrs.forEach((h, i) => { obj[h] = (r[i] || '').trim(); });
           return obj;
         });
     }
 
-    function parseDate(str) {
-      if (!str) return null;
-      const d = new Date(str);
-      return isNaN(d) ? null : d;
-    }
-
-    function fmtDate(d) {
-      if (!d) return '—';
-      return d.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
-    }
+    const norm      = s => (s || '').trim().toLowerCase();
+    const parseDate = s => { if (!s) return null; const d = new Date(s); return isNaN(d) ? null : d; };
+    const fmtDate   = d => d ? d.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+    const esc       = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
     function etaInfo(d) {
       if (!d) return { cls: 'text-gray-400', badge: '' };
       const days = Math.ceil((d - Date.now()) / 86400000);
-      if (days < 0)  return { cls: 'text-gray-400', badge: '<span class="ml-1.5 text-xs text-gray-400">(arrived)</span>' };
-      if (days === 0) return { cls: 'text-red-600 font-semibold', badge: '<span class="ml-1.5 text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded-full font-semibold">Today</span>' };
-      if (days <= 7)  return { cls: 'text-red-600 font-semibold', badge: `<span class="ml-1.5 text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded-full font-semibold">${days}d</span>` };
-      if (days <= 14) return { cls: 'text-amber-600 font-semibold', badge: `<span class="ml-1.5 text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-semibold">${days}d</span>` };
+      if (days < 0)   return { cls: 'text-gray-400',               badge: '<span class="ml-1.5 text-xs text-gray-400">(arrived)</span>' };
+      if (days === 0) return { cls: 'text-red-600 font-semibold',   badge: '<span class="ml-1.5 text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded-full">Today</span>' };
+      if (days <= 7)  return { cls: 'text-red-600 font-semibold',   badge: `<span class="ml-1.5 text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded-full">${days}d</span>` };
+      if (days <= 14) return { cls: 'text-amber-600 font-semibold', badge: `<span class="ml-1.5 text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full">${days}d</span>` };
       return { cls: 'text-gray-700', badge: '' };
     }
 
+    function poaBadge(exists, compact) {
+      return exists
+        ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+             <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+             ${compact ? 'Exists' : 'Obtained'}
+           </span>`
+        : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+             <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+             Needed
+           </span>`;
+    }
+
+    // ── Load data ─────────────────────────────────────────────────────────
     async function loadData() {
-      const btn  = document.getElementById('refresh-btn');
+      const btn = document.getElementById('refresh-btn');
       const icon = document.getElementById('refresh-icon');
       btn.disabled = true;
       icon.classList.add('spin');
@@ -256,27 +385,29 @@
           fetch(csvUrl(SHIPMENT_GID)),
           fetch(csvUrl(POA_GID)),
         ]);
-        if (!shipRes.ok) throw new Error(`Shipment sheet responded with ${shipRes.status}`);
+        if (!shipRes.ok) throw new Error(`Shipment sheet returned HTTP ${shipRes.status}`);
 
         const [shipText, poaText] = await Promise.all([shipRes.text(), poaRes.text()]);
 
-        // Build POA entity set from first data column of registry sheet
-        const poaRows = rowsToObjects(poaText);
-        poaEntities = new Set(
-          poaRows
-            .map(r => Object.values(r)[0] || '')
-            .filter(Boolean)
-            .map(n => n.trim().toLowerCase())
-        );
+        // Build registry map — column order: entity_name, poa_exists, customs_identifier
+        registryMap = new Map();
+        toObjects(poaText).forEach(r => {
+          const key = norm(r.entity_name);
+          if (key) registryMap.set(key, {
+            display:   r.entity_name,
+            poaExists: norm(r.poa_exists) === 'true',
+            customsId: r.customs_identifier || '',
+          });
+        });
 
-        // Parse shipments and attach derived fields
-        allShipments = rowsToObjects(shipText).map(r => ({
+        // Parse shipments
+        allShipments = toObjects(shipText).map(r => ({
           ...r,
           _eta:    parseDate(r.arrival_eta),
-          _hasPoa: poaEntities.has((r.entity_name || '').trim().toLowerCase()),
+          _regKey: norm(r.entity_name),
         }));
 
-        // Sort chronologically — null ETAs last
+        // Chronological sort — nulls last
         allShipments.sort((a, b) => {
           if (!a._eta && !b._eta) return 0;
           if (!a._eta) return 1;
@@ -290,8 +421,9 @@
           `Updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 
         renderStats();
-        renderTable();
+        renderShipments();
         renderRegistry();
+        checkSetup();
 
       } catch (err) {
         document.getElementById('loading').classList.add('hidden');
@@ -303,24 +435,25 @@
       }
     }
 
+    const shipPoa = s => (registryMap.get(s._regKey) || {}).poaExists || false;
+
+    // ── Stats ─────────────────────────────────────────────────────────────
     function renderStats() {
-      const needed = allShipments.filter(s => !s._hasPoa).length;
-      const exists = allShipments.filter(s =>  s._hasPoa).length;
       document.getElementById('stat-total').textContent    = allShipments.length;
-      document.getElementById('stat-needed').textContent   = needed;
-      document.getElementById('stat-exists').textContent   = exists;
-      document.getElementById('stat-entities').textContent = poaEntities.size;
+      document.getElementById('stat-needed').textContent   = allShipments.filter(s => !shipPoa(s)).length;
+      document.getElementById('stat-exists').textContent   = allShipments.filter(s =>  shipPoa(s)).length;
+      document.getElementById('stat-entities').textContent = registryMap.size;
     }
 
-    function renderTable() {
-      const query = (document.getElementById('search').value || '').toLowerCase();
+    // ── Shipments tab ─────────────────────────────────────────────────────
+    function renderShipments() {
+      const query = norm(document.getElementById('search').value);
 
       const filtered = allShipments.filter(s => {
-        if (activeFilter === 'needed' &&  s._hasPoa) return false;
-        if (activeFilter === 'exists' && !s._hasPoa) return false;
+        if (activeFilter === 'needed' &&  shipPoa(s)) return false;
+        if (activeFilter === 'exists' && !shipPoa(s)) return false;
         if (query) {
-          const hay = [s.entity_name, s.quote_identity, s.container_number, s.name, s.hbl_number]
-            .join(' ').toLowerCase();
+          const hay = [s.entity_name, s.quote_identity, s.container_number, s.name, s.hbl_number].join(' ').toLowerCase();
           if (!hay.includes(query)) return false;
         }
         return true;
@@ -331,24 +464,14 @@
           ? `${filtered.length} of ${allShipments.length}`
           : `${allShipments.length} shipments`;
 
-      const tbody  = document.getElementById('tbody');
-      const empty  = document.getElementById('empty-state');
-
-      if (filtered.length === 0) {
-        tbody.innerHTML = '';
-        empty.classList.remove('hidden');
-        return;
-      }
+      const tbody = document.getElementById('tbody-shipments');
+      const empty = document.getElementById('empty-shipments');
+      if (!filtered.length) { tbody.innerHTML = ''; empty.classList.remove('hidden'); return; }
       empty.classList.add('hidden');
 
       tbody.innerHTML = filtered.map((s, i) => {
         const { cls: etaCls, badge: etaBadge } = etaInfo(s._eta);
-
-        const poaBadge = s._hasPoa
-          ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-               <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Exists</span>`
-          : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
-               <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Needed</span>`;
+        const inReg = registryMap.has(s._regKey);
 
         return `<tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
           <td class="px-4 py-3 text-xs text-gray-300 tabular-nums">${i + 1}</td>
@@ -360,50 +483,170 @@
           <td class="px-4 py-3 text-xs font-mono text-gray-500 whitespace-nowrap">${esc(s.container_number) || '—'}</td>
           <td class="px-4 py-3 text-xs whitespace-nowrap ${etaCls}">${fmtDate(s._eta)}${etaBadge}</td>
           <td class="px-4 py-3 text-xs text-gray-500 max-w-xs">
-            <span class="truncate block" title="${esc(s.shipment_status)}">${esc(s.shipment_status) || '—'}</span>
+            <span class="block truncate" title="${esc(s.shipment_status)}">${esc(s.shipment_status) || '—'}</span>
           </td>
-          <td class="px-4 py-3">${poaBadge}</td>
+          <td class="px-4 py-3">${poaBadge(shipPoa(s), true)}</td>
+          <td class="px-4 py-3">
+            <button onclick="openModal(${JSON.stringify(s._regKey)})"
+              ${!inReg ? 'disabled title="Not yet in registry — wait for next sync"' : ''}
+              class="p-1.5 rounded-lg transition-colors ${inReg ? 'text-gray-400 hover:text-indigo-600 hover:bg-indigo-50' : 'text-gray-200 cursor-not-allowed'}">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+            </button>
+          </td>
         </tr>`;
       }).join('');
-    }
-
-    function renderRegistry() {
-      const sorted = [...poaEntities].sort();
-      const count  = sorted.length;
-      document.getElementById('registry-count').textContent = `(${count} ${count === 1 ? 'entity' : 'entities'})`;
-
-      const list = document.getElementById('registry-list');
-      if (count === 0) {
-        list.innerHTML = '<p class="text-xs text-gray-400">No entries yet. Add entity names to the <strong>entity_name</strong> column in the POA Registry sheet tab.</p>';
-        return;
-      }
-      list.innerHTML = sorted.map(e =>
-        `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-800 border border-blue-100">
-           <svg class="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-           ${esc(e)}
-         </span>`
-      ).join('');
     }
 
     function setFilter(f) {
       activeFilter = f;
       document.querySelectorAll('.filter-tab').forEach(btn => {
         const on = btn.dataset.filter === f;
-        btn.classList.toggle('active',   on);
-        btn.classList.toggle('inactive', !on);
+        btn.className = `filter-tab px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+          on ? 'bg-gray-800 text-white' : 'text-gray-500 hover:bg-gray-50'
+        }`;
       });
-      renderTable();
+      renderShipments();
     }
 
-    function toggleRegistry() {
-      registryOpen = !registryOpen;
-      document.getElementById('registry-body').classList.toggle('hidden', !registryOpen);
-      document.getElementById('registry-chevron').style.transform = registryOpen ? 'rotate(180deg)' : '';
+    // ── Registry tab ──────────────────────────────────────────────────────
+    function renderRegistry() {
+      const query = norm(document.getElementById('registry-search')?.value || '');
+      const entries = [...registryMap.entries()]
+        .filter(([key]) => !query || key.includes(query))
+        .sort((a, b) => a[0].localeCompare(b[0]));
+
+      const tbody = document.getElementById('tbody-registry');
+      const empty = document.getElementById('empty-registry');
+      if (!entries.length) { tbody.innerHTML = ''; empty.classList.remove('hidden'); return; }
+      empty.classList.add('hidden');
+
+      tbody.innerHTML = entries.map(([key, { display, poaExists, customsId }]) =>
+        `<tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+          <td class="px-4 py-3 text-sm font-medium text-gray-800">${esc(display)}</td>
+          <td class="px-4 py-3 text-xs font-mono text-gray-500">
+            ${customsId ? esc(customsId) : '<span class="text-gray-300">—</span>'}
+          </td>
+          <td class="px-4 py-3">${poaBadge(poaExists, false)}</td>
+          <td class="px-4 py-3 text-right">
+            <button onclick="openModal(${JSON.stringify(key)})"
+              class="text-xs px-3 py-1.5 rounded-lg border border-gray-200 text-gray-500 hover:text-indigo-600 hover:border-indigo-200 transition-colors">
+              Edit
+            </button>
+          </td>
+        </tr>`
+      ).join('');
     }
 
-    function esc(str) {
-      return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    // ── Tabs ──────────────────────────────────────────────────────────────
+    function showTab(tab) {
+      document.getElementById('tab-shipments').classList.toggle('hidden', tab !== 'shipments');
+      document.getElementById('tab-registry').classList.toggle('hidden', tab !== 'registry');
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        const on = btn.dataset.tab === tab;
+        btn.className = `tab-btn px-5 py-2.5 text-sm font-medium -mb-px border-b-2 transition-colors ${
+          on ? 'border-gray-800 text-gray-800' : 'border-transparent text-gray-500 hover:text-gray-700'
+        }`;
+      });
     }
+
+    // ── Modal ─────────────────────────────────────────────────────────────
+    function openModal(key) {
+      const entry = registryMap.get(key);
+      if (!entry) return;
+
+      modalKey = key;
+      modalPoa = entry.poaExists;
+
+      document.getElementById('modal-entity').textContent = entry.display;
+      document.getElementById('modal-customs').value      = entry.customsId;
+      document.getElementById('modal-error').classList.add('hidden');
+      document.getElementById('modal-no-gas').classList.toggle('hidden', !!getGasUrl());
+
+      refreshPoaButtons();
+      document.getElementById('modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.add('hidden');
+      document.body.style.overflow = '';
+      modalKey = null;
+    }
+
+    function setModalPoa(val) { modalPoa = val; refreshPoaButtons(); }
+
+    function refreshPoaButtons() {
+      const t = document.getElementById('btn-poa-true');
+      const f = document.getElementById('btn-poa-false');
+      t.className = `flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold border-2 transition-colors ${
+        modalPoa  ? 'border-green-500 bg-green-50 text-green-700' : 'border-gray-200 text-gray-400 hover:border-gray-300'
+      }`;
+      f.className = `flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold border-2 transition-colors ${
+        !modalPoa ? 'border-red-400 bg-red-50 text-red-700'       : 'border-gray-200 text-gray-400 hover:border-gray-300'
+      }`;
+    }
+
+    async function saveModal() {
+      const gasUrl = getGasUrl();
+      if (!gasUrl) { document.getElementById('modal-no-gas').classList.remove('hidden'); return; }
+
+      const btn     = document.getElementById('save-btn');
+      const spinner = document.getElementById('save-spinner');
+      const label   = document.getElementById('save-label');
+      const errEl   = document.getElementById('modal-error');
+      const entry   = registryMap.get(modalKey);
+      const newCid  = document.getElementById('modal-customs').value.trim();
+
+      btn.disabled = true;
+      spinner.classList.remove('hidden');
+      label.textContent = 'Saving…';
+      errEl.classList.add('hidden');
+
+      try {
+        const calls = [];
+        if (entry.poaExists !== modalPoa) {
+          calls.push(gasCall(gasUrl, { action: 'set_poa', entity: entry.display, value: String(modalPoa) }));
+        }
+        if (entry.customsId !== newCid) {
+          calls.push(gasCall(gasUrl, { action: 'set_customs', entity: entry.display, value: newCid }));
+        }
+
+        if (calls.length) {
+          const results = await Promise.all(calls);
+          const fail = results.find(r => r.error);
+          if (fail) throw new Error(fail.error);
+        }
+
+        // Update local state immediately (no reload needed)
+        registryMap.set(modalKey, { ...entry, poaExists: modalPoa, customsId: newCid });
+        renderStats();
+        renderShipments();
+        renderRegistry();
+        closeModal();
+
+      } catch (err) {
+        errEl.textContent = 'Save failed: ' + err.message;
+        errEl.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        spinner.classList.add('hidden');
+        label.textContent = 'Save Changes';
+      }
+    }
+
+    async function gasCall(baseUrl, params) {
+      const url = new URL(baseUrl);
+      url.searchParams.set('secret', GAS_SECRET);
+      Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+      const res = await fetch(url.toString());
+      if (!res.ok) throw new Error(`GAS responded with HTTP ${res.status}`);
+      return res.json();
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
     loadData();
   </script>
