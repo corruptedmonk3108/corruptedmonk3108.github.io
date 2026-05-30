@@ -531,7 +531,6 @@
       document.getElementById('modal-entity').textContent = entry.display;
       document.getElementById('modal-customs').value      = entry.customsId;
       document.getElementById('modal-error').classList.add('hidden');
-      document.getElementById('modal-no-gas').classList.toggle('hidden', !!getGasUrl());
 
       refreshPoaButtons();
       document.getElementById('modal').classList.remove('hidden');
@@ -559,7 +558,7 @@
 
     async function saveModal() {
       const gasUrl = getGasUrl();
-      if (!gasUrl) { document.getElementById('modal-no-gas').classList.remove('hidden'); return; }
+      if (!gasUrl) return;
 
       const btn     = document.getElementById('save-btn');
       const spinner = document.getElementById('save-spinner');
