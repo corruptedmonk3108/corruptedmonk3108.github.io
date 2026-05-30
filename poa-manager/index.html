@@ -144,7 +144,6 @@
                   <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3 min-w-44">Vessel Status</th>
                   <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3 whitespace-nowrap">Regal</th>
                   <th class="text-left text-xs font-semibold text-gray-500 px-4 py-3 whitespace-nowrap">StrixSmart</th>
-                  <th class="w-12 px-4 py-3"></th>
                 </tr>
               </thead>
               <tbody id="tbody-shipments"></tbody>
@@ -259,6 +258,35 @@
     </div>
   </div>
 
+  <!-- ── Shipment Detail Modal ── -->
+  <div id="detail-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="closeDetailModal()"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 fade-in">
+      <div class="flex items-start justify-between mb-5">
+        <div class="pr-4">
+          <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">POA Status</p>
+          <h2 id="detail-title" class="text-sm font-semibold text-gray-800 leading-snug"></h2>
+          <p id="detail-qid" class="text-xs text-gray-400 font-mono mt-0.5"></p>
+        </div>
+        <button onclick="closeDetailModal()" class="text-gray-300 hover:text-gray-500 transition-colors flex-shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <table class="w-full">
+        <thead>
+          <tr class="border-b border-gray-100">
+            <th class="text-left text-xs font-semibold text-gray-400 pb-2 pr-4">Name</th>
+            <th class="text-left text-xs font-semibold text-gray-400 pb-2 pr-4">Type</th>
+            <th class="text-left text-xs font-semibold text-gray-400 pb-2 pr-4 whitespace-nowrap">Regal</th>
+            <th class="text-left text-xs font-semibold text-gray-400 pb-2 pr-4 whitespace-nowrap">StrixSmart</th>
+            <th class="pb-2"></th>
+          </tr>
+        </thead>
+        <tbody id="detail-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
   <script>
     const SHIPMENT_SHEET_ID = '1hT0klGac6bIRyUgD4BugB7Zroma31lH1ey2BMw9LLIY';
     const SHIPMENT_GID      = '0';
@@ -268,10 +296,11 @@
     const GAS_URL           = 'https://script.google.com/macros/s/AKfycbwV5HX2qOXIoNKXl4VA6ergfHQBfecFqzb4dmpGJJf_bVjj9J8JpVjSU5LXhnUEhl29/exec';
 
     // ── State ─────────────────────────────────────────────────────────────
-    let allShipments  = [];
-    let registryMap   = new Map();  // norm(entity) → { display, customsId, poaRegal, poaStrix }
-    let activeFilter  = 'all';
-    let modalKey      = null;
+    let allShipments    = [];
+    let currentFiltered = [];
+    let registryMap     = new Map();  // norm(entity) → { display, customsId, poaRegal, poaStrix }
+    let activeFilter    = 'all';
+    let modalKey        = null;
     let modalPoaRegal = null;
     let modalPoaStrix = null;
 
@@ -450,6 +479,7 @@
           ? `${filtered.length} of ${allShipments.length}`
           : `${allShipments.length} shipments`;
 
+      currentFiltered = filtered;
       const tbody = document.getElementById('tbody-shipments');
       const empty = document.getElementById('empty-shipments');
       if (!filtered.length) { tbody.innerHTML = ''; empty.classList.remove('hidden'); return; }
@@ -457,8 +487,8 @@
 
       tbody.innerHTML = filtered.map((s, i) => {
         const { cls: etaCls, badge: etaBadge } = etaInfo(s._eta);
-        const inReg = registryMap.has(s._regKey);
-        return `<tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+        return `<tr onclick="openShipmentDetail(${i})"
+          class="border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer">
           <td class="px-4 py-3 text-xs text-gray-300 tabular-nums">${i + 1}</td>
           <td class="px-4 py-3">
             <div class="text-sm font-medium text-gray-800 leading-tight">${esc(s.name) || '—'}</div>
@@ -471,16 +501,6 @@
           </td>
           <td class="px-4 py-3">${brokerBadge(hasRegal(s))}</td>
           <td class="px-4 py-3">${brokerBadge(hasStrix(s))}</td>
-          <td class="px-4 py-3">
-            <button data-key="${esc(s._regKey)}" onclick="openModal(this.dataset.key)"
-              ${!inReg ? 'disabled title="Not yet in registry — wait for next sync"' : ''}
-              class="p-1.5 rounded-lg transition-colors ${inReg ? 'text-gray-400 hover:text-indigo-600 hover:bg-indigo-50' : 'text-gray-200 cursor-not-allowed'}">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-              </svg>
-            </button>
-          </td>
         </tr>`;
       }).join('');
     }
@@ -637,7 +657,56 @@
       return res.json();
     }
 
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+    // ── Shipment detail modal ─────────────────────────────────────────────
+    function openShipmentDetail(idx) {
+      const s = currentFiltered[idx];
+      if (!s) return;
+
+      document.getElementById('detail-title').textContent = s.name || s.entity_name || '—';
+      document.getElementById('detail-qid').textContent   = s.quote_identity || '';
+
+      const candidates = [
+        { name: s.entity_name,    label: 'Entity'    },
+        { name: s.consignor_name, label: 'Consignor' },
+        { name: s.consignee_name, label: 'Consignee' },
+      ].filter(c => c.name && c.name.trim());
+
+      document.getElementById('detail-tbody').innerHTML = candidates.map(({ name, label }) => {
+        const key   = norm(name);
+        const entry = registryMap.get(key);
+        const regal = entry
+          ? brokerBadge(entry.poaRegal)
+          : `<span class="text-xs text-gray-300">Not tracked</span>`;
+        const strix = entry
+          ? brokerBadge(entry.poaStrix)
+          : `<span class="text-xs text-gray-300">Not tracked</span>`;
+        const editBtn = entry
+          ? `<button data-key="${esc(key)}" onclick="event.stopPropagation(); closeDetailModal(); openModal(this.dataset.key)"
+               class="text-xs px-2.5 py-1 rounded-lg border border-gray-200 text-gray-500 hover:text-indigo-600 hover:border-indigo-200 transition-colors">
+               Edit
+             </button>`
+          : '';
+        return `<tr class="border-b border-gray-100 last:border-0">
+          <td class="py-3 pr-4 text-sm font-medium text-gray-800 max-w-xs truncate">${esc(name)}</td>
+          <td class="py-3 pr-4 text-xs text-gray-400 whitespace-nowrap">${label}</td>
+          <td class="py-3 pr-4">${regal}</td>
+          <td class="py-3 pr-4">${strix}</td>
+          <td class="py-3">${editBtn}</td>
+        </tr>`;
+      }).join('');
+
+      document.getElementById('detail-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDetailModal() {
+      document.getElementById('detail-modal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { closeModal(); closeDetailModal(); }
+    });
 
     loadData();
   </script>
