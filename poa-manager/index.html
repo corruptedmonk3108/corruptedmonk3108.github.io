@@ -646,11 +646,16 @@
         isThird ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-500'
       }`;
 
-      const candidates = [
-        { name: s.entity_name,    label: 'ISF Importer' },
-        { name: s.consignor_name, label: 'BL Consignor' },
-        { name: s.consignee_name, label: 'BL Consignee' },
-      ].filter(c => c.name && c.name.trim());
+      let candidates = [
+        { name: s.entity_name, label: 'ISF Importer' },
+      ];
+      if (isThird) {
+        candidates.push(
+          { name: s.consignor_name, label: 'BL Consignor' },
+          { name: s.consignee_name, label: 'BL Consignee' }
+        );
+      }
+      candidates = candidates.filter(c => c.name && c.name.trim());
 
       document.getElementById('detail-tbody').innerHTML = candidates.map(({ name, label }) => {
         const key   = norm(name);
