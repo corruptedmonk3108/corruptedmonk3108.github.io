@@ -353,20 +353,25 @@
       try {
         const [shipRes, gasReg] = await Promise.all([
           fetch(csvUrl(SHIPMENT_SHEET_ID, SHIPMENT_GID)),
-          gasCall({ action: 'read_registry' }).catch(() => null),
+          gasCall({ action: 'read_registry' }).catch(err => ({ error: err.message })),
         ]);
         if (!shipRes.ok) throw new Error(`Shipment sheet returned HTTP ${shipRes.status}`);
 
         const shipText = await shipRes.text();
 
-        // Registry: prefer GAS response, fall back to gviz/tq
+        // Registry: GAS first, then gviz/tq fallback (skip if response is HTML)
         let poaRows = [];
         if (gasReg && gasReg.ok && Array.isArray(gasReg.data)) {
           poaRows = gasReg.data;
         } else {
           try {
-            const poaRes = await fetch(csvUrl(POA_SHEET_ID, POA_GID));
-            if (poaRes.ok) poaRows = toObjects(await poaRes.text());
+            const poaRes = await fetch(csvUrl(POA_SHEET_ID, POA_GID) + '&t=' + Date.now());
+            if (poaRes.ok) {
+              const poaText = await poaRes.text();
+              if (!poaText.trim().startsWith('<') && !poaText.includes('google.visualization')) {
+                poaRows = toObjects(poaText);
+              }
+            }
           } catch (_) {}
         }
 
