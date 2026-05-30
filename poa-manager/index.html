@@ -96,26 +96,6 @@
       <!-- ── SHIPMENTS TAB ── -->
       <div id="tab-shipments" class="space-y-4">
 
-        <!-- Stats -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div class="bg-white rounded-2xl border border-gray-200 px-5 py-4">
-            <div class="text-xs text-gray-400 uppercase tracking-wider mb-1">Total Shipments</div>
-            <div id="stat-total" class="text-2xl font-bold text-gray-800">—</div>
-          </div>
-          <div class="bg-red-50 rounded-2xl border border-red-100 px-5 py-4">
-            <div class="text-xs text-red-400 uppercase tracking-wider mb-1">Regal POA Missing</div>
-            <div id="stat-regal" class="text-2xl font-bold text-red-600">—</div>
-          </div>
-          <div class="bg-amber-50 rounded-2xl border border-amber-100 px-5 py-4">
-            <div class="text-xs text-amber-500 uppercase tracking-wider mb-1">StrixSmart POA Missing</div>
-            <div id="stat-strix" class="text-2xl font-bold text-amber-600">—</div>
-          </div>
-          <div class="bg-blue-50 rounded-2xl border border-blue-100 px-5 py-4">
-            <div class="text-xs text-blue-400 uppercase tracking-wider mb-1">Entities Tracked</div>
-            <div id="stat-entities" class="text-2xl font-bold text-blue-600">—</div>
-          </div>
-        </div>
-
         <!-- Filters -->
         <div class="bg-white rounded-2xl border border-gray-200 px-4 py-3 flex items-center gap-3 flex-wrap">
           <div class="flex gap-1">
@@ -453,10 +433,6 @@
 
     // ── Stats ─────────────────────────────────────────────────────────────
     function renderStats() {
-      document.getElementById('stat-total').textContent    = allShipments.length;
-      document.getElementById('stat-regal').textContent    = allShipments.filter(s => !hasRegal(s)).length;
-      document.getElementById('stat-strix').textContent    = allShipments.filter(s => !hasStrix(s)).length;
-      document.getElementById('stat-entities').textContent = registryMap.size;
     }
 
     // ── Shipments tab ─────────────────────────────────────────────────────
