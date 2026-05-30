@@ -65,26 +65,6 @@
 
   <main class="max-w-7xl mx-auto px-6 py-6">
 
-    <!-- ── GAS setup banner (shown until URL is configured) ─────────────── -->
-    <div id="setup-banner" class="hidden mb-5 bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4">
-      <div class="flex items-start gap-3">
-        <svg class="w-5 h-5 text-amber-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
-        <div class="flex-1">
-          <p class="text-sm font-semibold text-amber-800">One-time setup required to enable editing</p>
-          <p class="text-xs text-amber-700 mt-0.5 mb-3">Deploy the Google Apps Script Web App, then paste the deployment URL below. Viewing works without this.</p>
-          <div class="flex gap-2">
-            <input id="gas-url-input" type="text" placeholder="https://script.google.com/macros/s/…/exec"
-              class="flex-1 text-xs border border-amber-300 bg-white rounded-lg px-3 py-1.5 outline-none focus:border-amber-500" />
-            <button onclick="saveGasUrl()"
-              class="text-xs px-4 py-1.5 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors font-medium whitespace-nowrap">
-              Save URL
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <!-- ── Loading ───────────────────────────────────────────────────────── -->
     <div id="loading" class="py-24 text-center">
@@ -266,9 +246,6 @@
 
       <p id="modal-error" class="hidden mt-3 text-xs text-red-600 text-center"></p>
 
-      <div id="modal-no-gas" class="hidden mt-3 bg-amber-50 border border-amber-100 rounded-xl px-4 py-3 text-xs text-amber-700">
-        GAS Web App URL not set. Paste it in the setup banner at the top to enable saving.
-      </div>
     </div>
   </div>
 
@@ -278,6 +255,7 @@
     const POA_SHEET_ID      = '195mILw4Kq4KyJ4x3VT6N6SYLJgcP6KGUknXKMT_Yqdg';
     const POA_GID           = '0';
     const GAS_SECRET        = 'xhip-poa-2026';
+    const GAS_URL           = 'https://script.google.com/macros/s/AKfycbwV5HX2qOXIoNKXl4VA6ergfHQBfecFqzb4dmpGJJf_bVjj9J8JpVjSU5LXhnUEhl29/exec';
 
     // ── State ─────────────────────────────────────────────────────────────
     let allShipments = [];
@@ -287,20 +265,9 @@
     let modalPoa     = null;       // boolean — current toggle state in modal
 
     // ── GAS URL (stored per-device in localStorage) ───────────────────────
-    function getGasUrl() { return localStorage.getItem('poaGasUrl') || ''; }
+    function getGasUrl() { return GAS_URL; }
 
-    function saveGasUrl() {
-      const val = (document.getElementById('gas-url-input').value || '').trim();
-      if (!val) return;
-      localStorage.setItem('poaGasUrl', val);
-      document.getElementById('setup-banner').classList.add('hidden');
-    }
-
-    function checkSetup() {
-      if (!getGasUrl()) {
-        document.getElementById('setup-banner').classList.remove('hidden');
-      }
-    }
+    function checkSetup() { /* GAS URL is hardcoded — no setup needed */ }
 
     // ── CSV helpers ───────────────────────────────────────────────────────
     function csvUrl(sheetId, gid) {
