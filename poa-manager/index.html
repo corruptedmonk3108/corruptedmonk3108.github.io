@@ -181,7 +181,7 @@
         <div class="flex items-center justify-between flex-wrap gap-3">
           <p class="text-xs text-gray-500">
             Entity names are auto-synced by the Apps Script.
-            <a href="https://docs.google.com/spreadsheets/d/1hT0klGac6bIRyUgD4BugB7Zroma31lH1ey2BMw9LLIY/edit?gid=1751535167"
+            <a href="https://docs.google.com/spreadsheets/d/195mILw4Kq4KyJ4x3VT6N6SYLJgcP6KGUknXKMT_Yqdg/edit?gid=0"
               target="_blank" class="text-blue-500 hover:underline ml-1">View sheet →</a>
           </p>
           <input id="registry-search" type="text" placeholder="Search entities…" oninput="renderRegistry()"
@@ -273,10 +273,11 @@
   </div>
 
   <script>
-    const SHEET_ID     = '1hT0klGac6bIRyUgD4BugB7Zroma31lH1ey2BMw9LLIY';
-    const SHIPMENT_GID = '0';
-    const POA_GID      = '1751535167';
-    const GAS_SECRET   = 'xhip-poa-2026';
+    const SHIPMENT_SHEET_ID = '1hT0klGac6bIRyUgD4BugB7Zroma31lH1ey2BMw9LLIY';
+    const SHIPMENT_GID      = '0';
+    const POA_SHEET_ID      = '195mILw4Kq4KyJ4x3VT6N6SYLJgcP6KGUknXKMT_Yqdg';
+    const POA_GID           = '0';
+    const GAS_SECRET        = 'xhip-poa-2026';
 
     // ── State ─────────────────────────────────────────────────────────────
     let allShipments = [];
@@ -302,8 +303,8 @@
     }
 
     // ── CSV helpers ───────────────────────────────────────────────────────
-    function csvUrl(gid) {
-      return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${gid}`;
+    function csvUrl(sheetId, gid) {
+      return `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${gid}`;
     }
 
     function parseCSV(text) {
@@ -382,8 +383,8 @@
 
       try {
         const [shipRes, poaRes] = await Promise.all([
-          fetch(csvUrl(SHIPMENT_GID)),
-          fetch(csvUrl(POA_GID)),
+          fetch(csvUrl(SHIPMENT_SHEET_ID, SHIPMENT_GID)),
+          fetch(csvUrl(POA_SHEET_ID, POA_GID)),
         ]);
         if (!shipRes.ok) throw new Error(`Shipment sheet returned HTTP ${shipRes.status}`);
 
