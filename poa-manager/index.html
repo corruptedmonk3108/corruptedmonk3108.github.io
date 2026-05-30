@@ -261,12 +261,15 @@
   <!-- ── Shipment Detail Modal ── -->
   <div id="detail-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
     <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="closeDetailModal()"></div>
-    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 fade-in">
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl p-6 fade-in">
       <div class="flex items-start justify-between mb-5">
         <div class="pr-4">
           <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">POA Status</p>
           <h2 id="detail-title" class="text-sm font-semibold text-gray-800 leading-snug"></h2>
-          <p id="detail-qid" class="text-xs text-gray-400 font-mono mt-0.5"></p>
+          <div class="flex items-center gap-2 mt-0.5">
+            <p id="detail-qid" class="text-xs text-gray-400 font-mono"></p>
+            <span id="detail-ior" class="text-xs px-2 py-0.5 rounded-full font-medium"></span>
+          </div>
         </div>
         <button onclick="closeDetailModal()" class="text-gray-300 hover:text-gray-500 transition-colors flex-shrink-0">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -665,10 +668,18 @@
       document.getElementById('detail-title').textContent = s.name || s.entity_name || '—';
       document.getElementById('detail-qid').textContent   = s.quote_identity || '';
 
+      const iorEl    = document.getElementById('detail-ior');
+      const iorType  = (s.ior_type || '').toLowerCase();
+      const isThird  = iorType === 'third_party';
+      iorEl.textContent = isThird ? 'Third Party IOR' : 'Own IOR';
+      iorEl.className   = `text-xs px-2 py-0.5 rounded-full font-medium ${
+        isThird ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-500'
+      }`;
+
       const candidates = [
-        { name: s.entity_name,    label: 'Entity'    },
-        { name: s.consignor_name, label: 'Consignor' },
-        { name: s.consignee_name, label: 'Consignee' },
+        { name: s.entity_name,    label: 'ISF Importer' },
+        { name: s.consignor_name, label: 'BL Consignor' },
+        { name: s.consignee_name, label: 'BL Consignee' },
       ].filter(c => c.name && c.name.trim());
 
       document.getElementById('detail-tbody').innerHTML = candidates.map(({ name, label }) => {
