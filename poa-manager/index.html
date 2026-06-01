@@ -132,7 +132,7 @@
       <!-- ── REGISTRY TAB ── -->
       <div id="tab-registry" class="hidden space-y-4">
         <div class="flex items-center justify-between flex-wrap gap-3">
-          <p class="text-xs text-gray-500">Entity names are auto-synced every 6 hours.</p>
+          <p class="text-xs text-gray-500">Entity names are auto-synced every 6 hours. Last fetched: <span id="registry-fetched-at" class="text-gray-400">—</span></p>
           <input id="registry-search" type="text" placeholder="Search entities…" oninput="renderRegistry()"
             class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none focus:border-blue-300 transition-colors w-52" />
         </div>
@@ -384,6 +384,10 @@
         }
 
         registryMap = new Map();
+        const fetchedAt = new Date();
+        const fetchedStr = fetchedAt.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })
+          + ', ' + fetchedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        document.getElementById('registry-fetched-at').textContent = fetchedStr;
         poaRows.forEach(r => {
           const key = norm(r.entity_name);
           if (key) registryMap.set(key, {
