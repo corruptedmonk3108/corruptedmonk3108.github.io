@@ -97,40 +97,38 @@
       <div id="tab-shipments" class="space-y-4">
 
         <!-- Filters -->
-        <div class="bg-white rounded-2xl border border-gray-200 px-4 py-3 flex items-center gap-4 flex-wrap">
-          <div class="flex items-center gap-2">
-            <span class="text-xs font-medium text-gray-500 whitespace-nowrap">IOR Type</span>
-            <select id="ior-filter" onchange="renderShipments()"
-              class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none focus:border-blue-300 transition-colors text-gray-600 bg-white">
-              <option value="">All</option>
-              <option value="third_party">Third Party IOR</option>
-              <option value="own">Own IOR</option>
-            </select>
+        <div class="bg-white rounded-2xl border border-gray-200 px-4 py-3 flex items-center gap-3 flex-wrap">
+          <!-- IOR Type -->
+          <div class="relative fd-wrapper">
+            <button id="fd-ior-btn" onclick="toggleFd('ior')" class="fd-btn flex items-center gap-1.5 text-xs border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-600 hover:border-blue-300 transition-colors whitespace-nowrap">
+              <span id="fd-ior-label">IOR Type</span>
+              <svg class="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div id="fd-ior-panel" data-fd-id="ior" class="fd-panel hidden absolute top-full left-0 mt-1.5 bg-white border border-gray-200 rounded-xl shadow-lg z-30 min-w-44 py-1.5"></div>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="text-xs font-medium text-gray-500 whitespace-nowrap">Origin Country</span>
-            <select id="origin-filter" onchange="renderShipments()"
-              class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none focus:border-blue-300 transition-colors text-gray-600 bg-white">
-              <option value="">All</option>
-            </select>
+          <!-- Origin Country -->
+          <div class="relative fd-wrapper">
+            <button id="fd-origin-btn" onclick="toggleFd('origin')" class="fd-btn flex items-center gap-1.5 text-xs border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-600 hover:border-blue-300 transition-colors whitespace-nowrap">
+              <span id="fd-origin-label">Origin Country</span>
+              <svg class="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div id="fd-origin-panel" data-fd-id="origin" class="fd-panel hidden absolute top-full left-0 mt-1.5 bg-white border border-gray-200 rounded-xl shadow-lg z-30 min-w-44 max-h-60 overflow-y-auto py-1.5"></div>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="text-xs font-medium text-gray-500 whitespace-nowrap">Import POC</span>
-            <select id="poc-filter" onchange="renderShipments()"
-              class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none focus:border-blue-300 transition-colors text-gray-600 bg-white">
-              <option value="">All</option>
-            </select>
+          <!-- Import POC -->
+          <div class="relative fd-wrapper">
+            <button id="fd-poc-btn" onclick="toggleFd('poc')" class="fd-btn flex items-center gap-1.5 text-xs border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-600 hover:border-blue-300 transition-colors whitespace-nowrap">
+              <span id="fd-poc-label">Import POC</span>
+              <svg class="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div id="fd-poc-panel" data-fd-id="poc" class="fd-panel hidden absolute top-full left-0 mt-1.5 bg-white border border-gray-200 rounded-xl shadow-lg z-30 min-w-44 max-h-60 overflow-y-auto py-1.5"></div>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="text-xs font-medium text-gray-500 whitespace-nowrap">POA Status</span>
-            <select id="poa-status-filter" onchange="renderShipments()"
-              class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none focus:border-blue-300 transition-colors text-gray-600 bg-white">
-              <option value="">All</option>
-              <option value="POA Available">POA Available</option>
-              <option value="POA Unavailable">POA Unavailable</option>
-              <option value="3rd Party IOR (Consignee / Consignor POA Unavailable)">3rd Party IOR (Consignee / Consignor POA Unavailable)</option>
-              <option value="Check with Ops Lead">Check with Ops Lead</option>
-            </select>
+          <!-- POA Status -->
+          <div class="relative fd-wrapper">
+            <button id="fd-poaStatus-btn" onclick="toggleFd('poaStatus')" class="fd-btn flex items-center gap-1.5 text-xs border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-600 hover:border-blue-300 transition-colors whitespace-nowrap">
+              <span id="fd-poaStatus-label">POA Status</span>
+              <svg class="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div id="fd-poaStatus-panel" data-fd-id="poaStatus" class="fd-panel hidden absolute top-full left-0 mt-1.5 bg-white border border-gray-200 rounded-xl shadow-lg z-30 min-w-64 py-1.5"></div>
           </div>
           <div class="flex-1 min-w-48">
             <input id="search" type="text" placeholder="Search entity, QID, container…" oninput="renderShipments()"
@@ -506,49 +504,138 @@
     }
 
     // ── Stats ─────────────────────────────────────────────────────────────
-    function renderStats() {
+    function renderStats() {}
+
+    // ── Multi-select checkbox filters ─────────────────────────────────────
+    const fdExcl  = { ior: new Set(), origin: new Set(), poc: new Set(), poaStatus: new Set() };
+    const fdAll   = { ior: [], origin: [], poc: [], poaStatus: [] };
+    const fdNames = { ior: 'IOR Type', origin: 'Origin Country', poc: 'Import POC', poaStatus: 'POA Status' };
+
+    function buildFdPanel(id, opts) {
+      // opts: array of strings OR {value, label}
+      const items = opts.map(o => typeof o === 'string' ? { value: o, label: o } : o);
+      fdAll[id]   = items;
+      const panel = document.getElementById('fd-' + id + '-panel');
+      if (!panel) return;
+      panel.innerHTML =
+        `<label class="flex items-center gap-2 px-3 py-1.5 hover:bg-gray-50 cursor-pointer text-xs font-medium text-gray-700 select-none">
+          <input type="checkbox" data-all="1" checked class="accent-blue-500 cursor-pointer">
+          <span>Select All</span>
+        </label>
+        <div class="h-px bg-gray-100 mx-3 my-1"></div>` +
+        items.map(({ value, label }) =>
+          `<label class="flex items-center gap-2 px-3 py-1.5 hover:bg-gray-50 cursor-pointer text-xs text-gray-700 select-none">
+            <input type="checkbox" data-val="${esc(value)}" ${fdExcl[id].has(value) ? '' : 'checked'} class="accent-blue-500 cursor-pointer">
+            <span>${esc(label)}</span>
+          </label>`
+        ).join('');
+      syncSelectAll(id);
+      updateFdLabel(id);
     }
 
+    function syncSelectAll(id) {
+      const allCb = document.querySelector(`#fd-${id}-panel input[data-all]`);
+      if (!allCb) return;
+      const total = fdAll[id].length;
+      const excl  = fdExcl[id].size;
+      allCb.checked       = excl === 0;
+      allCb.indeterminate = excl > 0 && excl < total;
+    }
+
+    function toggleFd(id) {
+      Object.keys(fdAll).forEach(fid => {
+        const p = document.getElementById('fd-' + fid + '-panel');
+        if (p) p.classList[fid === id ? 'toggle' : 'add']('hidden');
+      });
+    }
+
+    function fdSelectAll(id, cb) {
+      if (cb.checked) fdExcl[id].clear();
+      else fdAll[id].forEach(({ value }) => fdExcl[id].add(value));
+      document.querySelectorAll(`#fd-${id}-panel input[data-val]`).forEach(c => c.checked = cb.checked);
+      updateFdLabel(id);
+      renderShipments();
+    }
+
+    function fdToggle(id, value, cb) {
+      if (cb.checked) fdExcl[id].delete(value);
+      else            fdExcl[id].add(value);
+      syncSelectAll(id);
+      updateFdLabel(id);
+      renderShipments();
+    }
+
+    function updateFdLabel(id) {
+      const excl  = fdExcl[id];
+      const total = fdAll[id].length;
+      const btn   = document.getElementById('fd-' + id + '-btn');
+      const lbl   = document.getElementById('fd-' + id + '-label');
+      if (!btn || !lbl) return;
+      const active = excl.size > 0;
+      lbl.textContent = active
+        ? `${fdNames[id]} (${total - excl.size}/${total})`
+        : fdNames[id];
+      btn.classList.toggle('border-blue-300', active);
+      btn.classList.toggle('bg-blue-50',      active);
+      btn.classList.toggle('text-blue-600',   active);
+      btn.classList.toggle('border-gray-200', !active);
+      btn.classList.toggle('text-gray-600',   !active);
+    }
+
+    function fdPasses(id, value) {
+      return fdExcl[id].size === 0 || !fdExcl[id].has(value || '');
+    }
+
+    // Event delegation for all fd checkboxes
+    document.addEventListener('change', e => {
+      if (e.target.type !== 'checkbox') return;
+      const panel = e.target.closest('.fd-panel');
+      if (!panel) return;
+      const id = panel.dataset.fdId;
+      if (e.target.dataset.all) {
+        fdSelectAll(id, e.target);
+      } else if (e.target.dataset.val !== undefined) {
+        fdToggle(id, e.target.dataset.val, e.target);
+      }
+    });
+
+    // Close panels on outside click
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.fd-wrapper')) {
+        document.querySelectorAll('.fd-panel').forEach(p => p.classList.add('hidden'));
+      }
+    });
+
     function clearFilters() {
-      document.getElementById('ior-filter').value        = '';
-      document.getElementById('origin-filter').value     = '';
-      document.getElementById('poc-filter').value        = '';
-      document.getElementById('poa-status-filter').value = '';
-      document.getElementById('search').value            = '';
+      Object.keys(fdExcl).forEach(id => {
+        fdExcl[id].clear();
+        buildFdPanel(id, fdAll[id]); // rebuild to reset checkboxes
+      });
+      document.getElementById('search').value = '';
       renderShipments();
     }
 
     function populateOriginFilter() {
-      const sel = document.getElementById('origin-filter');
-      const cur = sel.value;
       const vals = [...new Set(allShipments.map(s => (s.origin_country || '').trim()).filter(Boolean))].sort();
-      sel.innerHTML = '<option value="">All</option>' + vals.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
-      sel.value = cur;
+      buildFdPanel('origin', vals);
     }
 
     function populatePocFilter() {
-      const sel = document.getElementById('poc-filter');
-      const cur = sel.value;
       const vals = [...new Set(allShipments.map(s => (s.import_poc_name || '').trim()).filter(Boolean))].sort();
-      sel.innerHTML = '<option value="">All</option>' + vals.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
-      sel.value = cur;
+      buildFdPanel('poc', vals);
     }
 
     // ── Shipments tab ─────────────────────────────────────────────────────
     function renderShipments() {
       const query     = norm(document.getElementById('search').value);
-      const iorFilter       = document.getElementById('ior-filter').value;
-      const originFilter    = document.getElementById('origin-filter').value;
-      const pocFilter       = document.getElementById('poc-filter').value;
-      const poaStatusFilter = document.getElementById('poa-status-filter').value;
-      const anyActive       = !!(iorFilter || originFilter || pocFilter || poaStatusFilter || query);
+      const anyActive = Object.values(fdExcl).some(s => s.size > 0) || !!query;
       document.getElementById('clear-filters').classList.toggle('hidden', !anyActive);
 
       const filtered = allShipments.filter(s => {
-        if (iorFilter       && (s.ior_type        || '').toLowerCase().trim() !== iorFilter)    return false;
-        if (originFilter    && (s.origin_country  || '').trim()               !== originFilter) return false;
-        if (pocFilter       && (s.import_poc_name || '').trim()               !== pocFilter)    return false;
-        if (poaStatusFilter && getPOAStatus(s).label                          !== poaStatusFilter) return false;
+        if (!fdPasses('ior',       (s.ior_type        || '').toLowerCase().trim())) return false;
+        if (!fdPasses('origin',    (s.origin_country  || '').trim()))               return false;
+        if (!fdPasses('poc',       (s.import_poc_name || '').trim()))               return false;
+        if (!fdPasses('poaStatus', getPOAStatus(s).label))                          return false;
         if (query) {
           const hay = [s.entity_name, s.quote_identity, s.container_number, s.name, s.hbl_number].join(' ').toLowerCase();
           if (!hay.includes(query)) return false;
@@ -801,6 +888,18 @@
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') { closeModal(); closeDetailModal(); }
     });
+
+    // Initialise static filter panels
+    buildFdPanel('ior', [
+      { value: 'own',         label: 'Own IOR'         },
+      { value: 'third_party', label: 'Third Party IOR' },
+    ]);
+    buildFdPanel('poaStatus', [
+      'POA Available',
+      'POA Unavailable',
+      '3rd Party IOR (Consignee / Consignor POA Unavailable)',
+      'Check with Ops Lead',
+    ]);
 
     loadData();
   </script>
