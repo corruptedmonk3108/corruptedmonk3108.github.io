@@ -121,6 +121,16 @@
               <option value="">All</option>
             </select>
           </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-medium text-gray-500 whitespace-nowrap">POA Status</span>
+            <select id="poa-status-filter" onchange="renderShipments()"
+              class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none focus:border-blue-300 transition-colors text-gray-600 bg-white">
+              <option value="">All</option>
+              <option value="POA Available">POA Available</option>
+              <option value="POA Unavailable">POA Unavailable</option>
+              <option value="Check with Ops Lead">Check with Ops Lead</option>
+            </select>
+          </div>
           <div class="flex-1 min-w-48">
             <input id="search" type="text" placeholder="Search entity, QID, container…" oninput="renderShipments()"
               class="w-full text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none focus:border-blue-300 transition-colors" />
@@ -499,10 +509,11 @@
     }
 
     function clearFilters() {
-      document.getElementById('ior-filter').value    = '';
-      document.getElementById('origin-filter').value = '';
-      document.getElementById('poc-filter').value    = '';
-      document.getElementById('search').value        = '';
+      document.getElementById('ior-filter').value        = '';
+      document.getElementById('origin-filter').value     = '';
+      document.getElementById('poc-filter').value        = '';
+      document.getElementById('poa-status-filter').value = '';
+      document.getElementById('search').value            = '';
       renderShipments();
     }
 
@@ -525,16 +536,18 @@
     // ── Shipments tab ─────────────────────────────────────────────────────
     function renderShipments() {
       const query     = norm(document.getElementById('search').value);
-      const iorFilter    = document.getElementById('ior-filter').value;
-      const originFilter = document.getElementById('origin-filter').value;
-      const pocFilter    = document.getElementById('poc-filter').value;
-      const anyActive    = !!(iorFilter || originFilter || pocFilter || query);
+      const iorFilter       = document.getElementById('ior-filter').value;
+      const originFilter    = document.getElementById('origin-filter').value;
+      const pocFilter       = document.getElementById('poc-filter').value;
+      const poaStatusFilter = document.getElementById('poa-status-filter').value;
+      const anyActive       = !!(iorFilter || originFilter || pocFilter || poaStatusFilter || query);
       document.getElementById('clear-filters').classList.toggle('hidden', !anyActive);
 
       const filtered = allShipments.filter(s => {
-        if (iorFilter    && (s.ior_type        || '').toLowerCase().trim() !== iorFilter)    return false;
-        if (originFilter && (s.origin_country  || '').trim()               !== originFilter) return false;
-        if (pocFilter    && (s.import_poc_name || '').trim()               !== pocFilter)    return false;
+        if (iorFilter       && (s.ior_type        || '').toLowerCase().trim() !== iorFilter)    return false;
+        if (originFilter    && (s.origin_country  || '').trim()               !== originFilter) return false;
+        if (pocFilter       && (s.import_poc_name || '').trim()               !== pocFilter)    return false;
+        if (poaStatusFilter && getPOAStatus(s).label                          !== poaStatusFilter) return false;
         if (query) {
           const hay = [s.entity_name, s.quote_identity, s.container_number, s.name, s.hbl_number].join(' ').toLowerCase();
           if (!hay.includes(query)) return false;
