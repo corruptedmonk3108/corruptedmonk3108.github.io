@@ -128,6 +128,7 @@
               <option value="">All</option>
               <option value="POA Available">POA Available</option>
               <option value="POA Unavailable">POA Unavailable</option>
+              <option value="3rd Party IOR (Consignee / Consignor POA Unavailable)">3rd Party IOR (Consignee / Consignor POA Unavailable)</option>
               <option value="Check with Ops Lead">Check with Ops Lead</option>
             </select>
           </div>
@@ -497,7 +498,7 @@
           return { label: 'POA Available',   cls: 'bg-green-100 text-green-800' };
         const anyBL = cons.poaRegal || cons.poaStrix || consee.poaRegal || consee.poaStrix;
         if (!anyBL)
-          return { label: 'POA Unavailable', cls: 'bg-red-100 text-red-700' };
+          return { label: '3rd Party IOR (Consignee / Consignor POA Unavailable)', cls: 'bg-red-100 text-red-700' };
         return { label: 'Check with Ops Lead', cls: 'bg-amber-100 text-amber-700' };
       }
 
