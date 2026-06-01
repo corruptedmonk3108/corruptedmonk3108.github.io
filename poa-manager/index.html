@@ -99,8 +99,14 @@
         <!-- Filters -->
         <div class="bg-white rounded-2xl border border-gray-200 px-4 py-3 flex items-center gap-3 flex-wrap">
           <div class="flex gap-1">
-            <button data-filter="all"         onclick="setFilter('all')"         class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-800 text-white">All</button>
+            <button data-filter="all" onclick="setFilter('all')" class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-800 text-white">All</button>
           </div>
+          <select id="ior-filter" onchange="renderShipments()"
+            class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none focus:border-blue-300 transition-colors text-gray-600 bg-white">
+            <option value="">IOR Type</option>
+            <option value="third_party">Third Party IOR</option>
+            <option value="own">Own IOR</option>
+          </select>
           <div class="flex-1 min-w-48">
             <input id="search" type="text" placeholder="Search entity, QID, container…" oninput="renderShipments()"
               class="w-full text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none focus:border-blue-300 transition-colors" />
@@ -446,11 +452,11 @@
 
     // ── Shipments tab ─────────────────────────────────────────────────────
     function renderShipments() {
-      const query = norm(document.getElementById('search').value);
+      const query     = norm(document.getElementById('search').value);
+      const iorFilter = document.getElementById('ior-filter').value;
 
       const filtered = allShipments.filter(s => {
-        if (activeFilter === 'regal_needed' &&  hasRegal(s)) return false;
-        if (activeFilter === 'strix_needed' &&  hasStrix(s)) return false;
+        if (iorFilter && (s.ior_type || '').toLowerCase().trim() !== iorFilter) return false;
         if (query) {
           const hay = [s.entity_name, s.quote_identity, s.container_number, s.name, s.hbl_number].join(' ').toLowerCase();
           if (!hay.includes(query)) return false;
