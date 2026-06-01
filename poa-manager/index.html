@@ -119,6 +119,7 @@
               class="w-full text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none focus:border-blue-300 transition-colors" />
           </div>
           <span id="row-count" class="text-xs text-gray-400 whitespace-nowrap"></span>
+          <button id="clear-filters" onclick="clearFilters()" class="hidden text-xs text-red-400 hover:text-red-600 transition-colors whitespace-nowrap">Clear filters</button>
         </div>
 
         <!-- Shipments table -->
@@ -458,6 +459,13 @@
     function renderStats() {
     }
 
+    function clearFilters() {
+      document.getElementById('ior-filter').value    = '';
+      document.getElementById('origin-filter').value = '';
+      document.getElementById('search').value        = '';
+      renderShipments();
+    }
+
     function populateOriginFilter() {
       const sel      = document.getElementById('origin-filter');
       const current  = sel.value;
@@ -474,6 +482,8 @@
       const query     = norm(document.getElementById('search').value);
       const iorFilter    = document.getElementById('ior-filter').value;
       const originFilter = document.getElementById('origin-filter').value;
+      const anyActive    = !!(iorFilter || originFilter || query);
+      document.getElementById('clear-filters').classList.toggle('hidden', !anyActive);
 
       const filtered = allShipments.filter(s => {
         if (iorFilter    && (s.ior_type     || '').toLowerCase().trim() !== iorFilter)    return false;
