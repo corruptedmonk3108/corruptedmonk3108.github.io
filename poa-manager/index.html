@@ -97,16 +97,16 @@
       <div id="tab-shipments" class="space-y-4">
 
         <!-- Filters -->
-        <div class="bg-white rounded-2xl border border-gray-200 px-4 py-3 flex items-center gap-3 flex-wrap">
-          <div class="flex gap-1">
-            <button data-filter="all" onclick="setFilter('all')" class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-800 text-white">All</button>
+        <div class="bg-white rounded-2xl border border-gray-200 px-4 py-3 flex items-center gap-4 flex-wrap">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-medium text-gray-500 whitespace-nowrap">IOR Type</span>
+            <select id="ior-filter" onchange="renderShipments()"
+              class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none focus:border-blue-300 transition-colors text-gray-600 bg-white">
+              <option value="">All</option>
+              <option value="third_party">Third Party IOR</option>
+              <option value="own">Own IOR</option>
+            </select>
           </div>
-          <select id="ior-filter" onchange="renderShipments()"
-            class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none focus:border-blue-300 transition-colors text-gray-600 bg-white">
-            <option value="">IOR Type</option>
-            <option value="third_party">Third Party IOR</option>
-            <option value="own">Own IOR</option>
-          </select>
           <div class="flex-1 min-w-48">
             <input id="search" type="text" placeholder="Search entity, QID, container…" oninput="renderShipments()"
               class="w-full text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none focus:border-blue-300 transition-colors" />
