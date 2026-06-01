@@ -384,10 +384,15 @@
         }
 
         registryMap = new Map();
-        const fetchedAt = new Date();
-        const fetchedStr = fetchedAt.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })
-          + ', ' + fetchedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        document.getElementById('registry-fetched-at').textContent = fetchedStr;
+        const rawLastSync = (gasReg && gasReg.last_sync) ? gasReg.last_sync : null;
+        if (rawLastSync) {
+          const d = new Date(rawLastSync);
+          const syncStr = d.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })
+            + ', ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          document.getElementById('registry-fetched-at').textContent = syncStr;
+        } else {
+          document.getElementById('registry-fetched-at').textContent = 'unknown';
+        }
         poaRows.forEach(r => {
           const key = norm(r.entity_name);
           if (key) registryMap.set(key, {
