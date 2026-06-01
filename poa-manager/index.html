@@ -107,6 +107,13 @@
               <option value="own">Own IOR</option>
             </select>
           </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-medium text-gray-500 whitespace-nowrap">Origin Country</span>
+            <select id="origin-filter" onchange="renderShipments()"
+              class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none focus:border-blue-300 transition-colors text-gray-600 bg-white">
+              <option value="">All</option>
+            </select>
+          </div>
           <div class="flex-1 min-w-48">
             <input id="search" type="text" placeholder="Search entity, QID, container…" oninput="renderShipments()"
               class="w-full text-xs border border-gray-200 rounded-lg px-3 py-1.5 outline-none focus:border-blue-300 transition-colors" />
@@ -429,6 +436,7 @@
           `Updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 
         renderStats();
+        populateOriginFilter();
         renderShipments();
         renderRegistry();
 
@@ -450,13 +458,26 @@
     function renderStats() {
     }
 
+    function populateOriginFilter() {
+      const sel      = document.getElementById('origin-filter');
+      const current  = sel.value;
+      const countries = [...new Set(
+        allShipments.map(s => (s.origin_country || '').trim()).filter(Boolean)
+      )].sort();
+      sel.innerHTML = '<option value="">All</option>'
+        + countries.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+      sel.value = current;
+    }
+
     // ── Shipments tab ─────────────────────────────────────────────────────
     function renderShipments() {
       const query     = norm(document.getElementById('search').value);
-      const iorFilter = document.getElementById('ior-filter').value;
+      const iorFilter    = document.getElementById('ior-filter').value;
+      const originFilter = document.getElementById('origin-filter').value;
 
       const filtered = allShipments.filter(s => {
-        if (iorFilter && (s.ior_type || '').toLowerCase().trim() !== iorFilter) return false;
+        if (iorFilter    && (s.ior_type     || '').toLowerCase().trim() !== iorFilter)    return false;
+        if (originFilter && (s.origin_country || '').trim()             !== originFilter) return false;
         if (query) {
           const hay = [s.entity_name, s.quote_identity, s.container_number, s.name, s.hbl_number].join(' ').toLowerCase();
           if (!hay.includes(query)) return false;
