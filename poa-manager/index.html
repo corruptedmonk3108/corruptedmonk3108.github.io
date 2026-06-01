@@ -284,7 +284,7 @@
     let modalPoaStrix = null;
 
     // ── Helpers ───────────────────────────────────────────────────────────
-    const norm      = s => (s || '').trim().toLowerCase();
+    const norm      = s => (s == null ? '' : String(s)).trim().toLowerCase();
     const parseDate = s => { if (!s) return null; const d = new Date(s); return isNaN(d) ? null : d; };
     const fmtDate   = d => d ? d.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
     const esc       = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
