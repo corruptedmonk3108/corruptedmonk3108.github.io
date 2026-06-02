@@ -435,11 +435,12 @@
         });
 
         // Shipments
+        const ETA_CUTOFF = new Date('2026-06-16');
         allShipments = toObjects(shipText).map(r => ({
           ...r,
           _eta:    parseDate(r.arrival_eta),
           _regKey: norm(r.entity_name),
-        }));
+        })).filter(s => !s._eta || s._eta >= ETA_CUTOFF);
 
         allShipments.sort((a, b) => {
           if (!a._eta && !b._eta) return 0;
