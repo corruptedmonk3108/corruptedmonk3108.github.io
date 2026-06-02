@@ -244,7 +244,7 @@
         <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Customs Identifier</p>
         <input id="modal-customs" type="text" placeholder="e.g. 231001-04003"
           class="w-full text-sm border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:border-blue-300 focus:ring-1 focus:ring-blue-100 transition-colors" />
-        <p class="text-xs text-gray-400 mt-1.5">Auto-filled from shipment data. Edit or clear as needed.</p>
+        <p class="text-xs text-gray-400 mt-1.5">Format: <span class="font-mono">xx-xxxxxxxxx</span> or <span class="font-mono">xxxxxx-xxxxx</span> (digits only). Leave blank to clear.</p>
       </div>
 
       <div class="flex gap-2">
@@ -779,6 +779,12 @@
       const errEl   = document.getElementById('modal-error');
       const entry   = registryMap.get(modalKey);
       const newCid  = document.getElementById('modal-customs').value.trim();
+
+      if (newCid && !/^\d{2}-\d{9}$/.test(newCid) && !/^\d{6}-\d{5}$/.test(newCid)) {
+        errEl.textContent = 'Invalid format. Use xx-xxxxxxxxx or xxxxxx-xxxxx (digits only).';
+        errEl.classList.remove('hidden');
+        return;
+      }
 
       btn.disabled = true;
       spinner.classList.remove('hidden');
