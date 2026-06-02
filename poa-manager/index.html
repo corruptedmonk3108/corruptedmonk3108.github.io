@@ -440,7 +440,8 @@
           ...r,
           _eta:    parseDate(r.arrival_eta),
           _regKey: norm(r.entity_name),
-        })).filter(s => !s._eta || s._eta >= ETA_CUTOFF);
+        })).filter(s => (s.import_clearance || '').toLowerCase().trim() === 'yes')
+           .filter(s => !s._eta || s._eta >= ETA_CUTOFF);
 
         allShipments.sort((a, b) => {
           if (!a._eta && !b._eta) return 0;
