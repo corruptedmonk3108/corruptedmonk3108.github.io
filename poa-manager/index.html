@@ -477,14 +477,17 @@
     const hasStrix = s   => !!(getReg(s._regKey).poaStrix);
 
     function getPOAStatus(s) {
-      const ior    = (s.ior_type || '').toLowerCase().trim();
-      const isf    = getReg(norm(s.entity_name    || ''));
-      const cons   = getReg(norm(s.consignor_name || ''));
-      const consee = getReg(norm(s.consignee_name || ''));
+      const ior      = (s.ior_type || '').toLowerCase().trim();
+      const isf      = getReg(norm(s.entity_name    || ''));
+      const cons     = getReg(norm(s.consignor_name || ''));
+      const consee   = getReg(norm(s.consignee_name || ''));
+      const canBlank = !(isf.customsId || '').trim();
 
       if (ior === 'own') {
         if (isf.poaRegal || isf.poaStrix)
-          return { label: 'POA Available',   cls: 'bg-green-100 text-green-800' };
+          return canBlank
+            ? { label: 'POA Available - CAN # Missing', cls: 'bg-blue-100 text-blue-700' }
+            : { label: 'POA Available',                 cls: 'bg-green-100 text-green-800' };
         if (registryMap.has(norm(s.entity_name || '')))
           return { label: 'POA Unavailable', cls: 'bg-red-100 text-red-700' };
         return { label: 'Check with Ops Lead', cls: 'bg-amber-100 text-amber-700' };
@@ -495,11 +498,19 @@
           const count = [isf[field], cons[field], consee[field]].filter(Boolean).length;
           return count >= 2 && (cons[field] || consee[field]);
         };
-        if (brokerOk('poaRegal') || brokerOk('poaStrix'))
-          return { label: 'POA Available',   cls: 'bg-green-100 text-green-800' };
         const anyBL = cons.poaRegal || cons.poaStrix || consee.poaRegal || consee.poaStrix;
+
+        if (brokerOk('poaRegal') || brokerOk('poaStrix'))
+          return canBlank
+            ? { label: 'POA Available - CAN # Missing', cls: 'bg-blue-100 text-blue-700' }
+            : { label: 'POA Available',                 cls: 'bg-green-100 text-green-800' };
+
+        if (anyBL && canBlank)
+          return { label: 'POA Available - CAN # Missing', cls: 'bg-blue-100 text-blue-700' };
+
         if (!anyBL)
           return { label: '3rd Party IOR (Consignee / Consignor POA Unavailable)', cls: 'bg-orange-100 text-orange-700' };
+
         return { label: 'Check with Ops Lead', cls: 'bg-amber-100 text-amber-700' };
       }
 
@@ -906,6 +917,7 @@
     ]);
     buildFdPanel('poaStatus', [
       'POA Available',
+      'POA Available - CAN # Missing',
       'POA Unavailable',
       '3rd Party IOR (Consignee / Consignor POA Unavailable)',
       'Check with Ops Lead',
