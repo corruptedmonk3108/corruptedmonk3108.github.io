@@ -2,6 +2,7 @@ import csv
 import io
 import json
 import sys
+import time
 
 import requests
 
@@ -13,13 +14,19 @@ url = (
     f"/gviz/tq?tqx=out:csv&sheet={SHEET_NAME.replace(' ', '+')}"
 )
 
-try:
-    r = requests.get(url, timeout=30)
-    r.raise_for_status()
-except requests.RequestException as e:
-    print(f"ERROR: Failed to fetch sheet — {e}", file=sys.stderr)
-    print("Make sure the Google Sheet is shared as 'Anyone with the link can view'.", file=sys.stderr)
-    sys.exit(1)
+r = None
+for attempt in range(1, 4):
+    try:
+        r = requests.get(url, timeout=60)
+        r.raise_for_status()
+        break
+    except requests.RequestException as e:
+        print(f"Attempt {attempt}/3 failed: {e}", file=sys.stderr)
+        if attempt < 3:
+            time.sleep(10)
+        else:
+            print("ERROR: All 3 attempts failed. Make sure the Google Sheet is shared as 'Anyone with the link can view'.", file=sys.stderr)
+            sys.exit(1)
 
 if "<html" in r.text[:200].lower():
     print("ERROR: Got an HTML response instead of CSV. The sheet may not be publicly accessible.", file=sys.stderr)
