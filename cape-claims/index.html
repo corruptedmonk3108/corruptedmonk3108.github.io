@@ -6,11 +6,14 @@
   <title>CAPE Claims Status — Xhipment</title>
   <script>
     (function() {
+      var ALLOWED = ['raunak@xhipment.com', 'rachit@xhipment.com', 'srikrishna@xhipment.com'];
       var auth = null;
       try { auth = JSON.parse(localStorage.getItem('xhipAuth') || 'null'); } catch(e) {}
       if (!auth || !auth.expires || Date.now() > auth.expires) {
         localStorage.removeItem('xhipAuth');
         window.location.replace('/login.html');
+      } else if (!ALLOWED.includes((auth.email || '').toLowerCase().trim())) {
+        window.location.replace('/');
       }
     })();
   </script>
