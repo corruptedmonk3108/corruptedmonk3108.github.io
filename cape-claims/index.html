@@ -69,12 +69,21 @@
 
   <!-- Controls -->
   <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-    <div class="relative w-full sm:w-80">
-      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-      </svg>
-      <input id="search" type="text" placeholder="Search by customer name…"
-        class="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-200 focus:border-teal-400 transition" />
+    <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+      <div class="relative">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input id="search-customer" type="text" placeholder="Search by customer name…"
+          class="w-full sm:w-72 pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-200 focus:border-teal-400 transition" />
+      </div>
+      <div class="relative">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input id="search-entry" type="text" placeholder="Search by entry number…"
+          class="w-full sm:w-64 pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-200 focus:border-teal-400 transition" />
+      </div>
     </div>
     <button id="download-btn"
       class="flex items-center gap-2 text-sm px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:text-teal-600 hover:border-teal-300 bg-white transition-colors">
@@ -145,7 +154,6 @@
         const json = await res.json();
         if (!json.ok) throw new Error(json.error || 'API error');
         allData = json.data || [];
-        updateStats();
         render();
         const lu = document.getElementById('last-updated');
         lu.textContent = 'Updated ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -159,11 +167,11 @@
       }
     }
 
-    function updateStats() {
-      const total   = allData.length;
-      const failed  = allData.filter(r => (r['STATUS'] || '').toLowerCase().trim() === 'failed').length;
-      const updated = allData.filter(r => (r['STATUS'] || '').toLowerCase().trim() === 'entry summary updated').length;
-      const refund  = allData.reduce((sum, r) => {
+    function updateStats(rows) {
+      const total   = rows.length;
+      const failed  = rows.filter(r => (r['STATUS'] || '').toLowerCase().trim() === 'failed').length;
+      const updated = rows.filter(r => (r['STATUS'] || '').toLowerCase().trim() === 'entry summary updated').length;
+      const refund  = rows.reduce((sum, r) => {
         const n = parseFloat(String(r['Potential Refund Amount'] == null ? '' : r['Potential Refund Amount']).replace(/[$,]/g, ''));
         return sum + (isNaN(n) ? 0 : n);
       }, 0);
@@ -175,14 +183,18 @@
     }
 
     function getFiltered() {
-      const q = document.getElementById('search').value.toLowerCase().trim();
+      const qc = document.getElementById('search-customer').value.toLowerCase().trim();
+      const qe = document.getElementById('search-entry').value.toLowerCase().trim();
       return allData
-        .filter(r => (r['STATUS'] || '').toLowerCase().trim() !== 'failed')
-        .filter(r => !q || (r['Customer Name'] || '').toLowerCase().includes(q));
+        .filter(r => !qc || (r['Customer Name'] || '').toLowerCase().includes(qc))
+        .filter(r => !qe || (r['ENTRY_NUMBER'] || '').toLowerCase().includes(qe));
     }
 
     function render() {
-      showData = getFiltered();
+      const filtered = getFiltered();
+      updateStats(filtered);
+      showData = filtered.filter(r => (r['STATUS'] || '').toLowerCase().trim() !== 'failed');
+
       const tbody = document.getElementById('table-body');
       const empty = document.getElementById('empty-state');
       const wrap  = document.getElementById('table-wrap');
@@ -236,7 +248,8 @@
       URL.revokeObjectURL(url);
     }
 
-    document.getElementById('search').addEventListener('input', render);
+    document.getElementById('search-customer').addEventListener('input', render);
+    document.getElementById('search-entry').addEventListener('input', render);
     document.getElementById('download-btn').addEventListener('click', downloadCSV);
     document.getElementById('refresh-btn').addEventListener('click', loadData);
 
