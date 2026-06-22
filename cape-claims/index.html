@@ -492,16 +492,16 @@
       });
       const dateList = Object.entries(dateGroups).sort((a, b) => a[0].localeCompare(b[0]));
 
+      const filing = ([date, count]) =>
+        `"${count}" entries were filed by in the CAPE module in ACE portal by the 3P IOR on ${date}`;
+
       let filingSentence;
       if (dateList.length === 1) {
-        const [date, count] = dateList[0];
-        filingSentence = `"${count}" entries were filed by the 3P IOR on ${date}.`;
+        filingSentence = filing(dateList[0]) + '.';
       } else {
-        const parts = dateList.map(([date, count], i) => {
-          if (i === 0) return `"${count}" entries were filed by the 3P IOR on ${date}`;
-          if (i === dateList.length - 1) return `and "${count}" entries on ${date}`;
-          return `"${count}" entries on ${date}`;
-        });
+        const parts = dateList.map((d, i) =>
+          (i === dateList.length - 1 ? 'and ' : '') + filing(d)
+        );
         filingSentence = parts.join(', ') + '.';
       }
 
