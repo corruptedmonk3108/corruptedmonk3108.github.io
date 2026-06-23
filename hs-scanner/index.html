@@ -1050,16 +1050,15 @@ ${text.substring(0, 30000)}`;
     );
   }
 
-  const rawText = data.content[0].text.trim();
+  const rawText = data.content[0]?.text?.trim() ?? '';
   try {
     const cleaned = rawText.replace(/```json|```/g, '').trim();
-    // Extract the JSON object even if there's surrounding text
     const start = cleaned.indexOf('{');
     const end   = cleaned.lastIndexOf('}');
     if (start === -1 || end === -1) throw new Error('no JSON object found');
     return JSON.parse(cleaned.slice(start, end + 1));
   } catch {
-    throw new Error('Could not parse AI response. Please try again.');
+    throw new Error('Parse failed. Raw response: ' + rawText.substring(0, 300));
   }
 }
 
