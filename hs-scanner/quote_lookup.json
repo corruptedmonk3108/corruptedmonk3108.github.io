@@ -786,6 +786,18 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6598c5e41413a98e20b687e7/execution-documents/69df682aef4e6fd6ecb477e4/8074bbaf-0282-4219-872f-a27afebee0fc-Export Commercial Invoice - Excel_XQAMZFCL042620511M (CI).xlsx"
   },
   {
+    "quoteId": "XQAMZLCL062622515M",
+    "exportsInvoiceValue": 22116.14,
+    "shipper": "Cobra Industries Ltd",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=664d96bbd1a3a6a836c1e063/execution-documents/6a393cd780e4a68dff1449ab/5269ddcc-d363-48f2-98f2-d12d99f04028-Export Commercial Invoice - Excel_XQAMZLCL062622515M UP.xlsx"
+  },
+  {
+    "quoteId": "XQAMZLCL052621220M",
+    "exportsInvoiceValue": 1760.8,
+    "shipper": "abc technologies",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69036ff10c84936a3bba7e96/execution-documents/6a018fa79fc1822fc0b3aa70/745bbb3d-de9c-4c79-ade1-3ee51ccd916d-Untitled spreadsheet (3).xlsx"
+  },
+  {
     "quoteId": "XQLCL042620666",
     "exportsInvoiceValue": 22780.8,
     "shipper": "DelightLoop",
