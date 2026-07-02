@@ -252,12 +252,6 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=647594734988569a71a54341/execution-documents/6a17d8f38109ab1aba6c8be7/212b95be-ad78-4da3-a931-05789b62e609-Invoice No.xlsx"
   },
   {
-    "quoteId": "XQAMZLCL052621039M",
-    "exportsInvoiceValue": 19500.0,
-    "shipper": "Kanishka home bedding",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=63bbee1122d4ab1fc4725031/execution-documents/69faee45130f9cecb68e613b/1738e2e2-b027-4916-93fa-de973f1fc020-Export Commercial Invoice - Excel_XQAMZLCL052621039M UP.xlsx"
-  },
-  {
     "quoteId": "XQAMZLCL052621033M",
     "exportsInvoiceValue": 4730.88,
     "shipper": "ekabhumi superfood private limited",
@@ -444,6 +438,12 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=67ac11d37fc2add2ce5c68da/execution-documents/6a141e26dd5de1e3afc529a3/17a2b7b5-7bf6-4460-8bb5-43f304868924-WWH 01 Dt.xls"
   },
   {
+    "quoteId": "XQAMZLCL052621039M",
+    "exportsInvoiceValue": 19500.0,
+    "shipper": "Kanishka home bedding",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=63bbee1122d4ab1fc4725031/bookings-docs/69faee45130f9cecb68e613b/334ebf3c-987e-4128-a5dd-b563b0ce25d8.xlsx"
+  },
+  {
     "quoteId": "XQAMZLCL042620709M",
     "exportsInvoiceValue": 3112.52,
     "shipper": "LEAFORNA",
@@ -490,6 +490,12 @@
     "exportsInvoiceValue": 44342.0,
     "shipper": "Arrowhead exports",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=64427e65dd743bd4c1ef5891/execution-documents/6a16b732623a58c96c8f4261/b2b47421-bc04-4372-94e1-687cc3e1be01-Export Commercial Invoice - Excel_XQAMZLCL052621765M (CI).xlsx"
+  },
+  {
+    "quoteId": "XQAMZLCL042620051M",
+    "exportsInvoiceValue": 23050.59,
+    "shipper": "j and h textiles",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69c320a08e946c0d2915daaf/execution-documents/69cdfe8d36369c883229c768/0328601e-f2b9-4f04-9591-190dc03e8d6a-Export Commercial Invoice - Excel_XQAMZLCL042620051M CI.xlsx"
   },
   {
     "quoteId": "XQAMZLCL042620883M",
@@ -604,6 +610,12 @@
     "exportsInvoiceValue": 3601.8,
     "shipper": "mr. tamilselvan",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=68521cab2fb860a75762b6d5/bookings-docs/69f0f3533a441875759e1c1a/f02a099f-b1ca-43e3-b156-69307df7d9b9.xls"
+  },
+  {
+    "quoteId": "XQAMZLCL052621463M",
+    "exportsInvoiceValue": 16756.15,
+    "shipper": "caterpillar signs pvt. ltd",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69a28dd5bd688ab6ee1e03ab/execution-documents/6a0afba513063ec692f0aa76/44b09092-a77a-4b43-8e95-79cd278699ae-F012-INV (1) (1) CI.xlsx"
   },
   {
     "quoteId": "XQAMZAIR0626181634",
