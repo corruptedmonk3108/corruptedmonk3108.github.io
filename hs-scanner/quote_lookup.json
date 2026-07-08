@@ -816,6 +816,12 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=647594734988569a71a54341/bookings-docs/6a1697f892317fbde3153fe9/5e6a186b-a432-4862-886b-4a8ea4bd0c35.xlsx"
   },
   {
+    "quoteId": "XQAMZLCL052621233M",
+    "exportsInvoiceValue": 15207.0,
+    "shipper": "indian handicraft exports",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=696ac0330fdae2e2d5b33189/execution-documents/6a030955d6a715f18941c925/11235d60-c77e-4d42-adda-840fb70526e2-IHE-01-2026-27.xls"
+  },
+  {
     "quoteId": "XQAMZLCL052621657M",
     "exportsInvoiceValue": 11742.0,
     "shipper": "sciencent industries",
