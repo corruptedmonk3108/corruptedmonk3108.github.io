@@ -546,6 +546,24 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6960b7e63b2f99f4c60dc5f2/bookings-docs/6a1d8e317b6544e36cc2cc9b/fbd5160f-a972-454e-97f6-4bc477ae4d2f.xls"
   },
   {
+    "quoteId": "XQAMZFCL062622009M",
+    "exportsInvoiceValue": 42283.32,
+    "shipper": "metis learning solutions pvt ltd",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69f30be48e7092164001fb10/execution-documents/6a21355425611f8b625e4524/1cabd187-6572-4465-9f62-80c57d79c394-Export Commercial Invoice - Excel_XQAMZFCL062622009M.xlsx"
+  },
+  {
+    "quoteId": "XQAMZFCL052621673M",
+    "exportsInvoiceValue": 52341.6,
+    "shipper": "metis learning solutions pvt ltd",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69f30be48e7092164001fb10/execution-documents/6a1435dfe340a7c022ff6c5e/2f649f83-72de-407d-8432-2a3f39ff4664-Export Commercial Invoice - Excel_XQAMZFCL052621673M.xlsx"
+  },
+  {
+    "quoteId": "XQAMZLCL052621219M",
+    "exportsInvoiceValue": 8490.84,
+    "shipper": "ganpati exports",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a0077dbe27ffcee22b00d2f/execution-documents/6a01a9e2214a04a1a3266071/a6f3f6ba-c768-4ea4-a7f8-545f38c61212-Export Commercial Invoice - Excel_XQAMZLCL052621219M UP.xls"
+  },
+  {
     "quoteId": "XQAMZLCL052621622M",
     "exportsInvoiceValue": 5108.0,
     "shipper": "yash punjabi",
@@ -634,6 +652,30 @@
     "exportsInvoiceValue": 21960.0,
     "shipper": "Eximious India",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=63be58037afd2bee40041ae5/execution-documents/6a0ae50beba24ddb30f771d2/2fadd722-8735-4916-a06c-39a3e0f4d74b-Export Commercial Invoice - Excel_XQAMZLCL052621376M CI.xlsx"
+  },
+  {
+    "quoteId": "XQAMZLCL062622204M",
+    "exportsInvoiceValue": 3193.6,
+    "shipper": "jay ranpariya",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=650445f8ee7b4c905be7266c/execution-documents/6a2a69ee9ba028ce508bbc46/5d336f09-c527-43a2-a4ad-950fc4e3a579-Export Commercial Invoice - Excel_XQAMZLCL062622204M.xlsx"
+  },
+  {
+    "quoteId": "XQAMZFCL062622323M",
+    "exportsInvoiceValue": 162899.5,
+    "shipper": "NMK TEXTILE MILLS INDIA PVT LTD",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=647594734988569a71a54341/execution-documents/6a2fa1f0fd6e22fece78d17f/49854f96-aaaa-490b-bfb6-d3ace50b089c-Invoice No.xlsx"
+  },
+  {
+    "quoteId": "XQAMZLCL062622060M",
+    "exportsInvoiceValue": 82482.1,
+    "shipper": "seer udyog",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a21de6400483dd069c121ba/execution-documents/6a22c9c6d6d8f1a51dd66bc6/55bffdff-1bb8-428a-898c-1c0a7a50567c-Import Commercial Invoice - Excel_XQAMZLCL062622060M.xlsx"
+  },
+  {
+    "quoteId": "XQAMZFCL062622336M",
+    "exportsInvoiceValue": 124745.06,
+    "shipper": "NMK TEXTILE MILLS INDIA PVT LTD",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=647594734988569a71a54341/execution-documents/6a2ffdff36c215aefb60a0a4/2a92317d-c33c-43f3-873a-c149449e80d8-Invoice No.xlsx"
   },
   {
     "quoteId": "XQAMZLCL052621202M",
