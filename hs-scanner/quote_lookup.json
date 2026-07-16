@@ -468,6 +468,12 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=698eef3d6c400421e97e3831/execution-documents/6a0448680acc3c4daba3f77e/2750d1f4-88eb-4292-9a79-14e72721f68a-Import Commercial Invoice - Excel_XQAMZLCL052621291M CI.xlsx"
   },
   {
+    "quoteId": "XQAMZFCL062622326M",
+    "exportsInvoiceValue": 148876.28,
+    "shipper": "NMK TEXTILE MILLS INDIA PVT LTD",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=647594734988569a71a54341/execution-documents/6a2fa32d761fc3d22a09cfda/3930abb9-0ca9-4b09-9782-21e8fd326c0d-Invoice No.xlsx"
+  },
+  {
     "quoteId": "XQAMZLCL042620189M",
     "exportsInvoiceValue": 28578.4,
     "shipper": "durasolid automotive racing",
