@@ -354,6 +354,30 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=653f5ecfe8ae39671d021127/execution-documents/6a01ef12a76a4ef95ae40534/5d916c11-fc85-4168-858f-746fc06d3159-Import Commercial Invoice - Excel_XQAMZLCL052621183M.xls"
   },
   {
+    "quoteId": "XQAMZFCL062622322M",
+    "exportsInvoiceValue": 145995.64,
+    "shipper": "NMK TEXTILE MILLS INDIA PVT LTD",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=647594734988569a71a54341/execution-documents/6a2f9d6c6eb07b0f59f5cfe8/0b242782-6c3c-4d80-87b4-f4b9191bc0b5-Invoice No.xlsx"
+  },
+  {
+    "quoteId": "XQAMZFCL062622172M",
+    "exportsInvoiceValue": 169750.42,
+    "shipper": "NMK TEXTILE MILLS INDIA PVT LTD",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=647594734988569a71a54341/execution-documents/6a2905a16ef9b5ec7904a885/af4ee554-f13f-48e6-9c15-3ffaae71ac18-Invoice No.xlsx"
+  },
+  {
+    "quoteId": "XQAMZFCL062622363M",
+    "exportsInvoiceValue": 163780.94,
+    "shipper": "NMK TEXTILE MILLS INDIA PVT LTD",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=647594734988569a71a54341/execution-documents/6a31296dfbb5d341a82dd7df/9736678a-134b-4587-b59d-063329b5d8d5-Invoice No.xlsx"
+  },
+  {
+    "quoteId": "XQAMZFCL062622325M",
+    "exportsInvoiceValue": 148922.72,
+    "shipper": "NMK TEXTILE MILLS INDIA PVT LTD",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=647594734988569a71a54341/execution-documents/6a2fa2b4761fc3d22a09b0fc/4e96e7e8-12cc-41c3-891b-8f6150a4de1b-Invoice No.xlsx"
+  },
+  {
     "quoteId": "XQAMZLCL052621466M",
     "exportsInvoiceValue": 8543.05,
     "shipper": "caterpillar signs pvt. ltd",
