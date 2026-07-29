@@ -774,6 +774,12 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69a28dd5bd688ab6ee1e03ab/execution-documents/6a2a7ac05d9a9e3f8ee6cfda/02bd3ed6-27da-419e-9d2a-cfa5fcbd856d-Signed & Scanned Export Commercial Invoice_XQAMZLCL062622175M (CI).xlsx"
   },
   {
+    "quoteId": "XQFCL062622397",
+    "exportsInvoiceValue": 52065.02,
+    "shipper": "Formbench GmbH",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=68306da843c20a23d55fa8c7/execution-documents/6a3287e4c0d9ef7d6a24d2cb/b62f8214-f448-46d2-a344-eb490e21c22e-Commercial Invoice_XQFCL062622397 UP.pdf"
+  },
+  {
     "quoteId": "XQAMZLCL052621846M",
     "exportsInvoiceValue": 4750.2,
     "shipper": "tyre glider ltd",
