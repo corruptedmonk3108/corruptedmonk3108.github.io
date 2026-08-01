@@ -138,6 +138,18 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69298be8e2901d9dd706f3a6/execution-documents/6a0434171800e9320820041f/81922c1f-6b24-42ae-9143-a2c3f7687dac-Export Commercial Invoice - Excel_XQAMZLCL052621292M (2).xlsx"
   },
   {
+    "quoteId": "XQAMZLCL062622036M",
+    "exportsInvoiceValue": 2160.0,
+    "shipper": "caleb quinones",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=66daae11ba1a5a9fc766ca77/execution-documents/6a27bae2015465ee5b18ccc0/0b538288-b0f2-43c7-b9dc-35f5f5f627e8-Export Commercial Invoice - Excel_XQAMZLCL062622036M.xlsx"
+  },
+  {
+    "quoteId": "XQAMZLCL052621395M",
+    "exportsInvoiceValue": 13504.32,
+    "shipper": "Cotton Clinic",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=64365aad23f62b68024496b2/execution-documents/6a0702afa65adb5a82de974e/a7a993bf-d616-48dc-b379-29e86a0ed3ee-Import Commercial Invoice - Excel_XQAMZLCL052621395M.xlsx"
+  },
+  {
     "quoteId": "XQAMZLCL052621675M",
     "exportsInvoiceValue": 4146.33,
     "shipper": "deepika dhiman",
