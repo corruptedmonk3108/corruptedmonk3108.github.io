@@ -822,6 +822,12 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=64439ee4dd743bd4c1ef60b6/execution-documents/6a55fd9fcf97249785fba53e/05ed3bf2-3e01-4802-b165-3a13094c852d-Import Commercial Invoice - Excel_XQAMZFCL072623145M (73).xlsx"
   },
   {
+    "quoteId": "XQAMZLCL062622477M",
+    "exportsInvoiceValue": 8081.72,
+    "shipper": "lsd lifestyle",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6847cc1ad4f1cd0f59183fb0/execution-documents/6a36677fe003d985c85e9b33/31a60eee-250d-4e67-b933-eeae4a6103db-Export Commercial Invoice - Excel_XQAMZLCL062622477M.xlsx"
+  },
+  {
     "quoteId": "XQAMZFCL072623145M",
     "exportsInvoiceValue": 62803.0,
     "shipper": "Madan Mohan textiles",
