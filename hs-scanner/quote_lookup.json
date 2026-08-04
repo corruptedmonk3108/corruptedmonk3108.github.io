@@ -288,12 +288,6 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69a28dd5bd688ab6ee1e03ab/execution-documents/6a0afb7d13063ec692f09fd4/08e40d93-5107-4b45-90cc-0cebb7f78f02-Signed & Scanned Export Commercial Invoice_XQAMZLCL052621466M (2) Ci.xlsx"
   },
   {
-    "quoteId": "XQAMZLCL052621104M",
-    "exportsInvoiceValue": 3494.5,
-    "shipper": "Delphi Leather",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=63bfec928bb33ef411fecaa8/execution-documents/6a056d65ed48ddaf6ea98e9f/c7d2b2f8-1f47-4f4d-93ac-727cdc7c63de-Destination Invoice_XQAMZLCL052621104M (CI).xlsx"
-  },
-  {
     "quoteId": "XQAMZLCL062622206M",
     "exportsInvoiceValue": 9152.02,
     "shipper": "global hub llc",
@@ -436,12 +430,6 @@
     "exportsInvoiceValue": 6075.0,
     "shipper": "Kenzen Ventures Limited",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=67ab5ddfb8f128eb29a734a6/execution-documents/6a562fa80901ac0aba10597c/31bb6c56-0b1a-4cb6-8754-6bffcd95ad5f-CI XQAIR072623156 (Kenzen Ventures Limited).xlsx"
-  },
-  {
-    "quoteId": "XQAMZAIR0726188323",
-    "exportsInvoiceValue": 4104.0,
-    "shipper": "matthias christian",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a075235df856e2f4d552bfe/execution-documents/6a4e86b752d8d3d11f841e75/46ece217-760c-481f-82b8-4bec2997e65f-CI XQAMZAIR0726188323 (matthias christian).xlsx"
   },
   {
     "quoteId": "XQFCL062622641",
@@ -756,12 +744,6 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=642d53a7cc9c1a665f81375f/bookings-docs/6a2b99ca7fec0a43195f73c6/b7846845-5301-4a39-9df5-18e1f7894c63.xlsx"
   },
   {
-    "quoteId": "XQAMZLCL072622810M",
-    "exportsInvoiceValue": 17910.0,
-    "shipper": "sam clarke",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69aadea51cf88f3933482faf/execution-documents/6a451734b9e2041baeef221c/56312250-0aa2-4c40-a713-74a53e18eb16-Export Commercial Invoice - Excel_XQAMZLCL072622810M (CI.xlsx"
-  },
-  {
     "quoteId": "XQAMZLCL062622606M",
     "exportsInvoiceValue": 6923.7,
     "shipper": "hwc trading ltd",
@@ -988,6 +970,18 @@
     "exportsInvoiceValue": 896.33,
     "shipper": "best deal export",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=699c56075d3c259c7c160aad/execution-documents/6a0ffff870a13184d08d39b8/1ad63754-66b9-4386-a5f7-355440ea5937-Export Commercial Invoice - Excel_XQAMZLCL052621584M.xlsx"
+  },
+  {
+    "quoteId": "XQAMZLCL062622764M",
+    "exportsInvoiceValue": 13879.5,
+    "shipper": "anaya agate",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=68284257b3fb02d788de8a29/execution-documents/6a44ad56a3acea81c571d85c/c55aa2de-8801-48ea-8243-2461e92cca94-Import Commercial Invoice - Excel_XQAMZLCL062622764M.xlsx"
+  },
+  {
+    "quoteId": "XQAMZLCL072622810M",
+    "exportsInvoiceValue": 17910.0,
+    "shipper": "sam clarke",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69aadea51cf88f3933482faf/bookings-docs/6a451734b9e2041baeef221c/97dfc074-8996-4e3f-b3ef-2b1e7ed7bc6f.xlsx"
   },
   {
     "quoteId": "XQAMZLCL052621379M",
