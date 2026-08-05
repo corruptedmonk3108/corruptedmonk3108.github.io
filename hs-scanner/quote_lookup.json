@@ -6,12 +6,6 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a16f9995a8c5da8bdfedb62/execution-documents/6a1936398b42c70328c716c9/297042b0-f598-47c1-987f-1938db0b45c0-Export Commercial Invoice - Excel_XQAMZLCL052621824M.xlsx"
   },
   {
-    "quoteId": "XQAMZLCL072623239M",
-    "exportsInvoiceValue": 21170.71,
-    "shipper": "millbank trading uk limited",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=698dab3ff1f1ee58570f5efe/execution-documents/6a58ecb2e8146ec038615709/4241eed3-9fff-4de3-bf21-bc6bd608d440-Export Commercial Invoice - Excel_XQAMZLCL072623239M UP.xls"
-  },
-  {
     "quoteId": "XQAMZLCL052621417M",
     "exportsInvoiceValue": 2094.4,
     "shipper": "aa canvas company",
@@ -220,12 +214,6 @@
     "exportsInvoiceValue": 4041.73913,
     "shipper": "Bizeev LLC",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=66153d2c2d4374b19d603180/execution-documents/6a31159ea9e0f48a5afa0a5d/e9087427-a9bc-474f-bcfb-386f8f23c1bb-A.xls"
-  },
-  {
-    "quoteId": "XQAMZLCL052621700M",
-    "exportsInvoiceValue": 2934.2,
-    "shipper": "paffy industries pvt ltd",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69ef5d0e04490cd45d188289/execution-documents/6a157f9917565504c4c0027f/272464e2-cdb4-416b-804b-5e38d23470ff-Export Commercial Invoice - Excel_XQAMZLCL052621700M.xlsx"
   },
   {
     "quoteId": "XQAMZLCL052621699M",
@@ -450,12 +438,6 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=696f725e3736fc7b2a5e14d0/execution-documents/6a2024d2f462a59e14b16ef2/aab09b9d-b58a-4331-bad2-9d07f1a5cb0a-Export Commercial Invoice - Excel_XQAMZLCL062621952M.xlsx"
   },
   {
-    "quoteId": "XQAMZFCL062622498M",
-    "exportsInvoiceValue": 157743.8,
-    "shipper": "NMK TEXTILE MILLS INDIA PVT LTD",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=647594734988569a71a54341/execution-documents/6a38ca2a2b1f7065c97873df/10e08420-3aa9-411b-a010-40e59f6d5b4f-Invoice No.xlsx"
-  },
-  {
     "quoteId": "XQAIR072623227",
     "exportsInvoiceValue": 225.97,
     "shipper": "bharat bansal",
@@ -550,12 +532,6 @@
     "exportsInvoiceValue": 5108.0,
     "shipper": "yash punjabi",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=682f22265c045505bb3935ad/execution-documents/6a13dca75efbc76857dac218/338ac6ce-cf21-48de-897e-7015312ba90b-Export Commercial Invoice - Excel_XQAMZLCL052621622M.xlsx"
-  },
-  {
-    "quoteId": "XQAMZFCL062622430M",
-    "exportsInvoiceValue": 145402.06,
-    "shipper": "NMK TEXTILE MILLS INDIA PVT LTD",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=647594734988569a71a54341/execution-documents/6a33eac33d1915a60d5864b2/9d56a74f-2353-435c-856c-c0c39b831a44-Invoice No.xlsx"
   },
   {
     "quoteId": "XQAMZFCL062622364M",
@@ -936,12 +912,6 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=694a79e7397943e96874cb38/execution-documents/6a2140ee25611f8b6262b58d/5e86824b-afe7-45e1-924d-29dfb00bf32b-Import Commercial Invoice - Excel_XQAMZLCL062621937M.xlsx"
   },
   {
-    "quoteId": "XQAMZLCL062622121M",
-    "exportsInvoiceValue": 3202.47,
-    "shipper": "pravinkhatik",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=686b92c71602d6330b8555a0/execution-documents/6a27a902b72dbdb0ec565478/9e31e0f8-b728-400f-aa26-24f4ebb2ab62-Import Commercial Invoice - Excel_XQAMZLCL062622121M.xlsx"
-  },
-  {
     "quoteId": "XQAMZLCL052621584M",
     "exportsInvoiceValue": 896.33,
     "shipper": "best deal export",
@@ -994,6 +964,12 @@
     "exportsInvoiceValue": 5122.5,
     "shipper": "yutika natural private limited",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6836e4797a60102afc8782a9/bookings-docs/6a3a511d39ca78edde1a9f32/ebb364d8-d6e6-4f43-b4a9-cca50a098aae.xlsx"
+  },
+  {
+    "quoteId": "XQAMZLCL062622121M",
+    "exportsInvoiceValue": 3202.47,
+    "shipper": "pravinkhatik",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=686b92c71602d6330b8555a0/execution-documents/6a27a902b72dbdb0ec565478/240f576c-20fb-4f78-a5a8-3ec41edb9138-CI Destination Invoice_XQAMZLCL062622121M (2).xlsx"
   },
   {
     "quoteId": "XQAMZLCL052621457M",
