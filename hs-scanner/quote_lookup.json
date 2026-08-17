@@ -294,6 +294,12 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=63c926046d1bac3d2152c43c/execution-documents/6a34e4cac34831770612a6b7/a2ddf287-a37c-4f6b-b5e5-4b4cb00a9aaf-Invoice_100_2 UP.xlsx"
   },
   {
+    "quoteId": "XQAMZFCL072623285M",
+    "exportsInvoiceValue": 40139.9,
+    "shipper": "metis learning solutions pvt ltd",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69f30be48e7092164001fb10/execution-documents/6a5df27c74b88b9e7f6d18ae/4f014108-8e5d-4943-832d-883a916bca98-Export Commercial Invoice - Excel_XQAMZFCL072623285M.xlsx"
+  },
+  {
     "quoteId": "XQAMZLCL062622344M",
     "exportsInvoiceValue": 1627.5,
     "shipper": "leather forever",
@@ -312,16 +318,46 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=694a8f1e43996ff342b87d9d/execution-documents/6a44b18ad5d1a06424ffb27c/f3d7e221-2bbd-44a5-8d4a-ead0c620c38d-Export Commercial Invoice - Excel_XQAMZLCL062622731M.xlsx"
   },
   {
+    "quoteId": "XQAMZLCL072622935M",
+    "exportsInvoiceValue": 9625.0,
+    "shipper": "Aadhikesh\u00a0Exports",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=64ae91953e697333272f9a36/execution-documents/6a4e1685bbc4bcdf4d5f89a2/0b5e501d-7145-4ba7-ae1a-e873a3390a33-Commercial_Invoice_IN2US (4).xlsx"
+  },
+  {
     "quoteId": "XQAMZLCL052621824M",
     "exportsInvoiceValue": 47509.68,
     "shipper": "pai skincare",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a16f9995a8c5da8bdfedb62/bookings-docs/6a1936398b42c70328c716c9/20f2756c-f55f-4e2a-bd20-77ade6f6a6bb.xlsx"
   },
   {
+    "quoteId": "XQAMZLCL072623048M",
+    "exportsInvoiceValue": 13244.5,
+    "shipper": "esse dew",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=68e6509fbb9395760f86f5a9/execution-documents/6a50a2f847470f068c6dbddc/cf027fec-c17d-4936-8e09-233906f87db0-Export Commercial Invoice - Excel_XQAMZLCL072623048M.xls"
+  },
+  {
+    "quoteId": "XQAMZLCL072623059M",
+    "exportsInvoiceValue": 1322.0,
+    "shipper": "r & sons",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a0c2a81686685bb559fe50c/execution-documents/6a50b83a94089d6d1157cadf/d0c36fda-8f05-4791-a5d8-d4a5ee983ce3-Export Commercial Invoice - Excel_XQAMZLCL072623059M.xlsx"
+  },
+  {
     "quoteId": "XQAMZLCL062622359M",
     "exportsInvoiceValue": 4041.73913,
     "shipper": "Bizeev LLC",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=66153d2c2d4374b19d603180/execution-documents/6a31159ea9e0f48a5afa0a5d/e9087427-a9bc-474f-bcfb-386f8f23c1bb-A.xls"
+  },
+  {
+    "quoteId": "XQAMZLCL072622902M",
+    "exportsInvoiceValue": 68190.34,
+    "shipper": "sohal brothers",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=688cbb71051defcbf91b8491/execution-documents/6a4b51909b7705eb1e6ecdcd/b2a0b6fb-f009-4a94-bb33-ffb67ef9c33b-Export Commercial Invoice - Excel_XQAMZLCL072622902M.xls"
+  },
+  {
+    "quoteId": "XQAMZLCL072622903M",
+    "exportsInvoiceValue": 46753.86,
+    "shipper": "m/s al-habeebi international (ahi)",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=68b5c49d5e131672d63ac575/execution-documents/6a4b84d36f19aa2bdf65f6f7/98d52088-525c-44c8-877e-92fa85d00523-Export Commercial Invoice - Excel_XQAMZLCL072622903M.xlsx"
   },
   {
     "quoteId": "XQAMZLCL072622890M",
