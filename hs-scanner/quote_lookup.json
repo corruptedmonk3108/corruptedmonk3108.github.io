@@ -822,6 +822,12 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=68763c2255f5b7bd2576a4c3/execution-documents/6a70b7e7609a0f8295fd505b/609596fe-4e27-409f-b909-b01938fe93a9-Export_Commercial_Invoice_XQAMZLCL082623768M_REPAIRED.xlsx"
   },
   {
+    "quoteId": "XQAMZLCL072623264M",
+    "exportsInvoiceValue": 8684.0,
+    "shipper": "hwc trading ltd",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6874e741610057fe492df18e/execution-documents/6a5b18f5d3ea5bb167769c10/8039d091-9d98-441f-a455-9b72c10f39a3-Export Commercial Invoice - Excel_XQAMZLCL072623264M.xlsx"
+  },
+  {
     "quoteId": "XQAMZLCL062622780M",
     "exportsInvoiceValue": 21284.0,
     "shipper": "Madan Mohan textiles",
