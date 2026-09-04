@@ -462,12 +462,6 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=68b5c49d5e131672d63ac575/execution-documents/6a4b84d36f19aa2bdf65f6f7/98d52088-525c-44c8-877e-92fa85d00523-Export Commercial Invoice - Excel_XQAMZLCL072622903M.xlsx"
   },
   {
-    "quoteId": "XQAMZLCL072622905M",
-    "exportsInvoiceValue": 6900.0,
-    "shipper": "Forever Urns",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6799ec2348f164fcbe0a26db/execution-documents/6a4b78876f19aa2bdf5c64ad/cbace01d-29ce-4244-b3ea-9bacb7930f22-EXPORT Commercial Invoice_XQAMZLCL072622905M.xlsx"
-  },
-  {
     "quoteId": "XQAMZLCL052621198M",
     "exportsInvoiceValue": 5177.42,
     "shipper": "bikaji foods international  limited",
@@ -508,12 +502,6 @@
     "exportsInvoiceValue": 1078.0,
     "shipper": "kenova organics",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a5a6a33379f8c8b160d41ea/execution-documents/6a5f50e3a7d50d4de0dd850b/de84c7fd-4156-405c-af81-79eb2c71ae3d-Export Commercial Invoice - Excel_XQAMZLCL072623273M.xlsx"
-  },
-  {
-    "quoteId": "XQAMZLCL072623086M",
-    "exportsInvoiceValue": 51373.0,
-    "shipper": "s a enterprises",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=684694b126e6ca9d1ffed9dc/execution-documents/6a52066845460fc7e0330bce/789883c4-6fa1-4537-a4df-e27f2738e92c-Export Commercial Invoice - Excel_XQAMZLCL072623086M.xls"
   },
   {
     "quoteId": "XQAMZLCL072623089M",
@@ -684,12 +672,6 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=68ba85765ae692ed64b5fdd1/bookings-docs/6a1e8326998835be2ece6331/4ddb1879-17b2-4cd3-8926-0fb43ff479c5.xlsx"
   },
   {
-    "quoteId": "XQLCL052621727",
-    "exportsInvoiceValue": 10852.16,
-    "shipper": "GSI Handicrafts Co",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a159592a96a631c0bc2798a/execution-documents/6a15a36a5902030eda1d9b5e/3b9a74ba-ae34-41a5-847b-5e2fe69167fe-Export Commercial Invoice - Excel_XQLCL052621727.xlsx"
-  },
-  {
     "quoteId": "XQLCL062621903",
     "exportsInvoiceValue": 3606.0,
     "shipper": "Novare d.o.o.",
@@ -840,10 +822,10 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=647594734988569a71a54341/execution-documents/6a6afdc6f318c34106d37f84/e54b3562-0ab2-40fb-bae7-cf13ae6474ca-Invoice No.xlsx"
   },
   {
-    "quoteId": "XQAMZFCL072623625M",
-    "exportsInvoiceValue": 115565.96,
-    "shipper": "NMK TEXTILE MILLS INDIA PVT LTD",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=647594734988569a71a54341/bookings-docs/6a6afc96f318c34106d34805/9cc6aec5-2d8d-4fb3-9b77-d12e42371c56.xlsx"
+    "quoteId": "XQAMZLCL082624400M",
+    "exportsInvoiceValue": 20371.4,
+    "shipper": "Rainbow Chalk Markers Ltd",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=66a7931f2136cefba1f88e98/execution-documents/6a8838c9e0422d54f6deaa51/19c8d7c3-6764-4b4c-ba55-ea8b5791c554-Export Commercial Invoice - Excel_XQAMZLCL082624400M.xls"
   },
   {
     "quoteId": "XQAMZFCL072623428M",
@@ -934,5 +916,35 @@
     "exportsInvoiceValue": 844.7,
     "shipper": "candor foods private limited",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69c4d7d30f4ad1c07b34b297/bookings-docs/6a0eb17af0154ffb468f1528/b3ea10ad-937b-4c31-a4dc-d48edd66c6bc.xlsx"
+  },
+  {
+    "quoteId": "XQAMZLCL082624371M",
+    "exportsInvoiceValue": 3304.0,
+    "shipper": "market centre na",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=690a98c4c3f3a48206104066/execution-documents/6a872015d0e3d67e90c03b5d/ab00a78c-a4d0-4cae-b5ea-107253fcf48b-EXPORT Commercial Invoice_XQAMZLCL082624371M.XLSX"
+  },
+  {
+    "quoteId": "XQAMZLCL082624505M",
+    "exportsInvoiceValue": 2910.0,
+    "shipper": "PURE CLINICA",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=66e7f67ec5e77288b0d0bc3c/execution-documents/6a8d3fe63b28cd4a21eacc62/da75dff9-1406-4516-950d-ea28e046758e-Export Commercial Invoice - Excel_XQAMZLCL082624505M.xlsx"
+  },
+  {
+    "quoteId": "XQLCL082624362",
+    "exportsInvoiceValue": 7390.03,
+    "shipper": "NYK1 Secrets Ltd.",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=67bd9fe2fbb500598091b8bc/execution-documents/6a870bd8d0e3d67e90bfaff1/853f4d03-d71c-4039-83bb-a5049a602679-Export Commercial Invoice - Excel_XQLCL082624362.pdf"
+  },
+  {
+    "quoteId": "XQAMZLCL082624388M",
+    "exportsInvoiceValue": 540.75,
+    "shipper": "ancient care limited",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a85c3849f62eba4b9282a45/execution-documents/6a8816fb336102e081588afc/1bde229c-4d43-4e0d-9d59-92efddbda77a-EXPORT Commercial Invoice_XQAMZLCL082624388M.XLSX"
+  },
+  {
+    "quoteId": "XQAMZLCL082624361M",
+    "exportsInvoiceValue": 2526.72,
+    "shipper": "henry watson's potteries ltd",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69d77f5e32c06081c8eb03c4/execution-documents/6a86f79dd0e3d67e90aa8780/50e0c1a3-ec1e-42e1-9e3f-cc110d253b90-EXPORT Commercial Invoice_XQAMZLCL082624361M.XLSX"
   }
 ]
