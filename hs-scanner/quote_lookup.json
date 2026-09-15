@@ -78,12 +78,6 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=696ac0330fdae2e2d5b33189/execution-documents/6a4502b0d78c70534d9d3134/3829e43f-2077-420f-9e7f-7eb4a3d4b412-Export commercial invoice - excel.xls"
   },
   {
-    "quoteId": "XQAMZLCL072623532M",
-    "exportsInvoiceValue": 761.4,
-    "shipper": "chauhan rustam abdulbhai",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6957710c932514569105c17f/execution-documents/6a6833be27744e6266fb7758/6e0c80d9-8bd3-452f-9313-14cbb043e657-Export Commercial Invoice - Excel_XQAMZLCL072623532M.xlsx"
-  },
-  {
     "quoteId": "XQAMZLCL072622925M",
     "exportsInvoiceValue": 1600.0,
     "shipper": "desiboardgames india",
@@ -780,12 +774,6 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a5e397c3a385e7e1e008979/bookings-docs/6a621d07915912089884d73b/114fb9a3-fa54-4d75-b14d-c7c9602f91a4.xlsx"
   },
   {
-    "quoteId": "XQAMZLCL082624490M",
-    "exportsInvoiceValue": 4572.23,
-    "shipper": "Rainbow Chalk Markers Ltd",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=66a7931f2136cefba1f88e98/execution-documents/6a918f603f0130a882092c22/bb17c77d-68e6-4f31-a07c-19ed41625f4d-Export Commercial Invoice - Excel_XQAMZLCL082624490M.xlsx"
-  },
-  {
     "quoteId": "XQAMZLCL082624679M",
     "exportsInvoiceValue": 23004.88,
     "shipper": "sky high beauty ltd",
@@ -862,12 +850,6 @@
     "exportsInvoiceValue": 1344.3,
     "shipper": "bja trading limited t/a birkdale sales",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=689de30d8bb10ba8a8965c68/execution-documents/6a70b4fd04da0bdd73e99664/2a654cfd-d9e5-4d04-9f1a-e193a10abc3a-Export Commercial Invoice - Excel_XQAMZLCL082623767M.xlsx"
-  },
-  {
-    "quoteId": "XQAMZLCL092624763M",
-    "exportsInvoiceValue": 2691.84,
-    "shipper": "henry watson's potteries ltd",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69d77f5e32c06081c8eb03c4/execution-documents/6a96cd770b2f4413bc1e9c5c/a898370d-7901-420f-be07-9dc324fc2148-EXPORT Commercial Invoice_XQAMZLCL092624763M.XLSX"
   },
   {
     "quoteId": "XQAMZLCL072622861M",
