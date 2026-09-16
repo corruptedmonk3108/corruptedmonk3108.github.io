@@ -1,11 +1,5 @@
 [
   {
-    "quoteId": "XQAMZFCL072623455M",
-    "exportsInvoiceValue": 52335.36,
-    "shipper": "propelus",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a6140eabe25c88f7d322571/execution-documents/6a644fa39d68e01b535ca215/c5870da4-d7ee-4eea-bffc-6ae285eb39f9-Export Commercial Invoice - Excel_XQAMZFCL072623455M.xlsx"
-  },
-  {
     "quoteId": "XQAMZLCL072623166M",
     "exportsInvoiceValue": 4306.0,
     "shipper": "d v traders",
@@ -136,12 +130,6 @@
     "exportsInvoiceValue": 1809.0,
     "shipper": "Xcapism Learning Ltd",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a75db4a150422611711f2b8/execution-documents/6a75e1c7170bbbbb0e87050c/252c990e-3bd6-4213-ad2f-fe9bbf76ab10-Export Commercial Invoice - Excel_XQAMZLCL082623932M.xlsx"
-  },
-  {
-    "quoteId": "XQAMZLCL072623637M",
-    "exportsInvoiceValue": 10800.0,
-    "shipper": "tawa one wood handicrafts",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6801dc50e3cf1171176e0c60/execution-documents/6a6b378254af5d9d3a53af8a/0ba01905-2324-4132-9cd9-fdc150d77e62-Import Commercial Invoice - Excel_XQAMZLCL072623637M.xlsx"
   },
   {
     "quoteId": "XQFCL072623615",
@@ -678,12 +666,6 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a193bed0cb0a3b1b2d80509/execution-documents/6a1952d45f64a2e908d796a1/beaf90b0-d7e8-4302-b56e-a36526dff6f7-Export Commercial Invoice - Excel_XQAMZLCL052621825M.xlsx"
   },
   {
-    "quoteId": "XQAMZLCL072623570M",
-    "exportsInvoiceValue": 13427.5,
-    "shipper": "prophila handelsgesellschaft mbh",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69984b5d1c919212f4c47f61/execution-documents/6a68d51232bb3676b459674e/b893a3f7-8790-442b-8217-229976504b52-Commercial Invoice_XQAMZLCL072623570M (1).XLSX"
-  },
-  {
     "quoteId": "XQAMZLCL082623866M",
     "exportsInvoiceValue": 8563.0,
     "shipper": "halm straws gmbh",
@@ -1102,12 +1084,6 @@
     "exportsInvoiceValue": 176415.1,
     "shipper": "Shrimahaveer Home Furnish Expo Pvt. Ltd.",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=63a43a7560ce26e635ec2dcd/execution-documents/6a74240c3b49fc606550735c/2b68f19e-d219-4b0e-a37b-fd7df1a6009c-Destination Invoice_XQAMZFCL082623857M.xls"
-  },
-  {
-    "quoteId": "XQAMZLCL062622354M",
-    "exportsInvoiceValue": 720.0,
-    "shipper": "smitakart enterprises  c/o- priyansi jena",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a30f3f1aa18b9a09a2d285e/execution-documents/6a310800405ab7fecf12fbc4/59704b86-86a6-4b48-bc84-dfe92024af6c-Export_Commercial_Invoice_XQAMZLCL062622354M_REPAIRED (1).xlsx"
   },
   {
     "quoteId": "XQAMZLCL062622735M",
