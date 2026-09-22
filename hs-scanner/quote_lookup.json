@@ -126,12 +126,6 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69abe2e3d4dba691b3f40707/execution-documents/6a675476088688e904fbc9bf/88d313d6-fcce-45cf-ae37-d91eeaa43dd6-Export Commercial Invoice - Excel_XQAMZLCL072623483M.xlsx"
   },
   {
-    "quoteId": "XQAMZLCL072623374M",
-    "exportsInvoiceValue": 24776.0,
-    "shipper": "cerberus uk ltd c/o ezidrops ltd",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a60ccec2e2fe5c7dbe8586b/bookings-docs/6a61be045b39ce96efadc07c/e8ad5d50-d3bc-43a6-bacc-6cb35cb0943f.XLSX"
-  },
-  {
     "quoteId": "XQAMZLCL072622910M",
     "exportsInvoiceValue": 6758.26,
     "shipper": "sesa care",
@@ -196,12 +190,6 @@
     "exportsInvoiceValue": 6060.0,
     "shipper": "paul longley",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=68da627871c4cab886d336c5/execution-documents/6a7b240df69b546801e05e31/4882263c-9d25-4497-a5b6-47532cf7d7a3-Export Commercial Invoice - Excel_XQAMZLCL082624040M.xlsx"
-  },
-  {
-    "quoteId": "XQAMZFCL072623509M",
-    "exportsInvoiceValue": 29931.1,
-    "shipper": "hosley india pvt. ltd",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6916e6dd493a8fe03548badc/execution-documents/6a6752f351ab713780cce63c/0e5847eb-a5b1-47f0-860a-d5786d698ba2-Export Commercial Invoice - Excel_XQAMZFCL072623509M.xls"
   },
   {
     "quoteId": "XQAMZFCL082623974M",
@@ -604,18 +592,6 @@
     "exportsInvoiceValue": 20510.73354,
     "shipper": "TK Logistics Solutions",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=669b5a441c7962187e4bf1ba/execution-documents/6a7d6adb7f11c56948b75397/1bf686e2-b728-4f87-b10d-eb8df1253fc4-Export Commercial Invoice - Excel_XQLCL082624099.xlsx"
-  },
-  {
-    "quoteId": "XQAMZFCL082623790M",
-    "exportsInvoiceValue": 57916.25,
-    "shipper": "hawkins cookers limited",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a4bfa948dc987673f4ee9a7/execution-documents/6a7ef973e505b63a420d51c7/a5c1b18e-11ad-4bd4-a67a-bfff030b28b4-Commercial_Invoice_EI_27041_with_HSCode.xlsx"
-  },
-  {
-    "quoteId": "XQAMZLCL082623931M",
-    "exportsInvoiceValue": 341.5,
-    "shipper": "bharath",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a75842926f15864e60af279/execution-documents/6a75e1e0170bbbbb0e870726/f55be44c-3a78-4851-971b-77c85d6c4da6-Export Commercial Invoice - Excel_XQAMZLCL082623931M (1).xlsx"
   },
   {
     "quoteId": "XQAMZLCL082623784M",
@@ -1062,6 +1038,36 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=68b744d3015ac4433468e07a/execution-documents/6aaac12ea0abcf04e3f05556/961cde9f-3197-49da-93f0-ef0377074fa4-CI XQAMZAIR0926212613 (creative jam enterprises ltd).XLSX"
   },
   {
+    "quoteId": "XQAMZLCL072623374M",
+    "exportsInvoiceValue": 24776.0,
+    "shipper": "cerberus uk ltd c/o ezidrops ltd",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a60ccec2e2fe5c7dbe8586b/bookings-docs/6a61be045b39ce96efadc07c/77fcf242-0323-4d9e-b5b0-1e296d93c4b0.XLSX"
+  },
+  {
+    "quoteId": "XQAMZFCL072623509M",
+    "exportsInvoiceValue": 29931.1,
+    "shipper": "hosley india pvt. ltd",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6916e6dd493a8fe03548badc/bookings-docs/6a6752f351ab713780cce63c/9abbbf05-3e7d-498b-bb0d-32499e5f4f49.xls"
+  },
+  {
+    "quoteId": "XQAMZLCL082623931M",
+    "exportsInvoiceValue": 341.5,
+    "shipper": "bharath",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a75842926f15864e60af279/bookings-docs/6a75e1e0170bbbbb0e870726/1c13272d-1065-41c5-a4f6-a680ceea2ee9.xlsx"
+  },
+  {
+    "quoteId": "XQAMZLCL072623125M",
+    "exportsInvoiceValue": 1680.0,
+    "shipper": "rajendra bhavsar",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=68f8c6fac30d819240c91dc5/bookings-docs/6a55221a36ae0f22be0cb3ad/44c27c40-e9fe-4e58-8172-260b670ec362.xlsx"
+  },
+  {
+    "quoteId": "XQAMZFCL082623790M",
+    "exportsInvoiceValue": 57916.25,
+    "shipper": "hawkins cookers limited",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a4bfa948dc987673f4ee9a7/bookings-docs/6a7ef973e505b63a420d51c7/653daef7-25e0-4188-89e5-2695631017e2.xlsx"
+  },
+  {
     "quoteId": "XQAMZLCL072623065M",
     "exportsInvoiceValue": 2000.0,
     "shipper": "forestis gallinaria",
@@ -1084,12 +1090,6 @@
     "exportsInvoiceValue": 74917.1,
     "shipper": "Imagimake",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=65361d0abaaff8718950ced6/bookings-docs/6a76fd24497473beb0b58897/e6e68264-5a0d-4606-b27d-018d1ec485b6.xls"
-  },
-  {
-    "quoteId": "XQAMZLCL072623125M",
-    "exportsInvoiceValue": 1680.0,
-    "shipper": "rajendra bhavsar",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=68f8c6fac30d819240c91dc5/execution-documents/6a55221a36ae0f22be0cb3ad/218e191c-3c2d-4f57-9ee1-1b882ebdcb39-Import Commercial Invoice - Excel_XQAMZLCL072623125M.xlsx"
   },
   {
     "quoteId": "XQAMZLCL072623271M",
