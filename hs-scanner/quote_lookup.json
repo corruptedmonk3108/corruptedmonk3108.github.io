@@ -198,6 +198,12 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69b589eda1e9bad190698548/execution-documents/6a9bfd09c1f712b6b6d87fc2/b6bdddf1-3a22-4e15-9d1b-247ad68d734a-CI XQAMZAIR0926208228 (mplinn foods).xlsx"
   },
   {
+    "quoteId": "XQAMZFCL082624719M",
+    "exportsInvoiceValue": 80975.0,
+    "shipper": "Madan Mohan textiles",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=64439ee4dd743bd4c1ef60b6/execution-documents/6a95c22160382b5561cdb84e/8ae778e7-b76d-482b-8b89-138a3851765a-INVOICE  PACKING LIST 128 MAYFAIR LINEN GREENCASTLE.xlsx"
+  },
+  {
     "quoteId": "XQAMZLCL062622034M",
     "exportsInvoiceValue": 5215.0,
     "shipper": "ashok & company",
