@@ -1,11 +1,5 @@
 [
   {
-    "quoteId": "XQAMZLCL082624050M",
-    "exportsInvoiceValue": 2160.0,
-    "shipper": "anshul c/o fba sunny sadh",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=68287776586fa2a9a7251d9c/execution-documents/6a8432d1ba4520ab6b3e7038/b932274f-4722-409a-bfe2-f0dc57385e4c-Import Commercial Invoice - Excel_XQAMZLCL082624050M.xlsx"
-  },
-  {
     "quoteId": "XQAMZAIR0926215030",
     "exportsInvoiceValue": 1721.22,
     "shipper": "philip lawes",
@@ -28,12 +22,6 @@
     "exportsInvoiceValue": 94805.84,
     "shipper": "Imagimake",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=65361d0abaaff8718950ced6/execution-documents/6a8c108bbafb4b8876f7462c/7f9521a0-f259-494c-b7b7-53330cc5c20f-Import Commercial Invoice - Excel_XQFCL082624473.xls"
-  },
-  {
-    "quoteId": "XQAMZFCL082624720M",
-    "exportsInvoiceValue": 106091.0,
-    "shipper": "Madan Mohan textiles",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=64439ee4dd743bd4c1ef60b6/execution-documents/6a95c0dbfc74808eb7d381cb/6a6a04b6-3663-42b8-b0b0-634c3776e730-Import Commercial Invoice - Excel_XQAMZFCL082624720M.xlsx"
   },
   {
     "quoteId": "XQAMZLCL082623750M",
@@ -102,12 +90,6 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a8b213fa034c38710d50012/execution-documents/6ab460eb5d8d62bfca77d651/0c205d6f-40b1-4f20-80a0-8af8762a1cfa-CI XQAMZAIR0926215282 (andrew).xlsx"
   },
   {
-    "quoteId": "XQAMZLCL082624571M",
-    "exportsInvoiceValue": 8264.4,
-    "shipper": "J&J ARONIA TRADING INC",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=68887b4ec734b267a9719ca8/execution-documents/6a8efb4c62d982548beaa467/d7198074-9357-4fa6-82f0-f1b55b99b63b-Aronia_Original_Commercial_Invoice_and_Packing_List_RE15079.xlsx"
-  },
-  {
     "quoteId": "XQAMZLCL092625046M",
     "exportsInvoiceValue": 3467.85,
     "shipper": "t & d pharma",
@@ -148,12 +130,6 @@
     "exportsInvoiceValue": 38880.0,
     "shipper": "Katyani Exports (SVA Organics)",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6413ea6386f8f3d27a499d64/execution-documents/6a5a003543692db5fb749b5c/2e9ac260-5a0e-496f-8800-9baf29e68868-INVOICE BIO HUMA NETICS INC.pdf"
-  },
-  {
-    "quoteId": "XQAMZLCL092624850M",
-    "exportsInvoiceValue": 26988.0,
-    "shipper": "cartamundi",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=68a46f3f96799b214ebf29c1/execution-documents/6a9957153545781f21e60294/99b012ad-9525-4e4d-9a65-f2c5555693f0-Commercial Invoice_XQAMZLCL092624850M.xlsx"
   },
   {
     "quoteId": "XQAMZLCL092624903M",
