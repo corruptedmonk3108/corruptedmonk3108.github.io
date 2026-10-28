@@ -24,12 +24,6 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=653cafe326796547ec0fa6c7/execution-documents/6a8fcc27f4fe70c3c3b5cb0c/5d8477f0-9d68-4574-8e5e-fff09fe29936-Export Commercial Invoice - Excel_XQAMZLCL082624581M.xlsx"
   },
   {
-    "quoteId": "XQAMZLCL082624663M",
-    "exportsInvoiceValue": 9826.504155,
-    "shipper": "magic linen private limited",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a92f2bfa553befe52918d74/execution-documents/6a93136dd2c380b31885e47c/fbeb220d-206d-461d-a08e-598139e94716-Export Commercial Invoice - Excel_XQAMZLCL082624663M.xlsx"
-  },
-  {
     "quoteId": "XQAMZLCL082624675M",
     "exportsInvoiceValue": 688.5,
     "shipper": "shakti hnco",
@@ -138,6 +132,12 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a22d748de31b2284b2ea687/execution-documents/6ad5e5cc1810ab9d8d01a5cf/8c6d3a91-29d8-4af9-9c17-fe2148db9636-Commercial Invoice_XQAMZAIR1026224119.XLSX"
   },
   {
+    "quoteId": "XQAMZLCL082624663M",
+    "exportsInvoiceValue": 9826.504155,
+    "shipper": "magic linen private limited",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a92f2bfa553befe52918d74/bookings-docs/6a93136dd2c380b31885e47c/42724ea3-e341-4d4f-9991-df4302af388a.xlsx"
+  },
+  {
     "quoteId": "XQAMZLCL082623711M",
     "exportsInvoiceValue": 3282.4,
     "shipper": "my dec international",
@@ -166,12 +166,6 @@
     "exportsInvoiceValue": 1004.64,
     "shipper": "madhu jayanti international pvt ltd",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a7aef45439c5e9a74b2b078/execution-documents/6a7d876aceb3b16381c75f33/eaf99811-c954-4a81-bd31-b80adb0b487a-Madhu_Jayanti_Invoice_KE-2627-0048_and_Packing_List_Fixed.xlsx"
-  },
-  {
-    "quoteId": "XQAMZLCL082624111M",
-    "exportsInvoiceValue": 480.0,
-    "shipper": "SALMA AZIM CHOUDHARY",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=63c8ef3938524d648955fa3d/execution-documents/6a7ec2fbedabb041b1bc14c4/cf503fee-18d7-4d10-8fe6-55183d91bafc-EXPORT Commercial Invoice_XQAMZLCL082624111M.XLS"
   },
   {
     "quoteId": "XQAMZLCL082624143M",
@@ -210,12 +204,6 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=65afef7dcd5cf974e1b43ea2/execution-documents/6aa155522f0808716535fa9c/1447c116-46dc-42fd-a9bb-2fa74252e0b6-Export Commercial Invoice - Excel_XQAMZLCL082624193M.xlsx"
   },
   {
-    "quoteId": "XQAMZLCL082624220M",
-    "exportsInvoiceValue": 1100.5,
-    "shipper": "HRIDAY INDUSTRY",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=64e996b33f6b16436ceb8294/execution-documents/6a84119f2c63b356c6a2f855/5645827e-97c4-49f0-9d4e-97b7d06bdc41-Export Commercial Invoice - Excel_XQAMZLCL082624220M.xlsx"
-  },
-  {
     "quoteId": "XQAMZLCL082624242M",
     "exportsInvoiceValue": 5125.0,
     "shipper": "md irshad alam",
@@ -232,12 +220,6 @@
     "exportsInvoiceValue": 3390.0,
     "shipper": "akriti online",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=686ab0e1018574c8e2bab4a4/execution-documents/6a8bd65ce343ea4cd72686c9/5c5e4717-95e1-4453-82f1-dc3c3ab6faea-EXPORT Commercial Invoice_XQAMZLCL082624461M.xls"
-  },
-  {
-    "quoteId": "XQAMZLCL092624780M",
-    "exportsInvoiceValue": 9306.0,
-    "shipper": "guhan krishnamurtthy",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a3b8471434775cacf2fa6d2/execution-documents/6a97b8228c05db5ac72122c4/c4f664fb-d56b-445b-9273-cfa7a9000d5e-Export Commercial Invoice - Excel_XQAMZLCL092624780M.xlsx"
   },
   {
     "quoteId": "XQAMZLCL092624936M",
