@@ -192,6 +192,24 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69945b84bb0464a85e64a8ac/execution-documents/6aaa2c57d1a7d333e4322095/c54950e3-519e-4a1f-bad3-8329d3198cb0-Indus_Cosmeceuticals_Invoice_HR-CI-26-27-006_and_Packing_List_Fixed.xlsx"
   },
   {
+    "quoteId": "XQAMZAIR1026223224",
+    "exportsInvoiceValue": 54733.35,
+    "shipper": "Solino Home",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=64a6af4fb03bfab1854edcb1/execution-documents/6ad1c99e7a0f3c010971de93/d182270c-a894-4d25-b914-a4107c255c35-CI XQAMZAIR1026223224 (Solino Home).xls"
+  },
+  {
+    "quoteId": "XQAMZAIR1026224039",
+    "exportsInvoiceValue": 4215.47,
+    "shipper": "Solino Home",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=64a6af4fb03bfab1854edcb1/execution-documents/6ad5c57dedb8644f6fab15fd/2b8528b0-8b1e-40ef-9b40-26d177e4ba19-CI XQAMZAIR1026224039 (Solino Home).xlsx"
+  },
+  {
+    "quoteId": "XQAMZAIR1026225790",
+    "exportsInvoiceValue": 2860.73,
+    "shipper": "Solino Home",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=64a6af4fb03bfab1854edcb1/execution-documents/6adb3d9547fdff2eae98cf7a/f9208e8f-e84c-44c1-98de-5b9b9b50765c-CI XQAMZAIR1026225790 (Solino Home).xlsx"
+  },
+  {
     "quoteId": "XQAMZLCL082624012M",
     "exportsInvoiceValue": 17135.94475,
     "shipper": "Bizeev LLC",
@@ -310,12 +328,6 @@
     "exportsInvoiceValue": 20170.73,
     "shipper": "Solino Home",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=64a6af4fb03bfab1854edcb1/execution-documents/6aba05cc998301452484bf19/241d3690-35db-42be-a842-c305cdc59a02-FY-2627-049 - Destination docs (1).xlsm"
-  },
-  {
-    "quoteId": "XQAMZLCL092625801M",
-    "exportsInvoiceValue": 4070.4,
-    "shipper": "halm straws gmbh",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6ab75c71028ee03ea74b3037/execution-documents/6ab794c95e23e39f6e8ad143/aba8c702-8342-4822-bfe3-ae951f47acb3-Commercial Invoice_XQAMZLCL092625801M UP.pdf"
   },
   {
     "quoteId": "XQAMZLCL092625869M",
@@ -588,12 +600,6 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=647594734988569a71a54341/execution-documents/6ac49d32cd23d6c3dc8151cd/52d328bb-10e1-4edf-8a9a-7953cbb14323-Invoice No.xlsx"
   },
   {
-    "quoteId": "XQAMZFCL102626368M",
-    "exportsInvoiceValue": 86935.12,
-    "shipper": "Well Made Gifts",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=66312a95075abb31b85ab94d/execution-documents/6ace219f09c71663659f7e43/fd23eff4-8a1a-4839-84b4-9e7d1a326921-Export Commercial Invoice - Excel_XQAMZFCL102626368M.xlsx"
-  },
-  {
     "quoteId": "XQAMZLCL072623213M",
     "exportsInvoiceValue": 1259.5,
     "shipper": "hecate wizard mall",
@@ -676,12 +682,6 @@
     "exportsInvoiceValue": 3136.5,
     "shipper": "farhan",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6819f708b326f93fa2eba6e6/execution-documents/6a9008c5d40e4100e891475b/58ddad71-626c-40b4-928f-d67b9087591b-Import Commercial Invoice - Excel_XQAMZLCL082624584M.xls"
-  },
-  {
-    "quoteId": "XQAMZLCL082624609M",
-    "exportsInvoiceValue": 19185.0,
-    "shipper": "exion leatherworks",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6915ad32da5064f10d1c5da4/execution-documents/6a9049b08223b7df34d2ef6f/90ed0c25-a7c2-4f96-add7-4e2bb2bb36de-Export Commercial Invoice - Excel_XQAMZLCL082624609M.xls"
   },
   {
     "quoteId": "XQAMZLCL082624610M",
@@ -1032,12 +1032,6 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6aa778d0b9f05c948d6d9c27/execution-documents/6aa8e1e55d3c6ae25c72098b/f7f711f2-9b8d-4baf-8289-99778465bc9f-Export Commercial Invoice - Excel_XQAMZLCL092625318M.xlsx"
   },
   {
-    "quoteId": "XQAMZLCL092625325M",
-    "exportsInvoiceValue": 4413.16,
-    "shipper": "nikilko2017 ltd",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69425e0247d324cfdc366591/execution-documents/6aa7d0fca4d23e6cb10e2cdc/b069c880-fe48-4315-a0dc-037758c7bc24-Commercial Invoice_XQAMZLCL092625325M.xlsx"
-  },
-  {
     "quoteId": "XQAMZLCL092625328M",
     "exportsInvoiceValue": 36365.6,
     "shipper": "tas",
@@ -1110,22 +1104,10 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=690ca0876f1965bc6dcea409/execution-documents/6ab229ea2f768e918bde9250/a2b09c6c-2ac8-4e3c-a483-76606552dd41-Honey_XP_Invoice_US-03E_and_Packing_List_Fixed.xlsx"
   },
   {
-    "quoteId": "XQAMZLCL092625542M",
-    "exportsInvoiceValue": 18797.49,
-    "shipper": "movemate gmbh",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6a1eeae41431206c98325a50/execution-documents/6ab0d5ee8c7f12928f9a73a2/aaa05902-5c34-4b38-97fc-d8a38cf106ea-Commercial Invoice_XQAMZLCL092625542M.xlsx"
-  },
-  {
     "quoteId": "XQAMZLCL092625569M",
     "exportsInvoiceValue": 28770.0,
     "shipper": "fashionking brands pvt ltd",
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=6960a018432aad3e7f15db14/execution-documents/6ab2526a6e94a15c9652e50f/247a07e3-8441-47bb-9b23-711bd1d49ae6-Export Commercial Invoice - Excel_XQAMZLCL092625569M.xlsx"
-  },
-  {
-    "quoteId": "XQAMZLCL092625571M",
-    "exportsInvoiceValue": 3298.33,
-    "shipper": "nikilko2017 ltd",
-    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=69425e0247d324cfdc366591/execution-documents/6ab11540014469d37e8560b9/b7527ebd-86b5-4f08-bd94-0743817a24bb-Commercial Invoice_XQAMZLCL092625571M.xlsx"
   },
   {
     "quoteId": "XQAMZLCL092625575M",
