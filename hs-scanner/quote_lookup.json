@@ -210,6 +210,24 @@
     "url": "https://api.xhipment.com/api/v1/utils/download-report?url=64a6af4fb03bfab1854edcb1/execution-documents/6adb3d9547fdff2eae98cf7a/f9208e8f-e84c-44c1-98de-5b9b9b50765c-CI XQAMZAIR1026225790 (Solino Home).xlsx"
   },
   {
+    "quoteId": "XQAMZLCL092625554M",
+    "exportsInvoiceValue": 9900.0,
+    "shipper": "Global Exim",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=664602ea5d52248b7e4aad43/execution-documents/6ab253e36e94a15c9652fb57/f2378cfe-9125-4b08-ac7f-34eee457aac8-Export Commercial Invoice - Excel_XQAMZLCL092625554M.xlsx"
+  },
+  {
+    "quoteId": "XQAMZLCL092625598M",
+    "exportsInvoiceValue": 1664.0,
+    "shipper": "zeshane handicrafts",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=68ba85765ae692ed64b5fdd1/execution-documents/6ab222dd1e1cb0ec9dc18eef/d939fa54-0389-496d-9e9e-85026febbdeb-Export Commercial Invoice - Excel_XQAMZLCL092625598M.xlsx"
+  },
+  {
+    "quoteId": "XQAMZLCL092625746M",
+    "exportsInvoiceValue": 73820.0,
+    "shipper": "Carmel Organics",
+    "url": "https://api.xhipment.com/api/v1/utils/download-report?url=642d53a7cc9c1a665f81375f/execution-documents/6ab7611b028ee03ea74b4b48/1a54024f-b9dd-4675-a1ed-e4d7d67ea525-Export Commercial Invoice - Excel_XQAMZLCL092625746M.xlsx"
+  },
+  {
     "quoteId": "XQAMZLCL082624012M",
     "exportsInvoiceValue": 17135.94475,
     "shipper": "Bizeev LLC",
